@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:habit_app/styles/colors.dart';
+import 'package:habit_app/styles/typos.dart';
+import 'package:habit_app/widgets/ht_text.dart';
 
 class DailyPage extends StatelessWidget {
   const DailyPage({super.key});
@@ -20,7 +23,13 @@ class DailyAppbar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Column(
-      children: [Text('Task')],
+      children: [
+        HTText(
+          'Task',
+          typoToken: HTTypoToken.headlineLarge,
+          color: HTColors.gray080,
+        )
+      ],
     );
   }
 }

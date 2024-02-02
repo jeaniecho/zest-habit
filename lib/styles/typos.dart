@@ -3,19 +3,19 @@ import 'package:flutter/material.dart';
 final material2021 = Typography.material2021();
 
 enum HTTypoToken {
-  headlineXXLarge(56, 1.4, 0, FontWeight.w600),
+  headlineXXLarge(56, 1.4, 0, FontWeight.w700),
 
-  headlineXLarge(48, 1.4, 0, FontWeight.w600),
+  headlineXLarge(48, 1.4, 0, FontWeight.w700),
 
-  headlineLarge(36, 1.4, 0, FontWeight.w600),
+  headlineLarge(36, 1.4, 0, FontWeight.w700),
 
-  headlineMedium(28, 1.5, 0, FontWeight.w600),
+  headlineMedium(28, 1.5, 0, FontWeight.w700),
 
-  headlineSmall(24, 1.5, 0, FontWeight.w600),
+  headlineSmall(24, 1.5, 0, FontWeight.w700),
 
-  headlineXSmall(18, 1.5, 0, FontWeight.w600),
+  headlineXSmall(18, 1.5, 0, FontWeight.w700),
 
-  headlineXXSmall(16, 1.5, 0, FontWeight.w600),
+  headlineXXSmall(16, 1.5, 0, FontWeight.w700),
 
   subtitleXXLarge(24, 1.4, 0, FontWeight.w600),
 
