@@ -60,11 +60,6 @@ class DailyDates extends StatelessWidget {
   Widget build(BuildContext context) {
     DailyBloc dailyBloc = context.read<DailyBloc>();
 
-    ScrollController dateScrollController = ScrollController(
-        initialScrollOffset: ((52 + 8) * prevDates -
-                ((MediaQuery.sizeOf(context).width - 86) / 2))
-            .toDouble());
-
     return StreamBuilder<int>(
         stream: dailyBloc.dateIndex,
         builder: (context, snapshot) {
@@ -73,7 +68,7 @@ class DailyDates extends StatelessWidget {
           return SizedBox(
             height: 52 + 16,
             child: ListView.separated(
-                controller: dateScrollController,
+                controller: dailyBloc.dateScrollController,
                 scrollDirection: Axis.horizontal,
                 padding: HTEdgeInsets.horizontal16,
                 shrinkWrap: true,
@@ -133,20 +128,23 @@ class DailyTaskList extends StatelessWidget {
             padding: HTEdgeInsets.all24,
             child: Column(
               children: [
-                const Row(
-                  children: [
-                    HTText(
-                      '4 Tasks',
-                      typoToken: HTTypoToken.captionMedium,
-                      color: HTColors.gray040,
-                    ),
-                    Spacer(),
-                    HTText(
-                      '2 Done',
-                      typoToken: HTTypoToken.captionMedium,
-                      color: HTColors.gray040,
-                    ),
-                  ],
+                const Padding(
+                  padding: HTEdgeInsets.horizontal12,
+                  child: Row(
+                    children: [
+                      HTText(
+                        '4 Tasks',
+                        typoToken: HTTypoToken.captionMedium,
+                        color: HTColors.gray040,
+                      ),
+                      Spacer(),
+                      HTText(
+                        '2 Done',
+                        typoToken: HTTypoToken.captionMedium,
+                        color: HTColors.gray040,
+                      ),
+                    ],
+                  ),
                 ),
                 HTSpacers.height8,
                 ListView.separated(
@@ -186,7 +184,7 @@ class DailyTaskList extends StatelessWidget {
                             Spacer(),
                             Column(
                               children: [
-                                Icon(Icons.check_circle),
+                                Icon(Icons.check_circle_rounded),
                                 HTText(
                                   'Done',
                                   typoToken: HTTypoToken.headlineXXSmall,

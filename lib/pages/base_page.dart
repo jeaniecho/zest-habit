@@ -4,6 +4,7 @@ import 'package:habit_app/blocs/base/daily_bloc.dart';
 import 'package:habit_app/blocs/base/timer_bloc.dart';
 import 'package:habit_app/pages/base/daily_page.dart';
 import 'package:habit_app/pages/base/timer_page.dart';
+import 'package:habit_app/styles/colors.dart';
 import 'package:provider/provider.dart';
 
 class BasePage extends StatelessWidget {
@@ -12,7 +13,8 @@ class BasePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     AppBloc appBloc = context.read<AppBloc>();
-    DailyBloc dailyBloc = DailyBloc();
+    DailyBloc dailyBloc =
+        DailyBloc(deviceWidth: MediaQuery.sizeOf(context).width);
     TimerBloc timerBloc = TimerBloc();
 
     return StreamBuilder<int>(
@@ -47,10 +49,15 @@ class BasePage extends StatelessWidget {
               onTap: (int index) {
                 appBloc.setBottomIndex(index);
               },
+              selectedItemColor: HTColors.black,
+              unselectedItemColor: HTColors.gray040,
+              showSelectedLabels: false,
+              showUnselectedLabels: false,
               items: const [
-                BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
                 BottomNavigationBarItem(
-                    icon: Icon(Icons.timer), label: 'Timer'),
+                    icon: Icon(Icons.calendar_today), label: 'Home'),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.timer_outlined), label: 'Timer'),
               ],
             ),
           );
