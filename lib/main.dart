@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:habit_app/blocs/app_bloc.dart';
 import 'package:habit_app/pages/base_page.dart';
+import 'package:habit_app/styles/themes.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -16,10 +17,9 @@ class MyApp extends StatelessWidget {
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.black),
-        useMaterial3: true,
-      ),
+      theme: HTThemes.lightTheme,
+      darkTheme: HTThemes.darkTheme,
+      themeMode: ThemeMode.system,
       home: Provider(
         create: (context) => appBloc,
         child: const BasePage(),
