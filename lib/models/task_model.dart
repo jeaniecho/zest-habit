@@ -12,10 +12,9 @@ class Task {
   List<int>? repeatAt; // weekdays (1 ~ 7 == Mon ~ Sun) / if null: one time
   String? goal;
   String? desc;
-  List<DateTime> doneAt;
+  List<DateTime> doneAt = [];
 
   Task({
-    required this.id,
     required this.from,
     required this.emoji,
     required this.title,
@@ -23,6 +22,5 @@ class Task {
     required this.repeatAt,
     required this.goal,
     required this.desc,
-    required this.doneAt,
   });
 }

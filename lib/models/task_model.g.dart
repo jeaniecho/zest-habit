@@ -131,15 +131,15 @@ Task _taskDeserialize(
 ) {
   final object = Task(
     desc: reader.readStringOrNull(offsets[0]),
-    doneAt: reader.readDateTimeList(offsets[1]) ?? [],
     emoji: reader.readStringOrNull(offsets[2]),
     from: reader.readDateTime(offsets[3]),
     goal: reader.readStringOrNull(offsets[4]),
-    id: id,
     repeatAt: reader.readLongList(offsets[5]),
     title: reader.readString(offsets[6]),
     until: reader.readDateTimeOrNull(offsets[7]),
   );
+  object.doneAt = reader.readDateTimeList(offsets[1]) ?? [];
+  object.id = id;
   return object;
 }
 
