@@ -4,7 +4,7 @@ import 'package:habit_app/pages/base_page.dart';
 import 'package:habit_app/styles/themes.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+void main() async {
   runApp(const MyApp());
 }
 

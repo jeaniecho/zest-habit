@@ -1,15 +1,20 @@
-class TaskVM {
-  int id;
+import 'package:isar/isar.dart';
+
+part 'task_model.g.dart';
+
+@collection
+class Task {
+  Id id = Isar.autoIncrement;
   DateTime from;
-  String emoji;
+  String? emoji;
   String title;
   DateTime? until;
-  List<int> repeatAt; // weekdays (1 ~ 7 == Mon ~ Sun) / if empty: one time
-  String goal;
-  String desc;
+  List<int>? repeatAt; // weekdays (1 ~ 7 == Mon ~ Sun) / if null: one time
+  String? goal;
+  String? desc;
   List<DateTime> doneAt;
 
-  TaskVM({
+  Task({
     required this.id,
     required this.from,
     required this.emoji,
@@ -20,58 +25,4 @@ class TaskVM {
     required this.desc,
     required this.doneAt,
   });
-
-  TaskVM copyWith({
-    DateTime? from,
-    String? emoji,
-    String? title,
-    List<int>? repeatAt,
-    String? goal,
-    String? desc,
-    List<DateTime>? doneAt,
-  }) {
-    return TaskVM(
-      id: id,
-      from: from ?? this.from,
-      emoji: emoji ?? this.emoji,
-      title: title ?? this.title,
-      until: until,
-      repeatAt: repeatAt ?? this.repeatAt,
-      goal: goal ?? this.goal,
-      desc: desc ?? this.desc,
-      doneAt: doneAt ?? this.doneAt,
-    );
-  }
-
-  TaskVM updateUntil(DateTime? until) {
-    return TaskVM(
-      id: id,
-      from: from,
-      emoji: emoji,
-      title: title,
-      until: until,
-      repeatAt: repeatAt,
-      goal: goal,
-      desc: desc,
-      doneAt: doneAt,
-    );
-  }
-
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'from': '${from.year}-${from.month}-${from.day}',
-      'emoji': emoji,
-      'title': title,
-      'until':
-          until == null ? '' : '${until!.year}-${until!.month}-${until!.day}',
-      'repeatAt': repeatAt.toString(),
-      'goal': goal,
-      'desc': desc,
-      'doneAt': doneAt
-          .map((e) => '${e.year}-${e.month}-${e.day}')
-          .toList()
-          .toString(),
-    };
-  }
 }
