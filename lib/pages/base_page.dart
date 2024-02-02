@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:habit_app/blocs/app_bloc.dart';
+import 'package:habit_app/blocs/base/daily_bloc.dart';
+import 'package:habit_app/blocs/base/timer_bloc.dart';
+import 'package:habit_app/pages/base/daily_page.dart';
+import 'package:habit_app/pages/base/timer_page.dart';
 import 'package:provider/provider.dart';
 
 class BasePage extends StatelessWidget {
@@ -8,6 +12,8 @@ class BasePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     AppBloc appBloc = context.read<AppBloc>();
+    DailyBloc dailyBloc = DailyBloc();
+    TimerBloc timerBloc = TimerBloc();
 
     return StreamBuilder<int>(
         stream: appBloc.bottomIndex,
@@ -17,7 +23,22 @@ class BasePage extends StatelessWidget {
           return Scaffold(
             body: IndexedStack(
               index: bottomIndex,
-              children: [],
+              children: [
+                MultiProvider(
+                  providers: [
+                    Provider(create: (context) => appBloc),
+                    Provider(create: (context) => dailyBloc),
+                  ],
+                  child: const DailyPage(),
+                ),
+                MultiProvider(
+                  providers: [
+                    Provider(create: (context) => appBloc),
+                    Provider(create: (context) => timerBloc),
+                  ],
+                  child: const TimerPage(),
+                ),
+              ],
             ),
             bottomNavigationBar: BottomNavigationBar(
               currentIndex: bottomIndex,
