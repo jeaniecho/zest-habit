@@ -5,6 +5,33 @@ class DailyPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return const Column(
+      children: [
+        DailyAppbar(),
+        DailyTaskList(),
+      ],
+    );
+  }
+}
+
+class DailyAppbar extends StatelessWidget {
+  const DailyAppbar({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Column(
+      children: [Text('Task')],
+    );
+  }
+}
+
+class DailyTaskList extends StatelessWidget {
+  const DailyTaskList({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Expanded(
+      child: SingleChildScrollView(),
+    );
   }
 }

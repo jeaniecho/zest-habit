@@ -21,24 +21,26 @@ class BasePage extends StatelessWidget {
           int bottomIndex = snapshot.data ?? 0;
 
           return Scaffold(
-            body: IndexedStack(
-              index: bottomIndex,
-              children: [
-                MultiProvider(
-                  providers: [
-                    Provider(create: (context) => appBloc),
-                    Provider(create: (context) => dailyBloc),
-                  ],
-                  child: const DailyPage(),
-                ),
-                MultiProvider(
-                  providers: [
-                    Provider(create: (context) => appBloc),
-                    Provider(create: (context) => timerBloc),
-                  ],
-                  child: const TimerPage(),
-                ),
-              ],
+            body: SafeArea(
+              child: IndexedStack(
+                index: bottomIndex,
+                children: [
+                  MultiProvider(
+                    providers: [
+                      Provider(create: (context) => appBloc),
+                      Provider(create: (context) => dailyBloc),
+                    ],
+                    child: const DailyPage(),
+                  ),
+                  MultiProvider(
+                    providers: [
+                      Provider(create: (context) => appBloc),
+                      Provider(create: (context) => timerBloc),
+                    ],
+                    child: const TimerPage(),
+                  ),
+                ],
+              ),
             ),
             bottomNavigationBar: BottomNavigationBar(
               currentIndex: bottomIndex,
