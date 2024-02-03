@@ -431,7 +431,9 @@ class TaskWeeklyCalendar extends StatelessWidget {
                         width: 4,
                         height: 4,
                         decoration: BoxDecoration(
-                          color: now.day == day ? HTColors.red : HTColors.white,
+                          color: isSameMonth(now, currDate) && now.day == day
+                              ? HTColors.red
+                              : HTColors.white,
                           shape: BoxShape.circle,
                         ),
                       )
