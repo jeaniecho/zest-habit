@@ -154,18 +154,37 @@ class TaskCalendar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    TaskDetailBloc taskDetailBloc = context.read<TaskDetailBloc>();
+
     return Column(
       children: [
         HTSpacers.height32,
-        const TaskMonthly(),
+        StreamBuilder<bool>(
+            stream: taskDetailBloc.isMonthly,
+            builder: (context, snapshot) {
+              bool isMonthly = snapshot.data ?? true;
+
+              return isMonthly ? const TaskMonthly() : const TaskWeekly();
+            }),
         HTSpacers.height32,
         HTAnimatedToggle(
-          values: const ['Weekly', 'Monthly'],
-          onToggleCallback: (value) {},
+          values: const ['Monthly', 'Weekly'],
+          onToggleCallback: (value) {
+            taskDetailBloc.toggleCalendarType();
+          },
         ),
         HTSpacers.height32,
       ],
     );
+  }
+}
+
+class TaskWeekly extends StatelessWidget {
+  const TaskWeekly({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Placeholder();
   }
 }
 
