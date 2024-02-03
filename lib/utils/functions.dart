@@ -23,7 +23,7 @@ String untilToText(DateTime? until) {
   if (until == null) {
     return 'Forever';
   } else {
-    return 'until ${DateFormat.yMd(until)}';
+    return 'until ${DateFormat.yMd().format(until)}';
   }
 }
 
