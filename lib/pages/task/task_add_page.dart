@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:habit_app/blocs/app_bloc.dart';
 import 'package:habit_app/models/task_model.dart';
 import 'package:habit_app/styles/tokens.dart';
+import 'package:habit_app/utils/functions.dart';
 import 'package:habit_app/widgets/ht_appbar.dart';
 import 'package:provider/provider.dart';
 
@@ -43,7 +44,7 @@ class TaskAddPage extends StatelessWidget {
             ),
             ElevatedButton(
                 onPressed: () {
-                  DateTime now = DateTime.now();
+                  DateTime now = DateTime.now().getDate();
                   DateTime today = DateTime(now.year, now.month, now.day);
 
                   appBloc.addTask(Task(

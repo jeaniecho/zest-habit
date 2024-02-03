@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:habit_app/blocs/app_bloc.dart';
 import 'package:habit_app/models/task_model.dart';
 import 'package:habit_app/utils/disposable.dart';
+import 'package:habit_app/utils/functions.dart';
 import 'package:rxdart/rxdart.dart';
 
 const int prevDates = 30;
@@ -38,7 +39,7 @@ class DailyBloc extends Disposable {
   }
 
   List<DateTime> getDates() {
-    DateTime today = DateTime.now();
+    DateTime today = DateTime.now().getDate();
     DateTime lastMonth = today.subtract(const Duration(days: prevDates));
 
     List<DateTime> items = List<DateTime>.generate(
