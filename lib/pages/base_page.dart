@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:habit_app/blocs/app_bloc.dart';
 import 'package:habit_app/blocs/base/daily_bloc.dart';
 import 'package:habit_app/blocs/base/timer_bloc.dart';
-import 'package:habit_app/blocs/task/task_add_bloc.dart';
 import 'package:habit_app/pages/base/daily_page.dart';
 import 'package:habit_app/pages/base/timer_page.dart';
-import 'package:habit_app/pages/task/task_add_page.dart';
 import 'package:habit_app/styles/colors.dart';
+import 'package:habit_app/styles/tokens.dart';
 import 'package:provider/provider.dart';
 
 class BasePage extends StatelessWidget {
@@ -39,12 +38,6 @@ class BasePage extends StatelessWidget {
                   MultiProvider(
                     providers: [
                       Provider(create: (context) => appBloc),
-                    ],
-                    child: const TaskAddPage(),
-                  ),
-                  MultiProvider(
-                    providers: [
-                      Provider(create: (context) => appBloc),
                       Provider(create: (context) => timerBloc),
                     ],
                     child: const TimerPage(),
@@ -52,23 +45,66 @@ class BasePage extends StatelessWidget {
                 ],
               ),
             ),
-            bottomNavigationBar: BottomNavigationBar(
-              currentIndex: bottomIndex,
-              onTap: (int index) {
-                appBloc.setBottomIndex(index);
-              },
-              selectedItemColor: HTColors.black,
-              unselectedItemColor: HTColors.gray040,
-              showSelectedLabels: false,
-              showUnselectedLabels: false,
-              items: const [
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.calendar_today), label: 'Home'),
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.add_circle), label: 'Add'),
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.timer_outlined), label: 'Timer'),
-              ],
+            bottomNavigationBar: SafeArea(
+              child: Container(
+                padding: HTEdgeInsets.h24v16,
+                decoration: const BoxDecoration(
+                  border: Border(
+                    top: BorderSide(
+                      color: HTColors.gray010,
+                      width: 1,
+                    ),
+                  ),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () {
+                        appBloc.setBottomIndex(0);
+                      },
+                      child: Icon(
+                        Icons.calendar_today_rounded,
+                        size: 28,
+                        color: bottomIndex == 0
+                            ? HTColors.black
+                            : HTColors.gray040,
+                      ),
+                    ),
+                    GestureDetector(
+                        onTap: () {},
+                        child: Container(
+                          width: 48,
+                          height: 48,
+                          decoration: const BoxDecoration(
+                            color: HTColors.black,
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Center(
+                            child: Icon(
+                              Icons.add_rounded,
+                              size: 24,
+                              color: HTColors.white,
+                            ),
+                          ),
+                        )),
+                    GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () {
+                        appBloc.setBottomIndex(1);
+                      },
+                      child: Icon(
+                        Icons.timer_outlined,
+                        size: 28,
+                        color: bottomIndex == 1
+                            ? HTColors.black
+                            : HTColors.gray040,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           );
         });
