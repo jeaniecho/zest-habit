@@ -9,6 +9,7 @@ import 'package:habit_app/utils/functions.dart';
 import 'package:habit_app/widgets/ht_text.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:rxdart/rxdart.dart';
 
 class DailyPage extends StatelessWidget {
   const DailyPage({super.key});
@@ -132,10 +133,16 @@ class DailyTaskList extends StatelessWidget {
           color: HTColors.gray010,
           child: SingleChildScrollView(
             padding: HTEdgeInsets.all24,
-            child: StreamBuilder<List<Task>>(
-                stream: dailyBloc.currTasks,
+            child: StreamBuilder<List>(
+                stream: Rx.combineLatestList(
+                    [dailyBloc.currTasks, dailyBloc.dateIndex]),
                 builder: (context, snapshot) {
-                  List<Task> currTasks = snapshot.data ?? [];
+                  List<Task> currTasks = snapshot.data?[0] ?? [];
+                  int dateIndex = snapshot.data?[1] ?? 0;
+                  List<Task> doneTasks = currTasks
+                      .where((element) =>
+                          isDone(dailyBloc.dates[dateIndex], element.doneAt))
+                      .toList();
 
                   return Column(
                     children: [
@@ -150,7 +157,7 @@ class DailyTaskList extends StatelessWidget {
                             ),
                             const Spacer(),
                             HTText(
-                              '${currTasks.length} Done',
+                              '${doneTasks.length} Done',
                               typoToken: HTTypoToken.captionMedium,
                               color: HTColors.gray040,
                             ),

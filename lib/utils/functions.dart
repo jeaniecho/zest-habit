@@ -20,3 +20,12 @@ String repeatAtToText(List<int>? repeatAt) {
 bool isSameDay(DateTime one, DateTime two) {
   return one.day == two.day && one.month == two.month && one.year == two.year;
 }
+
+bool isDone(DateTime currDate, List<DateTime> doneAt) {
+  try {
+    doneAt.firstWhere((element) => isSameDay(element, currDate));
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
