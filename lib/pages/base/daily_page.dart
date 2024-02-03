@@ -239,7 +239,7 @@ class TaskBox extends StatelessWidget {
                     children: [
                       if (task.until != null)
                         HTText(
-                          'until ${DateFormat.yMd().format(task.until!)} ㆍ ',
+                          '${untilToText(task.until)} ㆍ ',
                           typoToken: HTTypoToken.captionSmall,
                           color: HTColors.gray040,
                         ),

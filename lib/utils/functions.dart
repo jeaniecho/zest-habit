@@ -19,11 +19,11 @@ String repeatAtToText(List<int>? repeatAt) {
   return '';
 }
 
-String untilToText(DateTime? until) {
+String untilToText(DateTime? until, {bool long = false}) {
   if (until == null) {
     return 'Forever';
   } else {
-    return 'until ${DateFormat.yMd().format(until)}';
+    return 'until ${DateFormat('${long ? 'yy' : ''}yy.MM.dd').format(until)}';
   }
 }
 

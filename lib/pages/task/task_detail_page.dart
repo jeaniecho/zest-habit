@@ -554,7 +554,7 @@ class TaskDetailInfo extends StatelessWidget {
               borderRadius: HTBorderRadius.circular10,
             ),
             child: HTText(
-              '\u2022  ${untilToText(taskDetailBloc.task.until)}',
+              '\u2022  ${untilToText(taskDetailBloc.task.until, long: true)}',
               typoToken: HTTypoToken.captionMedium,
               color: HTColors.black,
             ),
