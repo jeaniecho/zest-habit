@@ -165,7 +165,7 @@ class DailyTaskList extends StatelessWidget {
                         child: Row(
                           children: [
                             HTText(
-                              '${currTasks.length} Tasks',
+                              '${currTasks.length} Task${currTasks.length > 1 ? 's' : ''}',
                               typoToken: HTTypoToken.captionMedium,
                               color: HTColors.gray040,
                             ),
