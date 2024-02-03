@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:habit_app/blocs/app_bloc.dart';
 import 'package:habit_app/blocs/base/daily_bloc.dart';
 import 'package:habit_app/models/task_model.dart';
+import 'package:habit_app/pages/task/task_detail_page.dart';
 import 'package:habit_app/styles/colors.dart';
 import 'package:habit_app/styles/tokens.dart';
 import 'package:habit_app/styles/typos.dart';
@@ -126,7 +127,6 @@ class DailyTaskList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     DailyBloc dailyBloc = context.read<DailyBloc>();
-    AppBloc appBloc = context.read<AppBloc>();
 
     return Expanded(
       child: Container(
@@ -170,89 +170,7 @@ class DailyTaskList extends StatelessWidget {
                           physics: const NeverScrollableScrollPhysics(),
                           itemBuilder: (context, index) {
                             Task task = currTasks[index];
-
-                            return Container(
-                              width: double.infinity,
-                              padding: HTEdgeInsets.h24v16,
-                              decoration: BoxDecoration(
-                                  color: HTColors.white,
-                                  borderRadius: HTBorderRadius.circular12),
-                              child: Row(
-                                children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      if (task.emoji != null)
-                                        HTText(
-                                          task.emoji!,
-                                          typoToken: HTTypoToken.captionLarge,
-                                          color: HTColors.black,
-                                        ),
-                                      HTText(
-                                        task.title,
-                                        typoToken: HTTypoToken.headlineSmall,
-                                        color: HTColors.black,
-                                      ),
-                                      Padding(
-                                        padding: HTEdgeInsets.top4,
-                                        child: Row(
-                                          children: [
-                                            if (task.until != null)
-                                              HTText(
-                                                'until ${DateFormat.yMd().format(task.until!)} ㆍ ',
-                                                typoToken:
-                                                    HTTypoToken.captionSmall,
-                                                color: HTColors.gray040,
-                                              ),
-                                            HTText(
-                                              repeatAtToText(task.repeatAt),
-                                              typoToken:
-                                                  HTTypoToken.captionSmall,
-                                              color: HTColors.gray040,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const Spacer(),
-                                  StreamBuilder<int>(
-                                      stream: dailyBloc.dateIndex,
-                                      builder: (context, snapshot) {
-                                        int dateIndex = snapshot.data ?? 0;
-                                        DateTime date =
-                                            dailyBloc.dates[dateIndex];
-                                        bool isDone =
-                                            appBloc.isDone(task, date);
-
-                                        return GestureDetector(
-                                          onTap: () {
-                                            appBloc.toggleTask(task, date);
-                                          },
-                                          child: Column(
-                                            children: [
-                                              Icon(
-                                                Icons.check_circle_rounded,
-                                                color: isDone
-                                                    ? HTColors.black
-                                                    : HTColors.gray030,
-                                              ),
-                                              HTText(
-                                                'Done',
-                                                typoToken:
-                                                    HTTypoToken.headlineXXSmall,
-                                                color: isDone
-                                                    ? HTColors.black
-                                                    : HTColors.gray030,
-                                              )
-                                            ],
-                                          ),
-                                        );
-                                      })
-                                ],
-                              ),
-                            );
+                            return TaskBox(task: task);
                           },
                           separatorBuilder: (context, index) {
                             return HTSpacers.height8;
@@ -262,6 +180,94 @@ class DailyTaskList extends StatelessWidget {
                   );
                 }),
           )),
+    );
+  }
+}
+
+class TaskBox extends StatelessWidget {
+  final Task task;
+  const TaskBox({super.key, required this.task});
+
+  @override
+  Widget build(BuildContext context) {
+    AppBloc appBloc = context.read<AppBloc>();
+    DailyBloc dailyBloc = context.read<DailyBloc>();
+
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushNamed(context, TaskDetailPage.routeName, arguments: task);
+      },
+      child: Container(
+        width: double.infinity,
+        padding: HTEdgeInsets.h24v16,
+        decoration: BoxDecoration(
+            color: HTColors.white, borderRadius: HTBorderRadius.circular12),
+        child: Row(
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (task.emoji != null)
+                  HTText(
+                    task.emoji!,
+                    typoToken: HTTypoToken.captionLarge,
+                    color: HTColors.black,
+                  ),
+                HTText(
+                  task.title,
+                  typoToken: HTTypoToken.headlineSmall,
+                  color: HTColors.black,
+                ),
+                Padding(
+                  padding: HTEdgeInsets.top4,
+                  child: Row(
+                    children: [
+                      if (task.until != null)
+                        HTText(
+                          'until ${DateFormat.yMd().format(task.until!)} ㆍ ',
+                          typoToken: HTTypoToken.captionSmall,
+                          color: HTColors.gray040,
+                        ),
+                      HTText(
+                        repeatAtToText(task.repeatAt),
+                        typoToken: HTTypoToken.captionSmall,
+                        color: HTColors.gray040,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const Spacer(),
+            StreamBuilder<int>(
+                stream: dailyBloc.dateIndex,
+                builder: (context, snapshot) {
+                  int dateIndex = snapshot.data ?? 0;
+                  DateTime date = dailyBloc.dates[dateIndex];
+                  bool isDone = appBloc.isDone(task, date);
+
+                  return GestureDetector(
+                    onTap: () {
+                      appBloc.toggleTask(task, date);
+                    },
+                    child: Column(
+                      children: [
+                        Icon(
+                          Icons.check_circle_rounded,
+                          color: isDone ? HTColors.black : HTColors.gray030,
+                        ),
+                        HTText(
+                          'Done',
+                          typoToken: HTTypoToken.headlineXXSmall,
+                          color: isDone ? HTColors.black : HTColors.gray030,
+                        )
+                      ],
+                    ),
+                  );
+                })
+          ],
+        ),
+      ),
     );
   }
 }

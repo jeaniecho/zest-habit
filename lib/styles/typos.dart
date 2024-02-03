@@ -17,19 +17,19 @@ enum HTTypoToken {
 
   headlineXXSmall(16, 1.5, 0, FontWeight.w700),
 
-  subtitleXXLarge(24, 1.4, 0, FontWeight.w600),
+  subtitleXXLarge(24, 1.4, 0, FontWeight.w700),
 
-  subtitleXLarge(20, 1.4, 0, FontWeight.w600),
+  subtitleXLarge(20, 1.4, 0, FontWeight.w700),
 
-  subtitleLarge(18, 1.4, 0, FontWeight.w600),
+  subtitleLarge(18, 1.4, 0, FontWeight.w700),
 
-  subtitleMedium(16, 1.4, 0, FontWeight.w600),
+  subtitleMedium(16, 1.2, 0, FontWeight.w700),
 
-  subtitleSmall(15, 1.4, 0, FontWeight.w600),
+  subtitleSmall(15, 1.4, 0, FontWeight.w700),
 
-  subtitleXSmall(14, 1.4, 0, FontWeight.w600),
+  subtitleXSmall(14, 1.4, 0, FontWeight.w700),
 
-  subtitleXXSmall(12, 1.4, 0, FontWeight.w600),
+  subtitleXXSmall(12, 1.4, 0, FontWeight.w700),
 
   bodyXXLarge(24, 1.5, 0, FontWeight.w500),
 

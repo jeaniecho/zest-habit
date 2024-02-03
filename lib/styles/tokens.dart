@@ -78,6 +78,8 @@ class HTEdgeInsets {
   static const vertical40 = EdgeInsets.symmetric(vertical: 40);
   static const vertical48 = EdgeInsets.symmetric(vertical: 48);
   static const vertical56 = EdgeInsets.symmetric(vertical: 56);
+  static const h12v16 = EdgeInsets.symmetric(horizontal: 12, vertical: 16);
+  static const h16v12 = EdgeInsets.symmetric(horizontal: 16, vertical: 12);
   static const h16v24 = EdgeInsets.symmetric(horizontal: 16, vertical: 24);
   static const h24v16 = EdgeInsets.symmetric(horizontal: 24, vertical: 16);
 }
