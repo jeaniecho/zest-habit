@@ -127,6 +127,7 @@ class HTBorderRadius {
   static final circular4 = BorderRadius.circular(4);
   static final circular6 = BorderRadius.circular(6);
   static final circular8 = BorderRadius.circular(8);
+  static final circular10 = BorderRadius.circular(10);
   static final circular12 = BorderRadius.circular(12);
   static final circular16 = BorderRadius.circular(16);
   static final circular20 = BorderRadius.circular(20);

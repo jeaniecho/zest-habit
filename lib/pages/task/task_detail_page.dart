@@ -9,7 +9,9 @@ import 'package:habit_app/styles/tokens.dart';
 import 'package:habit_app/styles/typos.dart';
 import 'package:habit_app/widgets/ht_appbar.dart';
 import 'package:habit_app/widgets/ht_text.dart';
+import 'package:habit_app/widgets/ht_toggle.dart';
 import 'package:provider/provider.dart';
+import 'package:quiver/time.dart';
 
 class TaskDetailPage extends StatelessWidget {
   const TaskDetailPage({super.key});
@@ -100,13 +102,10 @@ class TaskDesc extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (task.emoji != null)
-            Padding(
-              padding: HTEdgeInsets.bottom8,
-              child: HTText(
-                task.emoji!,
-                typoToken: HTTypoToken.headlineLarge,
-                color: HTColors.black,
-              ),
+            HTText(
+              task.emoji!,
+              typoToken: HTTypoToken.headlineLarge,
+              color: HTColors.black,
             ),
           HTText(
             task.title,
@@ -129,19 +128,15 @@ class TaskDesc extends StatelessWidget {
           if (task.desc != null)
             Container(
               margin: HTEdgeInsets.top12,
-              padding: HTEdgeInsets.h12v16,
+              padding: HTEdgeInsets.all16,
               decoration: BoxDecoration(
                 color: HTColors.gray010,
-                borderRadius: HTBorderRadius.circular8,
+                borderRadius: HTBorderRadius.circular10,
               ),
-              child: Row(
-                children: [
-                  HTText(
-                    task.desc!,
-                    typoToken: HTTypoToken.captionMedium,
-                    color: HTColors.gray070,
-                  ),
-                ],
+              child: HTText(
+                task.desc!,
+                typoToken: HTTypoToken.captionMedium,
+                color: HTColors.gray070,
               ),
             ),
           HTSpacers.height16,
@@ -156,11 +151,15 @@ class TaskCalendar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    return Column(
       children: [
-        HTSpacers.height24,
-        TaskMonthly(),
-        HTSpacers.height24,
+        HTSpacers.height32,
+        const TaskMonthly(),
+        HTSpacers.height32,
+        HTAnimatedToggle(
+          values: const ['Weekly', 'Monthly'],
+          onToggleCallback: (value) {},
+        ),
       ],
     );
   }
@@ -240,9 +239,13 @@ class TaskMonthlyCalendar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    DateTime today = DateTime.now();
+    int daysCount = daysInMonth(today.year, today.month);
+
     return Container(
-      width: (28 * 7) + (8 * 6) + 16,
-      height: (28 * 5) + (8 * 4) + 16,
+      width: (28 * 7) +
+          (8 * 6) +
+          16, // (boxWidth * 7days) + (boxPadding * (7-1)days) + containerPadding
       padding: HTEdgeInsets.all8,
       decoration: BoxDecoration(
         color: HTColors.gray010,
@@ -250,6 +253,7 @@ class TaskMonthlyCalendar extends StatelessWidget {
       ),
       child: GridView.builder(
         shrinkWrap: true,
+        padding: HTEdgeInsets.zero,
         physics: const NeverScrollableScrollPhysics(),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 7,
@@ -266,7 +270,7 @@ class TaskMonthlyCalendar extends StatelessWidget {
             ),
           );
         },
-        itemCount: 30,
+        itemCount: daysCount,
       ),
     );
   }
