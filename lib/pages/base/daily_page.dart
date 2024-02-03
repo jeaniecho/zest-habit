@@ -70,8 +70,16 @@ class DailyDates extends StatelessWidget {
         builder: (context, snapshot) {
           int dateIndex = snapshot.data ?? 0;
 
-          return SizedBox(
+          return Container(
             height: 52 + 16,
+            decoration: const BoxDecoration(
+              border: Border(
+                bottom: BorderSide(
+                  color: HTColors.gray010,
+                  width: 1,
+                ),
+              ),
+            ),
             child: ListView.separated(
                 controller: dailyBloc.dateScrollController,
                 scrollDirection: Axis.horizontal,
@@ -210,8 +218,9 @@ class TaskBox extends StatelessWidget {
                 if (task.emoji != null)
                   HTText(
                     task.emoji!,
-                    typoToken: HTTypoToken.captionLarge,
+                    typoToken: HTTypoToken.headlineSmall,
                     color: HTColors.black,
+                    height: 1.25,
                   ),
                 HTText(
                   task.title,

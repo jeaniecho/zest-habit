@@ -27,7 +27,8 @@ class HTAppbar extends StatelessWidget implements PreferredSizeWidget {
 
     return AppBar(
       toolbarHeight: height,
-      elevation: elevation ?? 0.1,
+      elevation: elevation ?? 0,
+      scrolledUnderElevation: 0,
       automaticallyImplyLeading: false,
       centerTitle: true,
       leading: leading ??

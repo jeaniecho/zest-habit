@@ -7,6 +7,7 @@ import 'package:habit_app/pages/task/task_edit_page.dart';
 import 'package:habit_app/styles/colors.dart';
 import 'package:habit_app/styles/tokens.dart';
 import 'package:habit_app/styles/typos.dart';
+import 'package:habit_app/utils/functions.dart';
 import 'package:habit_app/widgets/ht_appbar.dart';
 import 'package:habit_app/widgets/ht_text.dart';
 import 'package:habit_app/widgets/ht_toggle.dart';
@@ -82,6 +83,9 @@ class TaskDetailBody extends StatelessWidget {
           TaskDesc(),
           Divider(color: HTColors.gray010, thickness: 12, height: 12),
           TaskCalendar(),
+          Divider(color: HTColors.gray010, thickness: 12, height: 12),
+          TaskDetailInfo(),
+          HTSpacers.height48,
         ],
       ),
     );
@@ -99,7 +103,7 @@ class TaskDesc extends StatelessWidget {
     return Padding(
       padding: HTEdgeInsets.horizontal24,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           if (task.emoji != null)
             HTText(
@@ -160,6 +164,7 @@ class TaskCalendar extends StatelessWidget {
           values: const ['Weekly', 'Monthly'],
           onToggleCallback: (value) {},
         ),
+        HTSpacers.height32,
       ],
     );
   }
@@ -271,6 +276,56 @@ class TaskMonthlyCalendar extends StatelessWidget {
           );
         },
         itemCount: daysCount,
+      ),
+    );
+  }
+}
+
+class TaskDetailInfo extends StatelessWidget {
+  const TaskDetailInfo({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    TaskDetailBloc taskDetailBloc = context.read<TaskDetailBloc>();
+
+    return Padding(
+      padding: HTEdgeInsets.horizontal24,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          HTSpacers.height24,
+          const HTText(
+            'Repeat',
+            typoToken: HTTypoToken.captionMedium,
+            color: HTColors.gray050,
+          ),
+          HTSpacers.height12,
+          Container(
+            padding: HTEdgeInsets.h16v12,
+            decoration: BoxDecoration(
+              border: Border.all(color: HTColors.gray010, width: 1),
+              borderRadius: HTBorderRadius.circular10,
+            ),
+            child: HTText(
+              '\u2022  ${repeatAtToText(taskDetailBloc.task.repeatAt)}',
+              typoToken: HTTypoToken.captionMedium,
+              color: HTColors.black,
+            ),
+          ),
+          HTSpacers.height12,
+          Container(
+            padding: HTEdgeInsets.h16v12,
+            decoration: BoxDecoration(
+              border: Border.all(color: HTColors.gray010, width: 1),
+              borderRadius: HTBorderRadius.circular10,
+            ),
+            child: HTText(
+              '\u2022  ${untilToText(taskDetailBloc.task.until)}',
+              typoToken: HTTypoToken.captionMedium,
+              color: HTColors.black,
+            ),
+          ),
+        ],
       ),
     );
   }

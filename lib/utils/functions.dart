@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 String weekdayToText(int weekday) {
   List<String> days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   return days[weekday - 1];
@@ -15,6 +17,14 @@ String repeatAtToText(List<int>? repeatAt) {
   }
 
   return '';
+}
+
+String untilToText(DateTime? until) {
+  if (until == null) {
+    return 'Forever';
+  } else {
+    return 'until ${DateFormat.yMd(until)}';
+  }
 }
 
 bool isSameDay(DateTime one, DateTime two) {
