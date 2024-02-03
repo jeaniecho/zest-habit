@@ -382,7 +382,7 @@ class TaskWeeklyCalendar extends StatelessWidget {
 
                   bool isDone = doneDates.contains(day);
                   bool inSameWeek = isSameWeek(currDate, now);
-                  bool isLater = (inSameWeek && index >= now.weekday - 1) ||
+                  bool isLater = (inSameWeek && index >= now.weekday) ||
                       (!inSameWeek &&
                           now
                                   .difference(DateTime(
@@ -489,7 +489,7 @@ class TaskMonthlyCalendar extends StatelessWidget {
 
                       DateTime now = DateTime.now().getDate();
                       bool inSameMonth = isSameMonth(currMonth, now);
-                      bool isLater = (inSameMonth && index >= now.day) ||
+                      bool isLater = (inSameMonth && index >= now.day - 1) ||
                           (!inSameMonth &&
                               DateTime(currMonth.year, currMonth.month)
                                   .isAfter(DateTime(now.year, now.month)));
