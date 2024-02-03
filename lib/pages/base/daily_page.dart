@@ -98,6 +98,9 @@ class DailyDates extends StatelessWidget {
                       height: 52,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
+                        border: isSameDay(DateTime.now(), date)
+                            ? Border.all(color: HTColors.gray020)
+                            : null,
                         color: isSelected ? HTColors.black : HTColors.white,
                       ),
                       child: Column(

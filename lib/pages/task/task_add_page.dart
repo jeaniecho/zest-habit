@@ -43,8 +43,11 @@ class TaskAddPage extends StatelessWidget {
             ),
             ElevatedButton(
                 onPressed: () {
+                  DateTime now = DateTime.now();
+                  DateTime today = DateTime(now.year, now.month, now.day);
+
                   appBloc.addTask(Task(
-                    from: DateTime.now(),
+                    from: today,
                     emoji: emojiController.text,
                     title: titleController.text,
                     repeatAt: [1, 2, 3, 4, 5, 6, 7],

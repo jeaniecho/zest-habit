@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:habit_app/blocs/task/task_detail_bloc.dart';
 import 'package:habit_app/models/task_model.dart';
@@ -11,6 +9,7 @@ import 'package:habit_app/utils/functions.dart';
 import 'package:habit_app/widgets/ht_appbar.dart';
 import 'package:habit_app/widgets/ht_text.dart';
 import 'package:habit_app/widgets/ht_toggle.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:quiver/time.dart';
 
@@ -190,6 +189,8 @@ class TaskMonthlyTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    TaskDetailBloc taskDetailBloc = context.read<TaskDetailBloc>();
+
     return Column(
       children: [
         Row(
@@ -197,7 +198,9 @@ class TaskMonthlyTitle extends StatelessWidget {
           children: [
             GestureDetector(
               behavior: HitTestBehavior.opaque,
-              onTap: () {},
+              onTap: () {
+                taskDetailBloc.changeMonth(-1);
+              },
               child: const Padding(
                 padding: HTEdgeInsets.all4,
                 child: Icon(
@@ -207,16 +210,24 @@ class TaskMonthlyTitle extends StatelessWidget {
                 ),
               ),
             ),
-            const HTText(
-              '2024 January',
-              typoToken: HTTypoToken.headlineMedium,
-              color: HTColors.black,
-              height: 1,
-              underline: true,
-            ),
+            StreamBuilder<DateTime>(
+                stream: taskDetailBloc.currMonth,
+                builder: (context, snapshot) {
+                  DateTime currMonth = snapshot.data ?? DateTime.now();
+
+                  return HTText(
+                    '${currMonth.year} ${DateFormat.MMMM().format(currMonth)}',
+                    typoToken: HTTypoToken.headlineSmall,
+                    color: HTColors.black,
+                    height: 1,
+                    underline: true,
+                  );
+                }),
             GestureDetector(
               behavior: HitTestBehavior.opaque,
-              onTap: () {},
+              onTap: () {
+                taskDetailBloc.changeMonth(1);
+              },
               child: const Padding(
                 padding: HTEdgeInsets.all4,
                 child: Icon(
@@ -244,40 +255,63 @@ class TaskMonthlyCalendar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    DateTime today = DateTime.now();
-    int daysCount = daysInMonth(today.year, today.month);
+    TaskDetailBloc taskDetailBloc = context.read<TaskDetailBloc>();
 
-    return Container(
-      width: (28 * 7) +
-          (8 * 6) +
-          16, // (boxWidth * 7days) + (boxPadding * (7-1)days) + containerPadding
-      padding: HTEdgeInsets.all8,
-      decoration: BoxDecoration(
-        color: HTColors.gray010,
-        borderRadius: HTBorderRadius.circular8,
-      ),
-      child: GridView.builder(
-        shrinkWrap: true,
-        padding: HTEdgeInsets.zero,
-        physics: const NeverScrollableScrollPhysics(),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 7,
-          crossAxisSpacing: 8,
-          mainAxisSpacing: 8,
-        ),
-        itemBuilder: (context, index) {
+    return StreamBuilder<DateTime>(
+        stream: taskDetailBloc.currMonth,
+        builder: (context, snapshot) {
+          DateTime currMonth = snapshot.data ?? DateTime.now();
+          int daysCount = daysInMonth(currMonth.year, currMonth.month);
+
           return Container(
-            width: 28,
-            height: 28,
+            width: (28 * 7) +
+                (8 * 6) +
+                16, // (boxWidth * 7days) + (boxPadding * (7-1)days) + containerPadding
+            padding: HTEdgeInsets.all8,
             decoration: BoxDecoration(
-              color: HTColors.black,
+              color: HTColors.gray010,
               borderRadius: HTBorderRadius.circular8,
             ),
+            child: StreamBuilder<List<int>>(
+                stream: taskDetailBloc.doneDates,
+                builder: (context, snapshot) {
+                  List<int> doneDates = snapshot.data ?? [];
+
+                  return GridView.builder(
+                    shrinkWrap: true,
+                    padding: HTEdgeInsets.zero,
+                    physics: const NeverScrollableScrollPhysics(),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 7,
+                      crossAxisSpacing: 8,
+                      mainAxisSpacing: 8,
+                    ),
+                    itemBuilder: (context, index) {
+                      bool isDone = doneDates.contains(index + 1);
+
+                      DateTime now = DateTime.now();
+                      bool isLater =
+                          isSameMonth(currMonth, now) && index >= now.day;
+
+                      return Container(
+                        width: 28,
+                        height: 28,
+                        decoration: BoxDecoration(
+                          color: isDone
+                              ? HTColors.black
+                              : isLater
+                                  ? HTColors.white
+                                  : HTColors.gray020,
+                          borderRadius: HTBorderRadius.circular8,
+                        ),
+                      );
+                    },
+                    itemCount: daysCount,
+                  );
+                }),
           );
-        },
-        itemCount: daysCount,
-      ),
-    );
+        });
   }
 }
 
