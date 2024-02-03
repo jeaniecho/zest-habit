@@ -61,6 +61,7 @@ class DailyBloc extends Disposable {
   }
 
   Future<List<Task>> getCurrTasks(List<Task> tasks, DateTime currDate) async {
+    currDate = currDate.getDate();
     List<Task> currTasks = tasks.where((element) {
       return element.from.difference(currDate).inDays <= 0 &&
           (element.until == null ||
