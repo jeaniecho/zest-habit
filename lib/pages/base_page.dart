@@ -4,12 +4,15 @@ import 'package:habit_app/blocs/base/daily_bloc.dart';
 import 'package:habit_app/blocs/base/timer_bloc.dart';
 import 'package:habit_app/pages/base/daily_page.dart';
 import 'package:habit_app/pages/base/timer_page.dart';
+import 'package:habit_app/pages/task/task_add_page.dart';
 import 'package:habit_app/styles/colors.dart';
 import 'package:habit_app/styles/tokens.dart';
 import 'package:provider/provider.dart';
 
 class BasePage extends StatelessWidget {
   const BasePage({super.key});
+
+  static const routeName = '/base';
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +76,9 @@ class BasePage extends StatelessWidget {
                       ),
                     ),
                     GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.pushNamed(context, TaskAddPage.routeName);
+                        },
                         child: Container(
                           width: 48,
                           height: 48,
