@@ -6,17 +6,20 @@ String weekdayToText(int weekday) {
 }
 
 String repeatAtToText(List<int>? repeatAt) {
-  if (repeatAt == null) {
+  if (repeatAt == null || repeatAt.isEmpty) {
     return 'One time';
   } else if (repeatAt.length == 7) {
     return 'Everyday';
-  } else if (repeatAt == [1, 2, 3, 4, 5]) {
+  } else if (repeatAt.length == 5 &&
+      !(repeatAt.contains(6) || repeatAt.contains(7))) {
     return 'Weekday';
-  } else if (repeatAt == [6, 7]) {
+  } else if (repeatAt.contains(6) && repeatAt.contains(7)) {
     return 'Weekend';
   }
 
-  return '';
+  List<String> days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+  return repeatAt.map((e) => days[e - 1]).join(', ');
 }
 
 String untilToText(DateTime? until, {bool long = false}) {

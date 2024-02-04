@@ -6,11 +6,11 @@ class HTThemes {
   static final lightTheme = ThemeData(
     brightness: Brightness.light,
     appBarTheme: const AppBarTheme(
-      backgroundColor: Color(0xffFCFDFF),
+      backgroundColor: Colors.white,
     ),
-    scaffoldBackgroundColor: const Color(0xffFCFDFF),
+    scaffoldBackgroundColor: Colors.white,
     splashColor: Colors.transparent,
-    primaryColor: const Color(0xff39A0FF),
+    primaryColor: Colors.black,
     focusColor: const Color(0xff39A0FF),
     highlightColor: Colors.transparent,
     cardColor: Colors.white,
@@ -25,6 +25,11 @@ class HTThemes {
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         backgroundColor: Colors.black,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      ),
+    ),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(
+        foregroundColor: Colors.black, // button text color
       ),
     ),
     inputDecorationTheme: const InputDecorationTheme(

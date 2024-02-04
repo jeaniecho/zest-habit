@@ -6,9 +6,9 @@ class HTColors {
   static final lightColorScheme = ColorScheme.fromSeed(
       seedColor: white,
       brightness: Brightness.light,
-      primary: Colors.white,
+      primary: white,
       onPrimary: black,
-      secondary: const Color(0xffFCFDFF),
+      secondary: grey010,
       onSecondary: grey070,
       tertiary: const Color(0xff39A0FF),
       error: error,

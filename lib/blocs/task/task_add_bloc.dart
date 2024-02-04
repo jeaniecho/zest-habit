@@ -11,6 +11,10 @@ class TaskAddBloc extends Disposable {
   final BehaviorSubject<List<int>> _repeatAt = BehaviorSubject.seeded([]);
   Stream<List<int>> get repeatAt => _repeatAt.stream;
 
+  final BehaviorSubject<DateTime?> _until = BehaviorSubject.seeded(null);
+  Stream<DateTime?> get until => _until.stream;
+  Function(DateTime?) get setUntil => _until.add;
+
   final TextEditingController titleController = TextEditingController();
   final TextEditingController emojiController = TextEditingController();
   final TextEditingController goalController = TextEditingController();
@@ -21,6 +25,12 @@ class TaskAddBloc extends Disposable {
   @override
   void dispose() {
     _repeatAt.close();
+    _until.close();
+
+    titleController.dispose();
+    emojiController.dispose();
+    goalController.dispose();
+    descController.dispose();
   }
 
   toggleRepeatAt(int day) {
@@ -44,6 +54,7 @@ class TaskAddBloc extends Disposable {
       repeatAt: _repeatAt.value,
       goal: goalController.text,
       desc: descController.text,
+      until: _until.value,
     ));
   }
 }

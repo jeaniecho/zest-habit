@@ -3,8 +3,10 @@ import 'package:habit_app/blocs/task/task_add_bloc.dart';
 import 'package:habit_app/styles/colors.dart';
 import 'package:habit_app/styles/tokens.dart';
 import 'package:habit_app/styles/typos.dart';
+import 'package:habit_app/utils/functions.dart';
 import 'package:habit_app/widgets/ht_appbar.dart';
 import 'package:habit_app/widgets/ht_text.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class TaskAddPage extends StatelessWidget {
@@ -35,9 +37,11 @@ class TaskAddPage extends StatelessWidget {
               controller: taskAddBloc.goalController,
               decoration: const InputDecoration(hintText: 'Goal'),
             ),
-            HTSpacers.height12,
+            HTSpacers.height24,
             const TaskAddRepeatAt(),
             HTSpacers.height24,
+            const TaskAddUntil(),
+            HTSpacers.height48,
             ElevatedButton(
                 onPressed: () {
                   taskAddBloc.addTask();
@@ -119,6 +123,50 @@ class TaskAddRepeatAt extends StatelessWidget {
                     },
                     itemCount: 7),
               ),
+            ],
+          );
+        });
+  }
+}
+
+class TaskAddUntil extends StatelessWidget {
+  const TaskAddUntil({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    TaskAddBloc taskAddBloc = context.read<TaskAddBloc>();
+
+    DateTime today = DateTime.now().getDate();
+
+    return StreamBuilder<DateTime?>(
+        stream: taskAddBloc.until,
+        builder: (context, snapshot) {
+          DateTime? until = snapshot.data;
+
+          return Row(
+            children: [
+              const HTText(
+                'Until',
+                typoToken: HTTypoToken.subtitleMedium,
+                color: HTColors.black,
+              ),
+              HTSpacers.width12,
+              GestureDetector(
+                onTap: () {
+                  showDatePicker(
+                          context: context,
+                          firstDate: today,
+                          lastDate: DateTime(2101))
+                      .then((value) => taskAddBloc.setUntil(value));
+                },
+                child: HTText(
+                  until != null
+                      ? DateFormat('yyyy.MM.dd (E)').format(until)
+                      : 'Choose date',
+                  typoToken: HTTypoToken.subtitleMedium,
+                  color: HTColors.grey040,
+                ),
+              )
             ],
           );
         });

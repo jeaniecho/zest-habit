@@ -66,7 +66,8 @@ class DailyBloc extends Disposable {
       return (!element.from.getDate().isAfter(date)) &&
           (element.until == null ||
               (!element.until!.getDate().isBefore(date))) &&
-          (element.repeatAt == null ||
+          (((element.repeatAt == null || element.repeatAt!.isEmpty) &&
+                  isSameDay(element.from, currDate)) ||
               element.repeatAt!.contains(date.weekday));
     }).toList();
 
