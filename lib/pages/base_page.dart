@@ -50,7 +50,8 @@ class BasePage extends StatelessWidget {
             ),
             bottomNavigationBar: SafeArea(
               child: Container(
-                padding: HTEdgeInsets.h24v16,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
                 decoration: const BoxDecoration(
                   border: Border(
                     top: BorderSide(

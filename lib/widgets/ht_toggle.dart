@@ -17,7 +17,7 @@ class HTAnimatedToggle extends StatefulWidget {
     super.key,
     required this.values,
     required this.onToggleCallback,
-    this.backgroundColor = HTColors.gray020,
+    this.backgroundColor = HTColors.gray010,
     this.buttonColor = HTColors.white,
     this.textColor = HTColors.black,
     this.width = 320,

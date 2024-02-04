@@ -112,7 +112,6 @@ class TaskDesc extends StatelessWidget {
               const TaskEditButton(),
             ],
           ),
-
           HTText(
             task.title,
             typoToken: HTTypoToken.headlineMedium,
@@ -403,6 +402,7 @@ class TaskWeeklyCalendar extends StatelessWidget {
                                       currDate.year, currDate.month, day))
                                   .inDays <
                               0);
+                  bool isToday = isSameMonth(now, currDate) && now.day == day;
 
                   return Column(
                     children: [
@@ -445,9 +445,7 @@ class TaskWeeklyCalendar extends StatelessWidget {
                         width: 4,
                         height: 4,
                         decoration: BoxDecoration(
-                          color: isSameMonth(now, currDate) && now.day == day
-                              ? HTColors.red
-                              : HTColors.white,
+                          color: isToday ? HTColors.red : HTColors.white,
                           shape: BoxShape.circle,
                         ),
                       ),
@@ -505,7 +503,7 @@ class TaskMonthlyCalendar extends StatelessWidget {
 
                       DateTime now = DateTime.now().getDate();
                       bool inSameMonth = isSameMonth(currMonth, now);
-                      bool isLater = (inSameMonth && index >= now.day) ||
+                      bool isLater = (inSameMonth && index >= now.day - 1) ||
                           (!inSameMonth &&
                               DateTime(currMonth.year, currMonth.month)
                                   .isAfter(DateTime(now.year, now.month)));
