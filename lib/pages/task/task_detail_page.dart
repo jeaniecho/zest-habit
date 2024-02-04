@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:habit_app/blocs/app_bloc.dart';
 import 'package:habit_app/blocs/task/task_detail_bloc.dart';
 import 'package:habit_app/models/task_model.dart';
 import 'package:habit_app/pages/task/task_edit_page.dart';
@@ -42,6 +43,8 @@ class TaskDetailBody extends StatelessWidget {
           TaskCalendar(),
           Divider(color: HTColors.grey010, thickness: 12, height: 12),
           TaskDetailInfo(),
+          HTSpacers.height48,
+          TaskDangerZone(),
           HTSpacers.height48,
         ],
       ),
@@ -577,6 +580,34 @@ class TaskDetailInfo extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class TaskDangerZone extends StatelessWidget {
+  const TaskDangerZone({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    AppBloc appBloc = context.read<AppBloc>();
+    TaskDetailBloc taskDetailBloc = context.read<TaskDetailBloc>();
+
+    return Align(
+      alignment: Alignment.centerRight,
+      child: Padding(
+        padding: HTEdgeInsets.horizontal24,
+        child: ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              appBloc.deleteTask(taskDetailBloc.task);
+            },
+            child: const HTText(
+              'Delete Task',
+              typoToken: HTTypoToken.buttonTextMedium,
+              color: HTColors.white,
+              height: 1.25,
+            )),
       ),
     );
   }
