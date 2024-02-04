@@ -74,7 +74,7 @@ class DailyDates extends StatelessWidget {
             decoration: const BoxDecoration(
               border: Border(
                 bottom: BorderSide(
-                  color: HTColors.gray010,
+                  color: HTColors.grey010,
                   width: 1,
                 ),
               ),
@@ -101,7 +101,7 @@ class DailyDates extends StatelessWidget {
                             ? Border.all(
                                 color: isSelected
                                     ? HTColors.black
-                                    : HTColors.gray020)
+                                    : HTColors.grey020)
                             : null,
                         color: isSelected ? HTColors.black : HTColors.white,
                       ),
@@ -111,7 +111,7 @@ class DailyDates extends StatelessWidget {
                           HTText(
                             weekdayToText(date.weekday),
                             typoToken: HTTypoToken.captionXSmall,
-                            color: HTColors.gray030,
+                            color: HTColors.grey030,
                           ),
                           HTSpacers.height1,
                           HTText(
@@ -143,7 +143,7 @@ class DailyTaskList extends StatelessWidget {
 
     return Expanded(
       child: Container(
-          color: HTColors.gray010,
+          color: HTColors.grey010,
           child: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
             child: StreamBuilder<List>(
@@ -166,13 +166,13 @@ class DailyTaskList extends StatelessWidget {
                             HTText(
                               '${currTasks.length} Task${currTasks.length > 1 ? 's' : ''}',
                               typoToken: HTTypoToken.captionMedium,
-                              color: HTColors.gray040,
+                              color: HTColors.grey040,
                             ),
                             const Spacer(),
                             HTText(
                               '${doneTasks.length} Done',
                               typoToken: HTTypoToken.captionMedium,
-                              color: HTColors.gray040,
+                              color: HTColors.grey040,
                             ),
                           ],
                         ),
@@ -240,12 +240,12 @@ class TaskBox extends StatelessWidget {
                         HTText(
                           '${untilToText(task.until)} ㆍ ',
                           typoToken: HTTypoToken.captionSmall,
-                          color: HTColors.gray040,
+                          color: HTColors.grey040,
                         ),
                       HTText(
                         repeatAtToText(task.repeatAt),
                         typoToken: HTTypoToken.captionSmall,
-                        color: HTColors.gray040,
+                        color: HTColors.grey040,
                       ),
                     ],
                   ),
@@ -268,12 +268,12 @@ class TaskBox extends StatelessWidget {
                       children: [
                         Icon(
                           Icons.check_circle_rounded,
-                          color: isDone ? HTColors.black : HTColors.gray030,
+                          color: isDone ? HTColors.black : HTColors.grey030,
                         ),
                         HTText(
                           'Done',
                           typoToken: HTTypoToken.headlineXXSmall,
-                          color: isDone ? HTColors.black : HTColors.gray030,
+                          color: isDone ? HTColors.black : HTColors.grey030,
                         )
                       ],
                     ),

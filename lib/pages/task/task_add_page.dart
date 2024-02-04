@@ -99,7 +99,7 @@ class TaskAddRepeatAt extends StatelessWidget {
                             border: Border.all(
                                 color: isSelected
                                     ? HTColors.black
-                                    : HTColors.gray020,
+                                    : HTColors.grey020,
                                 width: 1),
                             color: isSelected ? HTColors.black : HTColors.white,
                           ),
@@ -108,7 +108,7 @@ class TaskAddRepeatAt extends StatelessWidget {
                             days[index],
                             typoToken: HTTypoToken.subtitleXSmall,
                             color:
-                                isSelected ? HTColors.white : HTColors.gray040,
+                                isSelected ? HTColors.white : HTColors.grey040,
                             height: 1.25,
                           )),
                         ),

@@ -17,7 +17,7 @@ class HTAnimatedToggle extends StatefulWidget {
     super.key,
     required this.values,
     required this.onToggleCallback,
-    this.backgroundColor = HTColors.gray010,
+    this.backgroundColor = HTColors.grey010,
     this.buttonColor = HTColors.white,
     this.textColor = HTColors.black,
     this.width = 320,
@@ -62,7 +62,7 @@ class _HTAnimatedToggleState extends State<HTAnimatedToggle> {
                   (index) => HTText(
                     widget.values[index],
                     typoToken: HTTypoToken.captionMedium,
-                    color: HTColors.gray050,
+                    color: HTColors.grey050,
                   ),
                 ),
               ),
@@ -87,7 +87,7 @@ class _HTAnimatedToggleState extends State<HTAnimatedToggle> {
               child: HTText(
                 initialPosition ? widget.values[0] : widget.values[1],
                 typoToken: HTTypoToken.subtitleMedium,
-                color: HTColors.gray080,
+                color: HTColors.grey080,
               ),
             ),
           ),

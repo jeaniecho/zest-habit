@@ -9,7 +9,7 @@ class HTColors {
       primary: Colors.white,
       onPrimary: black,
       secondary: const Color(0xffFCFDFF),
-      onSecondary: gray070,
+      onSecondary: grey070,
       tertiary: const Color(0xff39A0FF),
       error: error,
       onError: white,
@@ -21,10 +21,10 @@ class HTColors {
   static final darkColorScheme = ColorScheme.fromSeed(
       seedColor: black,
       brightness: Brightness.dark,
-      primary: gray070,
+      primary: grey070,
       onPrimary: white,
-      secondary: gray080,
-      onSecondary: gray010,
+      secondary: grey080,
+      onSecondary: grey010,
       tertiary: const Color(0xffD8ECFF),
       error: error,
       onError: black,
@@ -61,29 +61,29 @@ class HTColors {
   static const surface = Colors.white;
 
   //skeleton
-  static const shimmerBackgorund = gray020;
-  static const shimmerHighlight = gray010;
+  static const shimmerBackgorund = grey020;
+  static const shimmerHighlight = grey010;
 
-  // Gray
-  static const gray = Colors.grey;
-  static const gray010 = Color(0xFFF4F5F7);
-  static const gray020 = Color(0xFFE5E7EB);
-  static const gray030 = Color(0xFFD3D6DB);
-  static const gray040 = Color(0xFFA0A6B1);
-  static const gray050 = Color(0xFF6C727F);
-  static const gray060 = Color(0xFF4D5562);
-  static const gray070 = Color(0xFF394150);
-  static const gray080 = Color(0xFF272F3E);
-  static bool isAppGray(c) => [
-        gray,
-        gray010,
-        gray020,
-        gray030,
-        gray040,
-        gray050,
-        gray060,
-        gray070,
-        gray080
+  // Grey
+  static const grey010 = Color(0xFFF4F5F7);
+  static const grey020 = Color(0xFFE5E7EB);
+  static const grey030 = Color(0xFFD3D6DB);
+  static const grey040 = Color(0xFFA0A6B1);
+  static const grey050 = Color(0xFF6C727F);
+  static const grey060 = Color(0xFF4D5562);
+  static const grey070 = Color(0xFF394150);
+  static const grey080 = Color(0xFF272F3E);
+  static const grey090 = Color(0xFF151515);
+  static bool isAppGrey(c) => [
+        grey010,
+        grey020,
+        grey030,
+        grey040,
+        grey050,
+        grey060,
+        grey070,
+        grey080,
+        grey090,
       ].contains(c);
 
   // Clear

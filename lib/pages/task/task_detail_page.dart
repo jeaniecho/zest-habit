@@ -38,9 +38,9 @@ class TaskDetailBody extends StatelessWidget {
       child: Column(
         children: [
           TaskDesc(),
-          Divider(color: HTColors.gray010, thickness: 12, height: 12),
+          Divider(color: HTColors.grey010, thickness: 12, height: 12),
           TaskCalendar(),
-          Divider(color: HTColors.gray010, thickness: 12, height: 12),
+          Divider(color: HTColors.grey010, thickness: 12, height: 12),
           TaskDetailInfo(),
           HTSpacers.height48,
         ],
@@ -64,7 +64,7 @@ class TaskEditButton extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
         decoration: BoxDecoration(
-          color: HTColors.gray010,
+          color: HTColors.grey010,
           borderRadius: HTBorderRadius.circular24,
         ),
         child: const Row(
@@ -123,7 +123,7 @@ class TaskDesc extends StatelessWidget {
               child: HTText(
                 task.goal!,
                 typoToken: HTTypoToken.captionMedium,
-                color: HTColors.gray040,
+                color: HTColors.grey040,
               ),
             ),
           // if (task.desc != null)
@@ -131,13 +131,13 @@ class TaskDesc extends StatelessWidget {
           //     margin: HTEdgeInsets.top12,
           //     padding: HTEdgeInsets.h16v12,
           //     decoration: BoxDecoration(
-          //       color: HTColors.gray010,
+          //       color: HTColors.grey010,
           //       borderRadius: HTBorderRadius.circular10,
           //     ),
           //     child: HTText(
           //       task.desc!,
           //       typoToken: HTTypoToken.captionMedium,
-          //       color: HTColors.gray070,
+          //       color: HTColors.grey070,
           //     ),
           //   ),
           HTSpacers.height16,
@@ -242,7 +242,7 @@ class TaskWeeklyTitle extends StatelessWidget {
                       child: Icon(
                         Icons.chevron_left_rounded,
                         size: 24,
-                        color: isBefore ? HTColors.gray030 : HTColors.gray060,
+                        color: isBefore ? HTColors.grey030 : HTColors.grey060,
                       ),
                     ),
                   ),
@@ -265,7 +265,7 @@ class TaskWeeklyTitle extends StatelessWidget {
                       child: Icon(
                         Icons.chevron_right_rounded,
                         size: 24,
-                        color: isLater ? HTColors.gray030 : HTColors.gray060,
+                        color: isLater ? HTColors.grey030 : HTColors.grey060,
                       ),
                     ),
                   ),
@@ -276,7 +276,7 @@ class TaskWeeklyTitle extends StatelessWidget {
         const HTText(
           'You are about 42% closer to our goal.',
           typoToken: HTTypoToken.captionMedium,
-          color: HTColors.gray040,
+          color: HTColors.grey040,
         )
       ],
     );
@@ -316,7 +316,7 @@ class TaskMonthlyTitle extends StatelessWidget {
                       child: Icon(
                         Icons.chevron_left_rounded,
                         size: 24,
-                        color: isBefore ? HTColors.gray030 : HTColors.gray060,
+                        color: isBefore ? HTColors.grey030 : HTColors.grey060,
                       ),
                     ),
                   ),
@@ -339,7 +339,7 @@ class TaskMonthlyTitle extends StatelessWidget {
                       child: Icon(
                         Icons.chevron_right_rounded,
                         size: 24,
-                        color: isAfter ? HTColors.gray030 : HTColors.gray060,
+                        color: isAfter ? HTColors.grey030 : HTColors.grey060,
                       ),
                     ),
                   ),
@@ -350,7 +350,7 @@ class TaskMonthlyTitle extends StatelessWidget {
         const HTText(
           'You are about 42% closer to our goal.',
           typoToken: HTTypoToken.captionMedium,
-          color: HTColors.gray040,
+          color: HTColors.grey040,
         )
       ],
     );
@@ -409,7 +409,7 @@ class TaskWeeklyCalendar extends StatelessWidget {
                       HTText(
                         days[index],
                         typoToken: HTTypoToken.captionXSmall,
-                        color: HTColors.gray050,
+                        color: HTColors.grey050,
                       ),
                       HTSpacers.height12,
                       Container(
@@ -418,13 +418,13 @@ class TaskWeeklyCalendar extends StatelessWidget {
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           border: Border.all(
-                              color: isDone ? HTColors.black : HTColors.gray010,
+                              color: isDone ? HTColors.black : HTColors.grey010,
                               width: 1),
                           color: isDone
                               ? HTColors.black
                               : isLater
                                   ? HTColors.white
-                                  : HTColors.gray010,
+                                  : HTColors.grey010,
                         ),
                         child: Center(
                             child: isDone
@@ -436,7 +436,7 @@ class TaskWeeklyCalendar extends StatelessWidget {
                                 : HTText(
                                     '$day',
                                     typoToken: HTTypoToken.subtitleXSmall,
-                                    color: HTColors.gray040,
+                                    color: HTColors.grey040,
                                     height: 1.25,
                                   )),
                       ),
@@ -480,7 +480,7 @@ class TaskMonthlyCalendar extends StatelessWidget {
                 16, // (boxWidth * 7days) + (boxPadding * (7-1)days) + containerPadding
             padding: HTEdgeInsets.all8,
             decoration: BoxDecoration(
-              color: HTColors.gray010,
+              color: HTColors.grey010,
               borderRadius: HTBorderRadius.circular8,
             ),
             child: StreamBuilder<List<int>>(
@@ -519,7 +519,7 @@ class TaskMonthlyCalendar extends StatelessWidget {
                               ? HTColors.black
                               : isLater
                                   ? HTColors.white
-                                  : HTColors.gray020,
+                                  : HTColors.grey020,
                           borderRadius: HTBorderRadius.circular8,
                         ),
                       );
@@ -548,13 +548,13 @@ class TaskDetailInfo extends StatelessWidget {
           const HTText(
             'Repeat',
             typoToken: HTTypoToken.captionMedium,
-            color: HTColors.gray050,
+            color: HTColors.grey050,
           ),
           HTSpacers.height12,
           Container(
             padding: HTEdgeInsets.h16v12,
             decoration: BoxDecoration(
-              border: Border.all(color: HTColors.gray010, width: 1),
+              border: Border.all(color: HTColors.grey010, width: 1),
               borderRadius: HTBorderRadius.circular10,
             ),
             child: HTText(
@@ -567,7 +567,7 @@ class TaskDetailInfo extends StatelessWidget {
           Container(
             padding: HTEdgeInsets.h16v12,
             decoration: BoxDecoration(
-              border: Border.all(color: HTColors.gray010, width: 1),
+              border: Border.all(color: HTColors.grey010, width: 1),
               borderRadius: HTBorderRadius.circular10,
             ),
             child: HTText(

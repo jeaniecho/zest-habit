@@ -54,7 +54,7 @@ class BasePage extends StatelessWidget {
                 decoration: const BoxDecoration(
                   border: Border(
                     top: BorderSide(
-                      color: HTColors.gray010,
+                      color: HTColors.grey010,
                       width: 1,
                     ),
                   ),
@@ -74,7 +74,7 @@ class BasePage extends StatelessWidget {
                           size: 22,
                           color: bottomIndex == 0
                               ? HTColors.black
-                              : HTColors.gray040,
+                              : HTColors.grey040,
                         ),
                       ),
                     ),
@@ -113,7 +113,7 @@ class BasePage extends StatelessWidget {
                           size: 24,
                           color: bottomIndex == 1
                               ? HTColors.black
-                              : HTColors.gray040,
+                              : HTColors.grey040,
                         ),
                       ),
                     ),

@@ -46,7 +46,7 @@ class HTAppbar extends StatelessWidget implements PreferredSizeWidget {
                     child: const Icon(
                       Icons.arrow_back_ios_new_rounded,
                       size: 24,
-                      color: HTColors.gray080,
+                      color: HTColors.grey080,
                     ),
                   ),
                 )),
@@ -63,7 +63,7 @@ class HTAppbar extends StatelessWidget implements PreferredSizeWidget {
               child: const Icon(
                 Icons.close_rounded,
                 size: 24,
-                color: HTColors.gray080,
+                color: HTColors.grey080,
               ),
             ),
           ),
