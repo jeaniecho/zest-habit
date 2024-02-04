@@ -505,7 +505,7 @@ class TaskMonthlyCalendar extends StatelessWidget {
 
                       DateTime now = DateTime.now().getDate();
                       bool inSameMonth = isSameMonth(currMonth, now);
-                      bool isLater = (inSameMonth && index >= now.day - 1) ||
+                      bool isLater = (inSameMonth && index >= now.day) ||
                           (!inSameMonth &&
                               DateTime(currMonth.year, currMonth.month)
                                   .isAfter(DateTime(now.year, now.month)));
@@ -514,6 +514,9 @@ class TaskMonthlyCalendar extends StatelessWidget {
                         width: 28,
                         height: 28,
                         decoration: BoxDecoration(
+                          border: inSameMonth && index == now.day - 1
+                              ? Border.all(color: HTColors.black, width: 2)
+                              : null,
                           color: isDone
                               ? HTColors.black
                               : isLater

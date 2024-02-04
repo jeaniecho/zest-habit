@@ -17,7 +17,7 @@ class TaskDetailBloc extends Disposable {
   Stream<List<int>> get doneDates => _doneDates.stream;
 
   TaskDetailBloc({required this.task}) {
-    getDoneDates(DateTime.now().getDate());
+    getDoneDatesForWeek(DateTime.now().getDate());
   }
 
   @override
@@ -28,7 +28,15 @@ class TaskDetailBloc extends Disposable {
   }
 
   toggleCalendarType() {
-    _currDate.add(DateTime.now().getDate());
+    DateTime now = DateTime.now().getDate();
+
+    if (_isMonthly.value) {
+      getDoneDatesForMonth(now);
+    } else {
+      getDoneDatesForWeek(now);
+    }
+
+    _currDate.add(now);
     _isMonthly.add(!_isMonthly.value);
   }
 
@@ -37,7 +45,7 @@ class TaskDetailBloc extends Disposable {
         DateTime(_currDate.value.year, _currDate.value.month + move);
     _currDate.add(newDate);
 
-    getDoneDates(newDate);
+    getDoneDatesForMonth(newDate);
   }
 
   changeWeek(int move) {
@@ -45,12 +53,25 @@ class TaskDetailBloc extends Disposable {
         _currDate.value.day + move * 7);
     _currDate.add(newWeek);
 
-    getDoneDates(newWeek);
+    getDoneDatesForWeek(newWeek);
   }
 
-  getDoneDates(DateTime date) {
+  getDoneDatesForMonth(DateTime date) {
     List<int> dates = task.doneAt
         .where((element) => isSameMonth(element, date))
+        .map((e) => e.day)
+        .toList();
+    _doneDates.add(dates);
+  }
+
+  getDoneDatesForWeek(DateTime date) {
+    DateTime sunday = mostRecentWeekday(date, 0);
+
+    List<int> dates = task.doneAt
+        .where((element) =>
+            element.isAfter(date.subtract(const Duration(days: 7))) &&
+            element.isBefore(date.add(const Duration(days: 7))))
+        .where((element) => isSameDay(sunday, mostRecentWeekday(element, 0)))
         .map((e) => e.day)
         .toList();
     _doneDates.add(dates);
