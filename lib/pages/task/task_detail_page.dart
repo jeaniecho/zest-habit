@@ -217,53 +217,62 @@ class TaskWeeklyTitle extends StatelessWidget {
 
     return Column(
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () {
-                taskDetailBloc.changeWeek(-1);
-              },
-              child: const Padding(
-                padding: HTEdgeInsets.all4,
-                child: Icon(
-                  Icons.chevron_left_rounded,
-                  size: 24,
-                  color: HTColors.gray070,
-                ),
-              ),
-            ),
-            StreamBuilder<DateTime>(
-                stream: taskDetailBloc.currDate,
-                builder: (context, snapshot) {
-                  DateTime currDate = snapshot.data ?? DateTime.now().getDate();
-                  int weekNum = weekOfMonth(currDate, 0);
+        StreamBuilder<DateTime>(
+            stream: taskDetailBloc.currDate,
+            builder: (context, snapshot) {
+              DateTime today = DateTime.now().getDate();
+              DateTime currDate = snapshot.data ?? today;
+              int weekNum = weekOfMonth(currDate, 0);
 
-                  return HTText(
+              bool isBefore = currDate.isBefore(taskDetailBloc.task.from);
+              bool isLater = !mostRecentWeekday(currDate, 0)
+                  .isBefore(mostRecentWeekday(today, 0));
+
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () {
+                      if (!isBefore) {
+                        taskDetailBloc.changeWeek(-1);
+                      }
+                    },
+                    child: Padding(
+                      padding: HTEdgeInsets.all4,
+                      child: Icon(
+                        Icons.chevron_left_rounded,
+                        size: 24,
+                        color: isBefore ? HTColors.gray030 : HTColors.gray060,
+                      ),
+                    ),
+                  ),
+                  HTText(
                     '${DateFormat.MMMM().format(currDate)} $weekNum${stndrd(weekNum)} week',
                     typoToken: HTTypoToken.headlineSmall,
                     color: HTColors.black,
                     height: 1,
                     underline: true,
-                  );
-                }),
-            GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () {
-                taskDetailBloc.changeWeek(1);
-              },
-              child: const Padding(
-                padding: HTEdgeInsets.all4,
-                child: Icon(
-                  Icons.chevron_right_rounded,
-                  size: 24,
-                  color: HTColors.gray070,
-                ),
-              ),
-            ),
-          ],
-        ),
+                  ),
+                  GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () {
+                      if (!isLater) {
+                        taskDetailBloc.changeWeek(1);
+                      }
+                    },
+                    child: Padding(
+                      padding: HTEdgeInsets.all4,
+                      child: Icon(
+                        Icons.chevron_right_rounded,
+                        size: 24,
+                        color: isLater ? HTColors.gray030 : HTColors.gray060,
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            }),
         HTSpacers.height16,
         const HTText(
           'You are about 42% closer to our goal.',
@@ -284,53 +293,60 @@ class TaskMonthlyTitle extends StatelessWidget {
 
     return Column(
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () {
-                taskDetailBloc.changeMonth(-1);
-              },
-              child: const Padding(
-                padding: HTEdgeInsets.all4,
-                child: Icon(
-                  Icons.chevron_left_rounded,
-                  size: 24,
-                  color: HTColors.gray070,
-                ),
-              ),
-            ),
-            StreamBuilder<DateTime>(
-                stream: taskDetailBloc.currDate,
-                builder: (context, snapshot) {
-                  DateTime currMonth =
-                      snapshot.data ?? DateTime.now().getDate();
+        StreamBuilder<DateTime>(
+            stream: taskDetailBloc.currDate,
+            builder: (context, snapshot) {
+              DateTime today = DateTime.now().getDate();
+              DateTime currMonth = snapshot.data ?? today;
 
-                  return HTText(
+              bool isBefore = isSameMonth(taskDetailBloc.task.from, currMonth);
+              bool isAfter = isSameMonth(today, currMonth);
+
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () {
+                      if (!isBefore) {
+                        taskDetailBloc.changeMonth(-1);
+                      }
+                    },
+                    child: Padding(
+                      padding: HTEdgeInsets.all4,
+                      child: Icon(
+                        Icons.chevron_left_rounded,
+                        size: 24,
+                        color: isBefore ? HTColors.gray030 : HTColors.gray060,
+                      ),
+                    ),
+                  ),
+                  HTText(
                     '${currMonth.year} ${DateFormat.MMMM().format(currMonth)}',
                     typoToken: HTTypoToken.headlineSmall,
                     color: HTColors.black,
                     height: 1,
                     underline: true,
-                  );
-                }),
-            GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () {
-                taskDetailBloc.changeMonth(1);
-              },
-              child: const Padding(
-                padding: HTEdgeInsets.all4,
-                child: Icon(
-                  Icons.chevron_right_rounded,
-                  size: 24,
-                  color: HTColors.gray070,
-                ),
-              ),
-            ),
-          ],
-        ),
+                  ),
+                  GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () {
+                      if (!isAfter) {
+                        taskDetailBloc.changeMonth(1);
+                      }
+                    },
+                    child: Padding(
+                      padding: HTEdgeInsets.all4,
+                      child: Icon(
+                        Icons.chevron_right_rounded,
+                        size: 24,
+                        color: isAfter ? HTColors.gray030 : HTColors.gray060,
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            }),
         HTSpacers.height16,
         const HTText(
           'You are about 42% closer to our goal.',
