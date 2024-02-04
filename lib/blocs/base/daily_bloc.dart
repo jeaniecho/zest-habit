@@ -25,7 +25,7 @@ class DailyBloc extends Disposable {
     dates = getDates();
     dateScrollController = ScrollController(
         initialScrollOffset:
-            ((52 + 8) * prevDates - ((deviceWidth - 86) / 2)).toDouble());
+            ((52 + 12) * prevDates - ((deviceWidth - 84) / 2)).toDouble());
 
     appBloc.tasks.listen((tasks) {
       getCurrTasks(tasks, dates[_dateIndex.value]);

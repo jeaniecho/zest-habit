@@ -8,7 +8,6 @@ import 'package:habit_app/styles/tokens.dart';
 import 'package:habit_app/styles/typos.dart';
 import 'package:habit_app/utils/functions.dart';
 import 'package:habit_app/widgets/ht_text.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -35,7 +34,7 @@ class DailyAppbar extends StatelessWidget {
     return const Column(
       children: [
         Padding(
-          padding: HTEdgeInsets.h24v16,
+          padding: EdgeInsets.symmetric(horizontal: 24, vertical: 10),
           child: Row(
             children: [
               HTText(
@@ -127,7 +126,7 @@ class DailyDates extends StatelessWidget {
                   );
                 },
                 separatorBuilder: (context, index) {
-                  return HTSpacers.width8;
+                  return HTSpacers.width12;
                 },
                 itemCount: dailyBloc.dates.length),
           );
@@ -146,7 +145,7 @@ class DailyTaskList extends StatelessWidget {
       child: Container(
           color: HTColors.gray010,
           child: SingleChildScrollView(
-            padding: HTEdgeInsets.all24,
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
             child: StreamBuilder<List>(
                 stream: Rx.combineLatestList(
                     [dailyBloc.currTasks, dailyBloc.dateIndex]),
@@ -161,7 +160,7 @@ class DailyTaskList extends StatelessWidget {
                   return Column(
                     children: [
                       Padding(
-                        padding: HTEdgeInsets.horizontal12,
+                        padding: HTEdgeInsets.horizontal8,
                         child: Row(
                           children: [
                             HTText(
@@ -213,7 +212,7 @@ class TaskBox extends StatelessWidget {
       },
       child: Container(
         width: double.infinity,
-        padding: HTEdgeInsets.h24v16,
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         decoration: BoxDecoration(
             color: HTColors.white, borderRadius: HTBorderRadius.circular12),
         child: Row(

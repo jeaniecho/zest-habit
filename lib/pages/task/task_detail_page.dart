@@ -22,51 +22,8 @@ class TaskDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      appBar: TaskDetailAppbar(),
+      appBar: HTAppbar(),
       body: TaskDetailBody(),
-    );
-  }
-}
-
-class TaskDetailAppbar extends HTAppbar {
-  const TaskDetailAppbar({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    TaskDetailBloc taskDetailBloc = context.read<TaskDetailBloc>();
-
-    return HTAppbar(
-      actions: [
-        GestureDetector(
-          onTap: () {
-            Navigator.pushNamed(context, TaskEditPage.routeName,
-                arguments: [taskDetailBloc.task]);
-          },
-          child: Container(
-            margin: HTEdgeInsets.right16,
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-            decoration: BoxDecoration(
-              color: HTColors.gray010,
-              borderRadius: HTBorderRadius.circular24,
-            ),
-            child: const Row(
-              children: [
-                Icon(
-                  Icons.edit_rounded,
-                  size: 14,
-                  color: HTColors.black,
-                ),
-                HTSpacers.width4,
-                HTText(
-                  'Edit',
-                  typoToken: HTTypoToken.subtitleMedium,
-                  color: HTColors.black,
-                )
-              ],
-            ),
-          ),
-        )
-      ],
     );
   }
 }
@@ -92,6 +49,44 @@ class TaskDetailBody extends StatelessWidget {
   }
 }
 
+class TaskEditButton extends StatelessWidget {
+  const TaskEditButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    TaskDetailBloc taskDetailBloc = context.read<TaskDetailBloc>();
+
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushNamed(context, TaskEditPage.routeName,
+            arguments: [taskDetailBloc.task]);
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+        decoration: BoxDecoration(
+          color: HTColors.gray010,
+          borderRadius: HTBorderRadius.circular24,
+        ),
+        child: const Row(
+          children: [
+            Icon(
+              Icons.edit_rounded,
+              size: 14,
+              color: HTColors.black,
+            ),
+            HTSpacers.width4,
+            HTText(
+              'Edit',
+              typoToken: HTTypoToken.subtitleMedium,
+              color: HTColors.black,
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class TaskDesc extends StatelessWidget {
   const TaskDesc({super.key});
 
@@ -105,12 +100,19 @@ class TaskDesc extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          if (task.emoji != null)
-            HTText(
-              task.emoji!,
-              typoToken: HTTypoToken.headlineLarge,
-              color: HTColors.black,
-            ),
+          Row(
+            children: [
+              if (task.emoji != null)
+                HTText(
+                  task.emoji!,
+                  typoToken: HTTypoToken.headlineLarge,
+                  color: HTColors.black,
+                ),
+              const Spacer(),
+              const TaskEditButton(),
+            ],
+          ),
+
           HTText(
             task.title,
             typoToken: HTTypoToken.headlineMedium,
@@ -119,30 +121,26 @@ class TaskDesc extends StatelessWidget {
           if (task.goal != null)
             Padding(
               padding: HTEdgeInsets.top8,
-              child: Row(
-                children: [
-                  HTText(
-                    task.goal!,
-                    typoToken: HTTypoToken.captionMedium,
-                    color: HTColors.gray040,
-                  ),
-                ],
-              ),
-            ),
-          if (task.desc != null)
-            Container(
-              margin: HTEdgeInsets.top12,
-              padding: HTEdgeInsets.all16,
-              decoration: BoxDecoration(
-                color: HTColors.gray010,
-                borderRadius: HTBorderRadius.circular10,
-              ),
               child: HTText(
-                task.desc!,
+                task.goal!,
                 typoToken: HTTypoToken.captionMedium,
-                color: HTColors.gray070,
+                color: HTColors.gray040,
               ),
             ),
+          // if (task.desc != null)
+          //   Container(
+          //     margin: HTEdgeInsets.top12,
+          //     padding: HTEdgeInsets.h16v12,
+          //     decoration: BoxDecoration(
+          //       color: HTColors.gray010,
+          //       borderRadius: HTBorderRadius.circular10,
+          //     ),
+          //     child: HTText(
+          //       task.desc!,
+          //       typoToken: HTTypoToken.captionMedium,
+          //       color: HTColors.gray070,
+          //     ),
+          //   ),
           HTSpacers.height16,
         ],
       ),
@@ -167,7 +165,7 @@ class TaskCalendar extends StatelessWidget {
 
               return isMonthly ? const TaskWeekly() : const TaskMonthly();
             }),
-        HTSpacers.height32,
+        HTSpacers.height24,
         HTAnimatedToggle(
           values: const ['Weekly', 'Monthly'],
           onToggleCallback: (value) {
@@ -404,20 +402,20 @@ class TaskWeeklyCalendar extends StatelessWidget {
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           border: Border.all(
-                              color: isDone ? HTColors.black : HTColors.gray030,
+                              color: isDone ? HTColors.black : HTColors.gray010,
                               width: 1),
                           color: isDone
                               ? HTColors.black
                               : isLater
                                   ? HTColors.white
-                                  : HTColors.gray020,
+                                  : HTColors.gray010,
                         ),
                         child: Center(
                             child: isDone
                                 ? const Icon(
                                     Icons.check_rounded,
                                     color: HTColors.white,
-                                    size: 18,
+                                    size: 20,
                                   )
                                 : HTText(
                                     '$day',
@@ -436,7 +434,7 @@ class TaskWeeklyCalendar extends StatelessWidget {
                               : HTColors.white,
                           shape: BoxShape.circle,
                         ),
-                      )
+                      ),
                     ],
                   );
                 },

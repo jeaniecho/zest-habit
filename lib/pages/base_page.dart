@@ -67,30 +67,37 @@ class BasePage extends StatelessWidget {
                       onTap: () {
                         appBloc.setBottomIndex(0);
                       },
-                      child: Icon(
-                        Icons.calendar_today_rounded,
-                        size: 28,
-                        color: bottomIndex == 0
-                            ? HTColors.black
-                            : HTColors.gray040,
+                      child: SizedBox(
+                        width: 88,
+                        child: Icon(
+                          Icons.calendar_today_rounded,
+                          size: 22,
+                          color: bottomIndex == 0
+                              ? HTColors.black
+                              : HTColors.gray040,
+                        ),
                       ),
                     ),
                     GestureDetector(
+                        behavior: HitTestBehavior.opaque,
                         onTap: () {
                           Navigator.pushNamed(context, TaskAddPage.routeName);
                         },
-                        child: Container(
-                          width: 48,
-                          height: 48,
-                          decoration: const BoxDecoration(
-                            color: HTColors.black,
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Center(
-                            child: Icon(
-                              Icons.add_rounded,
-                              size: 24,
-                              color: HTColors.white,
+                        child: SizedBox(
+                          width: 88,
+                          child: Container(
+                            width: 48,
+                            height: 48,
+                            decoration: const BoxDecoration(
+                              color: HTColors.black,
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Center(
+                              child: Icon(
+                                Icons.add_rounded,
+                                size: 24,
+                                color: HTColors.white,
+                              ),
                             ),
                           ),
                         )),
@@ -99,12 +106,15 @@ class BasePage extends StatelessWidget {
                       onTap: () {
                         appBloc.setBottomIndex(1);
                       },
-                      child: Icon(
-                        Icons.timer_outlined,
-                        size: 28,
-                        color: bottomIndex == 1
-                            ? HTColors.black
-                            : HTColors.gray040,
+                      child: SizedBox(
+                        width: 88,
+                        child: Icon(
+                          Icons.timer_outlined,
+                          size: 24,
+                          color: bottomIndex == 1
+                              ? HTColors.black
+                              : HTColors.gray040,
+                        ),
                       ),
                     ),
                   ],
