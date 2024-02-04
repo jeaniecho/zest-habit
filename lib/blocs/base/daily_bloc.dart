@@ -61,13 +61,13 @@ class DailyBloc extends Disposable {
   }
 
   Future<List<Task>> getCurrTasks(List<Task> tasks, DateTime currDate) async {
-    currDate = currDate.getDate();
+    DateTime date = currDate.getDate();
     List<Task> currTasks = tasks.where((element) {
-      return element.from.difference(currDate).inDays <= 0 &&
+      return (!element.from.getDate().isAfter(date)) &&
           (element.until == null ||
-              (element.until!.difference(currDate).inDays >= 0)) &&
+              (!element.until!.getDate().isBefore(date))) &&
           (element.repeatAt == null ||
-              element.repeatAt!.contains(currDate.weekday));
+              element.repeatAt!.contains(date.weekday));
     }).toList();
 
     _currTasks.add(currTasks);
