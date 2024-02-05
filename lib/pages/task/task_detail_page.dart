@@ -395,12 +395,15 @@ class TaskMonthlyTitle extends StatelessWidget {
                       ],
                     );
                   }),
-              HTSpacers.height16,
-              const HTText(
-                'You are about 42% closer to our goal.',
-                typoToken: HTTypoToken.captionMedium,
-                color: HTColors.grey040,
-              )
+              if (task.until != null)
+                Padding(
+                  padding: HTEdgeInsets.top16,
+                  child: HTText(
+                    'You are about ${progressPercentage(task.from, task.until!, task.doneAt)}% closer to our goal.',
+                    typoToken: HTTypoToken.captionMedium,
+                    color: HTColors.grey040,
+                  ),
+                )
             ],
           );
         });
@@ -593,8 +596,11 @@ class TaskMonthlyCalendar extends StatelessWidget {
                         );
                       }
 
-                      // no repeat
-                      if (!repeatToday) {
+                      // no repeat || before
+                      if (!repeatToday ||
+                          DateTime(currMonth.year, currMonth.month,
+                                  index - fillDays + 1)
+                              .isBefore(task.from)) {
                         return Container(
                           width: 28,
                           height: 28,
