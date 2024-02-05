@@ -8,6 +8,7 @@ import 'package:habit_app/widgets/ht_appbar.dart';
 import 'package:habit_app/widgets/ht_text.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:rxdart/rxdart.dart';
 
 class TaskAddPage extends StatelessWidget {
   const TaskAddPage({super.key});
@@ -281,10 +282,15 @@ class TaskAddUntil extends StatelessWidget {
 
     DateTime today = DateTime.now().getDate();
 
-    return StreamBuilder<DateTime?>(
-        stream: taskAddBloc.until,
+    return StreamBuilder<List>(
+        stream: Rx.combineLatestList([taskAddBloc.until, taskAddBloc.from]),
         builder: (context, snapshot) {
-          DateTime? until = snapshot.data;
+          DateTime? until = snapshot.data?[0];
+          DateTime from = snapshot.data?[1] ?? today;
+
+          if (until != null && until.isBefore(from)) {
+            taskAddBloc.setUntil(null);
+          }
 
           return Row(
             children: [
@@ -301,7 +307,7 @@ class TaskAddUntil extends StatelessWidget {
                 onTap: () {
                   showDatePicker(
                           context: context,
-                          firstDate: today,
+                          firstDate: from,
                           lastDate: DateTime(2101))
                       .then((value) => taskAddBloc.setUntil(value));
                 },
