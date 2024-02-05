@@ -6,6 +6,11 @@ import 'package:rxdart/rxdart.dart';
 class TaskDetailBloc extends Disposable {
   final Task task;
 
+  late final BehaviorSubject<Task> _taskObj;
+  Stream<Task> get taskObj => _taskObj.stream;
+  Function(Task) get setTaskObj => _taskObj.add;
+  Task get taskObjValue => _taskObj.value;
+
   final BehaviorSubject<bool> _isMonthly = BehaviorSubject<bool>.seeded(true);
   Stream<bool> get isWeekly => _isMonthly.stream;
 
@@ -17,11 +22,14 @@ class TaskDetailBloc extends Disposable {
   Stream<List<int>> get doneDates => _doneDates.stream;
 
   TaskDetailBloc({required this.task}) {
+    _taskObj = BehaviorSubject.seeded(task);
+
     getDoneDatesForWeek(DateTime.now().getDate());
   }
 
   @override
   void dispose() {
+    _taskObj.close();
     _isMonthly.close();
     _currDate.close();
     _doneDates.close();

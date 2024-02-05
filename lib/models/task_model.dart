@@ -4,7 +4,7 @@ part 'task_model.g.dart';
 
 @collection
 class Task {
-  Id id = Isar.autoIncrement;
+  Id id;
   DateTime from;
   String? emoji;
   String title;
@@ -12,9 +12,10 @@ class Task {
   List<int>? repeatAt; // weekdays (1 ~ 7 == Mon ~ Sun) / if null: one time
   String? goal;
   String? desc;
-  List<DateTime> doneAt = [];
+  List<DateTime> doneAt;
 
   Task({
+    this.id = Isar.autoIncrement,
     required this.from,
     required this.emoji,
     required this.title,
@@ -22,5 +23,6 @@ class Task {
     required this.repeatAt,
     required this.goal,
     required this.desc,
+    this.doneAt = const [],
   });
 }

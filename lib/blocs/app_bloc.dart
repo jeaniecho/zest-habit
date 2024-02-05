@@ -29,6 +29,10 @@ class AppBloc {
     return tasks;
   }
 
+  Future<Task?> getTask(int id) async {
+    return await isar.tasks.get(id);
+  }
+
   addTask(Task task) async {
     await isar.writeTxn(() async {
       await isar.tasks.put(task);
@@ -39,6 +43,13 @@ class AppBloc {
   deleteTask(Task task) async {
     await isar.writeTxn(() async {
       await isar.tasks.delete(task.id);
+    });
+    getTasks();
+  }
+
+  updateTask(Task task) async {
+    await isar.writeTxn(() async {
+      await isar.tasks.put(task);
     });
     getTasks();
   }

@@ -26,9 +26,16 @@ final routes = {
       child: const TaskDetailPage(),
     );
   },
-  TaskEditPage.routeName: (context) => Provider<TaskEditBloc>(
-        create: (context) => TaskEditBloc(),
-        dispose: (context, value) => value.dispose(),
-        child: const TaskEditPage(),
+  TaskEditPage.routeName: (context) {
+    final Task task = ModalRoute.of(context)!.settings.arguments as Task;
+
+    return Provider<TaskEditBloc>(
+      create: (context) => TaskEditBloc(
+        appBloc: context.read<AppBloc>(),
+        task: task,
       ),
+      dispose: (context, value) => value.dispose(),
+      child: const TaskEditPage(),
+    );
+  },
 };

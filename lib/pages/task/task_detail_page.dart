@@ -44,14 +44,22 @@ class TaskDetailBody extends StatelessWidget {
         children: [
           const TaskDesc(),
           const Divider(color: HTColors.grey010, thickness: 12, height: 12),
-          if (taskDetailBloc.task.repeatAt != null &&
-              taskDetailBloc.task.repeatAt!.isNotEmpty)
-            const Column(
-              children: [
-                TaskCalendar(),
-                Divider(color: HTColors.grey010, thickness: 12, height: 12),
-              ],
-            ),
+          StreamBuilder<Task>(
+              stream: taskDetailBloc.taskObj,
+              builder: (context, snapshot) {
+                Task task = snapshot.data ?? taskDetailBloc.task;
+
+                if (task.repeatAt != null && task.repeatAt!.isNotEmpty) {
+                  return const Column(
+                    children: [
+                      TaskCalendar(),
+                      Divider(
+                          color: HTColors.grey010, thickness: 12, height: 12),
+                    ],
+                  );
+                }
+                return const SizedBox.shrink();
+              }),
           const TaskDetailInfo(),
           HTSpacers.height48,
           const TaskDangerZone(),
@@ -72,7 +80,12 @@ class TaskEditButton extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         Navigator.pushNamed(context, TaskEditPage.routeName,
-            arguments: [taskDetailBloc.task]);
+                arguments: taskDetailBloc.taskObjValue)
+            .then((task) {
+          if (task != null && task.runtimeType == Task) {
+            taskDetailBloc.setTaskObj(task as Task);
+          }
+        });
       },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -106,57 +119,62 @@ class TaskDesc extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     TaskDetailBloc taskDetailBloc = context.read<TaskDetailBloc>();
-    Task task = taskDetailBloc.task;
 
-    return Padding(
-      padding: HTEdgeInsets.horizontal24,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Row(
-            children: [
-              if (task.emoji != null)
+    return StreamBuilder<Task>(
+        stream: taskDetailBloc.taskObj,
+        builder: (context, snapshot) {
+          Task task = snapshot.data ?? taskDetailBloc.task;
+
+          return Padding(
+            padding: HTEdgeInsets.horizontal24,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
+                  children: [
+                    if (task.emoji != null)
+                      HTText(
+                        task.emoji!,
+                        typoToken: HTTypoToken.headlineLarge,
+                        color: HTColors.black,
+                      ),
+                    const Spacer(),
+                    const TaskEditButton(),
+                  ],
+                ),
                 HTText(
-                  task.emoji!,
-                  typoToken: HTTypoToken.headlineLarge,
+                  task.title,
+                  typoToken: HTTypoToken.headlineMedium,
                   color: HTColors.black,
                 ),
-              const Spacer(),
-              const TaskEditButton(),
-            ],
-          ),
-          HTText(
-            task.title,
-            typoToken: HTTypoToken.headlineMedium,
-            color: HTColors.black,
-          ),
-          if (task.goal != null)
-            Padding(
-              padding: HTEdgeInsets.top8,
-              child: HTText(
-                task.goal!,
-                typoToken: HTTypoToken.captionMedium,
-                color: HTColors.grey040,
-              ),
+                if (task.goal != null)
+                  Padding(
+                    padding: HTEdgeInsets.top8,
+                    child: HTText(
+                      task.goal!,
+                      typoToken: HTTypoToken.captionMedium,
+                      color: HTColors.grey040,
+                    ),
+                  ),
+                // if (task.desc != null)
+                //   Container(
+                //     margin: HTEdgeInsets.top12,
+                //     padding: HTEdgeInsets.h16v12,
+                //     decoration: BoxDecoration(
+                //       color: HTColors.grey010,
+                //       borderRadius: HTBorderRadius.circular10,
+                //     ),
+                //     child: HTText(
+                //       task.desc!,
+                //       typoToken: HTTypoToken.captionMedium,
+                //       color: HTColors.grey070,
+                //     ),
+                //   ),
+                HTSpacers.height16,
+              ],
             ),
-          // if (task.desc != null)
-          //   Container(
-          //     margin: HTEdgeInsets.top12,
-          //     padding: HTEdgeInsets.h16v12,
-          //     decoration: BoxDecoration(
-          //       color: HTColors.grey010,
-          //       borderRadius: HTBorderRadius.circular10,
-          //     ),
-          //     child: HTText(
-          //       task.desc!,
-          //       typoToken: HTTypoToken.captionMedium,
-          //       color: HTColors.grey070,
-          //     ),
-          //   ),
-          HTSpacers.height16,
-        ],
-      ),
-    );
+          );
+        });
   }
 }
 
@@ -226,75 +244,83 @@ class TaskWeeklyTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     TaskDetailBloc taskDetailBloc = context.read<TaskDetailBloc>();
-    Task task = taskDetailBloc.task;
 
-    return Column(
-      children: [
-        StreamBuilder<DateTime>(
-            stream: taskDetailBloc.currDate,
-            builder: (context, snapshot) {
-              DateTime today = DateTime.now().getDate();
-              DateTime currDate = snapshot.data ?? today;
-              int weekNum = weekOfMonth(currDate, 0);
+    return StreamBuilder<Task>(
+        stream: taskDetailBloc.taskObj,
+        builder: (context, snapshot) {
+          Task task = snapshot.data ?? taskDetailBloc.task;
 
-              bool isBefore = currDate.isBefore(task.from);
-              bool isLater = !mostRecentWeekday(currDate)
-                  .isBefore(mostRecentWeekday(today));
+          return Column(
+            children: [
+              StreamBuilder<DateTime>(
+                  stream: taskDetailBloc.currDate,
+                  builder: (context, snapshot) {
+                    DateTime today = DateTime.now().getDate();
+                    DateTime currDate = snapshot.data ?? today;
+                    int weekNum = weekOfMonth(currDate, 0);
 
-              return Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: () {
-                      if (!isBefore) {
-                        taskDetailBloc.changeWeek(-1);
-                      }
-                    },
-                    child: Padding(
-                      padding: HTEdgeInsets.all4,
-                      child: Icon(
-                        Icons.chevron_left_rounded,
-                        size: 24,
-                        color: isBefore ? HTColors.grey030 : HTColors.grey060,
-                      ),
-                    ),
-                  ),
-                  HTText(
-                    '${DateFormat.MMMM().format(currDate)} $weekNum${stndrd(weekNum)} week',
-                    typoToken: HTTypoToken.headlineSmall,
-                    color: HTColors.black,
-                    height: 1,
-                    underline: true,
-                  ),
-                  GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: () {
-                      if (!isLater) {
-                        taskDetailBloc.changeWeek(1);
-                      }
-                    },
-                    child: Padding(
-                      padding: HTEdgeInsets.all4,
-                      child: Icon(
-                        Icons.chevron_right_rounded,
-                        size: 24,
-                        color: isLater ? HTColors.grey030 : HTColors.grey060,
-                      ),
-                    ),
-                  ),
-                ],
-              );
-            }),
-        HTSpacers.height16,
-        if (task.until != null)
-          HTText(
-            'You are about ${progressPercentage(task.from, task.until!, task.doneAt)}% closer to our goal.',
-            typoToken: HTTypoToken.captionMedium,
-            color: HTColors.grey040,
-          )
-      ],
-    );
+                    bool isBefore = currDate.isBefore(task.from);
+                    bool isLater = !mostRecentWeekday(currDate)
+                        .isBefore(mostRecentWeekday(today));
+
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: () {
+                            if (!isBefore) {
+                              taskDetailBloc.changeWeek(-1);
+                            }
+                          },
+                          child: Padding(
+                            padding: HTEdgeInsets.all4,
+                            child: Icon(
+                              Icons.chevron_left_rounded,
+                              size: 24,
+                              color: isBefore
+                                  ? HTColors.grey030
+                                  : HTColors.grey060,
+                            ),
+                          ),
+                        ),
+                        HTText(
+                          '${DateFormat.MMMM().format(currDate)} $weekNum${stndrd(weekNum)} week',
+                          typoToken: HTTypoToken.headlineSmall,
+                          color: HTColors.black,
+                          height: 1,
+                          underline: true,
+                        ),
+                        GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: () {
+                            if (!isLater) {
+                              taskDetailBloc.changeWeek(1);
+                            }
+                          },
+                          child: Padding(
+                            padding: HTEdgeInsets.all4,
+                            child: Icon(
+                              Icons.chevron_right_rounded,
+                              size: 24,
+                              color:
+                                  isLater ? HTColors.grey030 : HTColors.grey060,
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  }),
+              HTSpacers.height16,
+              if (task.until != null)
+                HTText(
+                  'You are about ${progressPercentage(task.from, task.until!, task.doneAt)}% closer to our goal.',
+                  typoToken: HTTypoToken.captionMedium,
+                  color: HTColors.grey040,
+                )
+            ],
+          );
+        });
   }
 }
 
@@ -305,70 +331,79 @@ class TaskMonthlyTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     TaskDetailBloc taskDetailBloc = context.read<TaskDetailBloc>();
 
-    return Column(
-      children: [
-        StreamBuilder<DateTime>(
-            stream: taskDetailBloc.currDate,
-            builder: (context, snapshot) {
-              DateTime today = DateTime.now().getDate();
-              DateTime currMonth = snapshot.data ?? today;
+    return StreamBuilder<Task>(
+        stream: taskDetailBloc.taskObj,
+        builder: (context, snapshot) {
+          Task task = snapshot.data ?? taskDetailBloc.task;
 
-              bool isBefore = isSameMonth(taskDetailBloc.task.from, currMonth);
-              bool isAfter = isSameMonth(today, currMonth);
+          return Column(
+            children: [
+              StreamBuilder<DateTime>(
+                  stream: taskDetailBloc.currDate,
+                  builder: (context, snapshot) {
+                    DateTime today = DateTime.now().getDate();
+                    DateTime currMonth = snapshot.data ?? today;
 
-              return Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: () {
-                      if (!isBefore) {
-                        taskDetailBloc.changeMonth(-1);
-                      }
-                    },
-                    child: Padding(
-                      padding: HTEdgeInsets.all4,
-                      child: Icon(
-                        Icons.chevron_left_rounded,
-                        size: 24,
-                        color: isBefore ? HTColors.grey030 : HTColors.grey060,
-                      ),
-                    ),
-                  ),
-                  HTText(
-                    '${currMonth.year} ${DateFormat.MMMM().format(currMonth)}',
-                    typoToken: HTTypoToken.headlineSmall,
-                    color: HTColors.black,
-                    height: 1,
-                    underline: true,
-                  ),
-                  GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: () {
-                      if (!isAfter) {
-                        taskDetailBloc.changeMonth(1);
-                      }
-                    },
-                    child: Padding(
-                      padding: HTEdgeInsets.all4,
-                      child: Icon(
-                        Icons.chevron_right_rounded,
-                        size: 24,
-                        color: isAfter ? HTColors.grey030 : HTColors.grey060,
-                      ),
-                    ),
-                  ),
-                ],
-              );
-            }),
-        HTSpacers.height16,
-        const HTText(
-          'You are about 42% closer to our goal.',
-          typoToken: HTTypoToken.captionMedium,
-          color: HTColors.grey040,
-        )
-      ],
-    );
+                    bool isBefore = isSameMonth(task.from, currMonth);
+                    bool isAfter = isSameMonth(today, currMonth);
+
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: () {
+                            if (!isBefore) {
+                              taskDetailBloc.changeMonth(-1);
+                            }
+                          },
+                          child: Padding(
+                            padding: HTEdgeInsets.all4,
+                            child: Icon(
+                              Icons.chevron_left_rounded,
+                              size: 24,
+                              color: isBefore
+                                  ? HTColors.grey030
+                                  : HTColors.grey060,
+                            ),
+                          ),
+                        ),
+                        HTText(
+                          '${currMonth.year} ${DateFormat.MMMM().format(currMonth)}',
+                          typoToken: HTTypoToken.headlineSmall,
+                          color: HTColors.black,
+                          height: 1,
+                          underline: true,
+                        ),
+                        GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: () {
+                            if (!isAfter) {
+                              taskDetailBloc.changeMonth(1);
+                            }
+                          },
+                          child: Padding(
+                            padding: HTEdgeInsets.all4,
+                            child: Icon(
+                              Icons.chevron_right_rounded,
+                              size: 24,
+                              color:
+                                  isAfter ? HTColors.grey030 : HTColors.grey060,
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  }),
+              HTSpacers.height16,
+              const HTText(
+                'You are about 42% closer to our goal.',
+                typoToken: HTTypoToken.captionMedium,
+                color: HTColors.grey040,
+              )
+            ],
+          );
+        });
   }
 }
 
@@ -379,15 +414,17 @@ class TaskWeeklyCalendar extends StatelessWidget {
   Widget build(BuildContext context) {
     TaskDetailBloc taskDetailBloc = context.read<TaskDetailBloc>();
 
-    // List<int> repeatAt = taskDetailBloc.task.repeatAt!;
-    // days = repeatAt.map((e) => days[e % 7]).toList();
-
     return SizedBox(
       height: 86,
       child: StreamBuilder<List>(
-          stream: Rx.combineLatestList(
-              [taskDetailBloc.currDate, taskDetailBloc.doneDates]),
+          stream: Rx.combineLatestList([
+            taskDetailBloc.currDate,
+            taskDetailBloc.doneDates,
+            taskDetailBloc.taskObj
+          ]),
           builder: (context, snapshot) {
+            Task task = snapshot.data?[2] ?? taskDetailBloc.task;
+
             DateTime now = DateTime.now().getDate();
             DateTime currDate = snapshot.data?[0] ?? now;
             DateTime firstDay = mostRecentWeekday(currDate);
@@ -399,7 +436,7 @@ class TaskWeeklyCalendar extends StatelessWidget {
             List<int> doneDates = snapshot.data?[1] ?? [];
 
             return LayoutBuilder(builder: (context, constraints) {
-              List<int> repeatAt = taskDetailBloc.task.repeatAt ?? [];
+              List<int> repeatAt = task.repeatAt ?? [];
 
               double maxWidth = constraints.maxWidth;
               double itemWidth = 38;
@@ -497,10 +534,13 @@ class TaskMonthlyCalendar extends StatelessWidget {
   Widget build(BuildContext context) {
     TaskDetailBloc taskDetailBloc = context.read<TaskDetailBloc>();
 
-    return StreamBuilder<DateTime>(
-        stream: taskDetailBloc.currDate,
+    return StreamBuilder<List>(
+        stream: Rx.combineLatestList(
+            [taskDetailBloc.currDate, taskDetailBloc.taskObj]),
         builder: (context, snapshot) {
-          DateTime currDate = snapshot.data ?? DateTime.now().getDate();
+          Task task = snapshot.data?[1] ?? taskDetailBloc.task;
+
+          DateTime currDate = snapshot.data?[0] ?? DateTime.now().getDate();
           DateTime currMonth = DateTime(currDate.year, currDate.month, 1);
           int daysCount = daysInMonth(currMonth.year, currMonth.month);
 
@@ -508,7 +548,7 @@ class TaskMonthlyCalendar extends StatelessWidget {
           int fillDays = (8 - currMonth.weekday - firstDayOfWeek) % 7;
           daysCount += fillDays;
 
-          List<int> repeatAt = taskDetailBloc.task.repeatAt ?? [];
+          List<int> repeatAt = task.repeatAt ?? [];
 
           return Container(
             width: (28 * 7) +
@@ -604,59 +644,65 @@ class TaskDetailInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     TaskDetailBloc taskDetailBloc = context.read<TaskDetailBloc>();
 
-    return Padding(
-      padding: HTEdgeInsets.horizontal24,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          HTSpacers.height24,
-          const HTText(
-            'Repeat',
-            typoToken: HTTypoToken.captionMedium,
-            color: HTColors.grey050,
-          ),
-          HTSpacers.height12,
-          Container(
-            padding: HTEdgeInsets.h16v12,
-            decoration: BoxDecoration(
-              border: Border.all(color: HTColors.grey010, width: 1),
-              borderRadius: HTBorderRadius.circular10,
+    return StreamBuilder<Task>(
+        stream: taskDetailBloc.taskObj,
+        builder: (context, snapshot) {
+          Task task = snapshot.data ?? taskDetailBloc.task;
+
+          return Padding(
+            padding: HTEdgeInsets.horizontal24,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                HTSpacers.height24,
+                const HTText(
+                  'Repeat',
+                  typoToken: HTTypoToken.captionMedium,
+                  color: HTColors.grey050,
+                ),
+                HTSpacers.height12,
+                Container(
+                  padding: HTEdgeInsets.h16v12,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: HTColors.grey010, width: 1),
+                    borderRadius: HTBorderRadius.circular10,
+                  ),
+                  child: HTText(
+                    '\u2022  ${repeatAtToText(task.repeatAt)}',
+                    typoToken: HTTypoToken.captionMedium,
+                    color: HTColors.black,
+                  ),
+                ),
+                HTSpacers.height12,
+                Container(
+                  padding: HTEdgeInsets.h16v12,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: HTColors.grey010, width: 1),
+                    borderRadius: HTBorderRadius.circular10,
+                  ),
+                  child: HTText(
+                    '\u2022  from ${DateFormat('yyyy.MM.dd').format(task.from)}',
+                    typoToken: HTTypoToken.captionMedium,
+                    color: HTColors.black,
+                  ),
+                ),
+                HTSpacers.height12,
+                Container(
+                  padding: HTEdgeInsets.h16v12,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: HTColors.grey010, width: 1),
+                    borderRadius: HTBorderRadius.circular10,
+                  ),
+                  child: HTText(
+                    '\u2022  ${untilToText(task.until, long: true)}',
+                    typoToken: HTTypoToken.captionMedium,
+                    color: HTColors.black,
+                  ),
+                ),
+              ],
             ),
-            child: HTText(
-              '\u2022  ${repeatAtToText(taskDetailBloc.task.repeatAt)}',
-              typoToken: HTTypoToken.captionMedium,
-              color: HTColors.black,
-            ),
-          ),
-          HTSpacers.height12,
-          Container(
-            padding: HTEdgeInsets.h16v12,
-            decoration: BoxDecoration(
-              border: Border.all(color: HTColors.grey010, width: 1),
-              borderRadius: HTBorderRadius.circular10,
-            ),
-            child: HTText(
-              '\u2022  from ${DateFormat('yyyy.MM.dd').format(taskDetailBloc.task.from)}',
-              typoToken: HTTypoToken.captionMedium,
-              color: HTColors.black,
-            ),
-          ),
-          HTSpacers.height12,
-          Container(
-            padding: HTEdgeInsets.h16v12,
-            decoration: BoxDecoration(
-              border: Border.all(color: HTColors.grey010, width: 1),
-              borderRadius: HTBorderRadius.circular10,
-            ),
-            child: HTText(
-              '\u2022  ${untilToText(taskDetailBloc.task.until, long: true)}',
-              typoToken: HTTypoToken.captionMedium,
-              color: HTColors.black,
-            ),
-          ),
-        ],
-      ),
-    );
+          );
+        });
   }
 }
 
@@ -675,7 +721,7 @@ class TaskDangerZone extends StatelessWidget {
         child: ElevatedButton(
             onPressed: () {
               Navigator.pop(context);
-              appBloc.deleteTask(taskDetailBloc.task);
+              appBloc.deleteTask(taskDetailBloc.taskObjValue);
             },
             child: const HTText(
               'Delete Task',
