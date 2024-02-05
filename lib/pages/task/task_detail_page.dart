@@ -548,7 +548,7 @@ class TaskMonthlyCalendar extends StatelessWidget {
           int daysCount = daysInMonth(currMonth.year, currMonth.month);
 
           // fill first week
-          int fillDays = (8 - currMonth.weekday - firstDayOfWeek) % 7;
+          int fillDays = 7 - ((7 + firstDayOfWeek) - currMonth.weekday);
           daysCount += fillDays;
 
           List<int> repeatAt = task.repeatAt ?? [];

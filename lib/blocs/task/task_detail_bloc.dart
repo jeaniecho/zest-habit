@@ -73,13 +73,13 @@ class TaskDetailBloc extends Disposable {
   }
 
   getDoneDatesForWeek(DateTime date) {
-    DateTime sunday = mostRecentWeekday(date);
+    DateTime fd = mostRecentWeekday(date);
 
     List<int> dates = task.doneAt
         .where((element) =>
             element.isAfter(date.subtract(const Duration(days: 7))) &&
             element.isBefore(date.add(const Duration(days: 7))))
-        .where((element) => isSameDay(sunday, mostRecentWeekday(element)))
+        .where((element) => isSameDay(fd, mostRecentWeekday(element)))
         .map((e) => e.day)
         .toList();
     _doneDates.add(dates);
