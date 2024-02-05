@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:habit_app/styles/colors.dart';
 import 'package:habit_app/styles/tokens.dart';
+import 'package:habit_app/styles/typos.dart';
+import 'package:habit_app/widgets/ht_text.dart';
 
 class HTAppbar extends StatelessWidget implements PreferredSizeWidget {
   final String? title;
@@ -10,6 +12,8 @@ class HTAppbar extends StatelessWidget implements PreferredSizeWidget {
   final List<Widget>? actions;
   final PreferredSizeWidget? bottom;
   final double? elevation;
+  final bool? centerTitle;
+  final double? titleSpacing;
 
   const HTAppbar(
       {this.title,
@@ -18,7 +22,9 @@ class HTAppbar extends StatelessWidget implements PreferredSizeWidget {
       this.leading,
       this.actions,
       this.bottom,
-      this.elevation,
+      this.elevation = 0,
+      this.centerTitle = true,
+      this.titleSpacing = 24,
       super.key});
 
   @override
@@ -27,10 +33,12 @@ class HTAppbar extends StatelessWidget implements PreferredSizeWidget {
 
     return AppBar(
       toolbarHeight: height,
-      elevation: elevation ?? 0,
+      elevation: elevation,
       scrolledUnderElevation: 0,
       automaticallyImplyLeading: false,
-      centerTitle: true,
+      centerTitle: centerTitle,
+      titleSpacing: titleSpacing,
+      leadingWidth: leading == null ? 0 : null,
       leading: leading ??
           ((showBack == false || showClose == true)
               ? const SizedBox.shrink()
@@ -50,7 +58,13 @@ class HTAppbar extends StatelessWidget implements PreferredSizeWidget {
                     ),
                   ),
                 )),
-      title: title == null ? null : Text(title!),
+      title: title == null
+          ? null
+          : HTText(
+              title!,
+              typoToken: HTTypoToken.headlineSmall,
+              color: HTColors.grey070,
+            ),
       actions: [
         if (showClose == true)
           GestureDetector(
