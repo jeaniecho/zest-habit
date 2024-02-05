@@ -498,8 +498,15 @@ class TaskMonthlyCalendar extends StatelessWidget {
     return StreamBuilder<DateTime>(
         stream: taskDetailBloc.currDate,
         builder: (context, snapshot) {
-          DateTime currMonth = snapshot.data ?? DateTime.now().getDate();
+          DateTime currDate = snapshot.data ?? DateTime.now().getDate();
+          DateTime currMonth = DateTime(currDate.year, currDate.month, 1);
           int daysCount = daysInMonth(currMonth.year, currMonth.month);
+
+          // fill first week
+          int fillDays = (8 - currMonth.weekday - firstDayOfWeek) % 7;
+          daysCount += fillDays;
+
+          List<int> repeatAt = taskDetailBloc.task.repeatAt ?? [];
 
           return Container(
             width: (28 * 7) +
@@ -515,6 +522,9 @@ class TaskMonthlyCalendar extends StatelessWidget {
                 builder: (context, snapshot) {
                   List<int> doneDates = snapshot.data ?? [];
 
+                  DateTime now = DateTime.now().getDate();
+                  int todayDateInCal = now.day - 1 + fillDays;
+
                   return GridView.builder(
                     shrinkWrap: true,
                     padding: HTEdgeInsets.zero,
@@ -526,11 +536,37 @@ class TaskMonthlyCalendar extends StatelessWidget {
                       mainAxisSpacing: 8,
                     ),
                     itemBuilder: (context, index) {
-                      bool isDone = doneDates.contains(index + 1);
+                      bool repeatToday =
+                          repeatAt.contains((index % 7) + firstDayOfWeek);
 
-                      DateTime now = DateTime.now().getDate();
+                      // fill days
+                      if (index < fillDays) {
+                        return Container(
+                          width: 28,
+                          height: 28,
+                          decoration: BoxDecoration(
+                            color: HTColors.grey010,
+                            borderRadius: HTBorderRadius.circular8,
+                          ),
+                        );
+                      }
+
+                      // no repeat
+                      if (!repeatToday) {
+                        return Container(
+                          width: 28,
+                          height: 28,
+                          decoration: BoxDecoration(
+                            color: HTColors.white50,
+                            borderRadius: HTBorderRadius.circular8,
+                          ),
+                        );
+                      }
+
+                      bool isDone = doneDates.contains(index - fillDays + 1);
+
                       bool inSameMonth = isSameMonth(currMonth, now);
-                      bool isLater = (inSameMonth && index >= now.day - 1) ||
+                      bool isLater = (inSameMonth && index >= todayDateInCal) ||
                           (!inSameMonth &&
                               DateTime(currMonth.year, currMonth.month)
                                   .isAfter(DateTime(now.year, now.month)));
@@ -539,14 +575,14 @@ class TaskMonthlyCalendar extends StatelessWidget {
                         width: 28,
                         height: 28,
                         decoration: BoxDecoration(
-                          border: inSameMonth && index == now.day - 1
+                          border: inSameMonth && index == todayDateInCal
                               ? Border.all(color: HTColors.black, width: 2)
                               : null,
                           color: isDone
                               ? HTColors.black
                               : isLater
                                   ? HTColors.white
-                                  : HTColors.grey020,
+                                  : HTColors.grey030,
                           borderRadius: HTBorderRadius.circular8,
                         ),
                       );
