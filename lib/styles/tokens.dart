@@ -50,6 +50,7 @@ class HTEdgeInsets {
   static const right0 = EdgeInsets.only(right: 0);
   static const right4 = EdgeInsets.only(right: 4);
   static const right8 = EdgeInsets.only(right: 8);
+  static const right12 = EdgeInsets.only(right: 12);
   static const right16 = EdgeInsets.only(right: 16);
   static const right20 = EdgeInsets.only(right: 20);
   static const right24 = EdgeInsets.only(right: 24);

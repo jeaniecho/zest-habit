@@ -5,6 +5,11 @@ class TimerPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return const Center(
+      child: Icon(
+        Icons.timer_outlined,
+        size: 88,
+      ),
+    );
   }
 }
