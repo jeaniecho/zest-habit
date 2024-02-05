@@ -15,7 +15,9 @@ String repeatAtToText(List<int>? repeatAt) {
   } else if (repeatAt.length == 5 &&
       !(repeatAt.contains(6) || repeatAt.contains(7))) {
     return 'Weekday';
-  } else if (repeatAt.contains(6) && repeatAt.contains(7)) {
+  } else if (repeatAt.length == 2 &&
+      repeatAt.contains(6) &&
+      repeatAt.contains(7)) {
     return 'Weekend';
   }
 
