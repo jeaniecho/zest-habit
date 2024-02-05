@@ -20,7 +20,11 @@ class TaskAddPage extends StatelessWidget {
     TaskAddBloc taskAddBloc = context.read<TaskAddBloc>();
 
     return Scaffold(
-      appBar: const HTAppbar(showClose: true),
+      appBar: const HTAppbar(
+        showClose: true,
+        title: 'Add Task',
+        centerTitle: false,
+      ),
       body: SingleChildScrollView(
         padding: HTEdgeInsets.h24v16,
         child: Column(

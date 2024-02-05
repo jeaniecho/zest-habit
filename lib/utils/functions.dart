@@ -1,7 +1,9 @@
 import 'package:intl/intl.dart';
 
+const List<String> days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+const int firstDayOfWeek = 1; // 0: Sunday, 1: Monday
+
 String weekdayToText(int weekday) {
-  List<String> days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   return days[weekday - 1];
 }
 
@@ -16,8 +18,6 @@ String repeatAtToText(List<int>? repeatAt) {
   } else if (repeatAt.contains(6) && repeatAt.contains(7)) {
     return 'Weekend';
   }
-
-  List<String> days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
   return repeatAt.map((e) => days[e - 1]).join(', ');
 }
@@ -54,7 +54,7 @@ bool isDone(DateTime currDate, List<DateTime> doneAt) {
 }
 
 /// The [weekday] may be 0 for Sunday, 1 for Monday, etc. up to 7 for Sunday.
-DateTime mostRecentWeekday(DateTime date, int weekday) =>
+DateTime mostRecentWeekday(DateTime date, {int weekday = firstDayOfWeek}) =>
     DateTime(date.year, date.month, date.day - (date.weekday - weekday) % 7);
 
 int weekOfMonth(DateTime date, int weekday) {

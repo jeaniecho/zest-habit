@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:habit_app/blocs/app_bloc.dart';
 import 'package:habit_app/blocs/task/task_detail_bloc.dart';
@@ -34,17 +36,25 @@ class TaskDetailBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const SingleChildScrollView(
+    TaskDetailBloc taskDetailBloc = context.read<TaskDetailBloc>();
+
+    return SingleChildScrollView(
       padding: HTEdgeInsets.vertical24,
       child: Column(
         children: [
-          TaskDesc(),
-          Divider(color: HTColors.grey010, thickness: 12, height: 12),
-          TaskCalendar(),
-          Divider(color: HTColors.grey010, thickness: 12, height: 12),
-          TaskDetailInfo(),
+          const TaskDesc(),
+          const Divider(color: HTColors.grey010, thickness: 12, height: 12),
+          if (taskDetailBloc.task.repeatAt != null &&
+              taskDetailBloc.task.repeatAt!.isNotEmpty)
+            const Column(
+              children: [
+                TaskCalendar(),
+                Divider(color: HTColors.grey010, thickness: 12, height: 12),
+              ],
+            ),
+          const TaskDetailInfo(),
           HTSpacers.height48,
-          TaskDangerZone(),
+          const TaskDangerZone(),
           HTSpacers.height48,
         ],
       ),
@@ -227,8 +237,8 @@ class TaskWeeklyTitle extends StatelessWidget {
               int weekNum = weekOfMonth(currDate, 0);
 
               bool isBefore = currDate.isBefore(taskDetailBloc.task.from);
-              bool isLater = !mostRecentWeekday(currDate, 0)
-                  .isBefore(mostRecentWeekday(today, 0));
+              bool isLater = !mostRecentWeekday(currDate)
+                  .isBefore(mostRecentWeekday(today));
 
               return Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -367,7 +377,8 @@ class TaskWeeklyCalendar extends StatelessWidget {
   Widget build(BuildContext context) {
     TaskDetailBloc taskDetailBloc = context.read<TaskDetailBloc>();
 
-    List<String> days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    // List<int> repeatAt = taskDetailBloc.task.repeatAt!;
+    // days = repeatAt.map((e) => days[e % 7]).toList();
 
     return SizedBox(
       height: 86,
@@ -377,7 +388,7 @@ class TaskWeeklyCalendar extends StatelessWidget {
           builder: (context, snapshot) {
             DateTime now = DateTime.now().getDate();
             DateTime currDate = snapshot.data?[0] ?? now;
-            DateTime firstDay = mostRecentWeekday(currDate, 0);
+            DateTime firstDay = mostRecentWeekday(currDate);
 
             int lastDate = DateTime(currDate.year, currDate.month, 1)
                 .subtract(const Duration(days: 1))
@@ -385,80 +396,93 @@ class TaskWeeklyCalendar extends StatelessWidget {
 
             List<int> doneDates = snapshot.data?[1] ?? [];
 
-            return ListView.separated(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                scrollDirection: Axis.horizontal,
-                padding: HTEdgeInsets.zero,
-                itemBuilder: (context, index) {
-                  int day = firstDay.day + index;
-                  if (day > lastDate) {
-                    day -= lastDate;
-                  }
+            return LayoutBuilder(builder: (context, constraints) {
+              List<int> repeatAt = taskDetailBloc.task.repeatAt ?? [];
 
-                  bool isDone = doneDates.contains(day);
-                  bool inSameWeek = isSameWeek(currDate, now);
-                  bool isLater = (inSameWeek && index >= (now.weekday % 7)) ||
-                      (!inSameWeek &&
-                          now
-                                  .difference(DateTime(
-                                      currDate.year, currDate.month, day))
-                                  .inDays <
-                              0);
-                  bool isToday = isSameMonth(now, currDate) && now.day == day;
+              double maxWidth = constraints.maxWidth;
+              double itemWidth = 38;
+              int itemCount = repeatAt.length;
+              double spacing = min(
+                  (maxWidth - (itemWidth * itemCount) - 48) / (itemCount - 1),
+                  24);
 
-                  return Column(
-                    children: [
-                      HTText(
-                        days[index],
-                        typoToken: HTTypoToken.captionXSmall,
-                        color: HTColors.grey050,
-                      ),
-                      HTSpacers.height12,
-                      Container(
-                        width: 38,
-                        height: 38,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                              color: isDone ? HTColors.black : HTColors.grey010,
-                              width: 1),
-                          color: isDone
-                              ? HTColors.black
-                              : isLater
-                                  ? HTColors.white
-                                  : HTColors.grey010,
+              return ListView.separated(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  scrollDirection: Axis.horizontal,
+                  padding: HTEdgeInsets.horizontal24,
+                  itemBuilder: (context, index) {
+                    int day = firstDay.day + repeatAt[index] - firstDayOfWeek;
+                    if (day > lastDate) {
+                      day -= lastDate;
+                    }
+
+                    bool isDone = doneDates.contains(day);
+                    bool inSameWeek = isSameWeek(currDate, now);
+                    bool isLater = (inSameWeek &&
+                            index >= (now.weekday % 7 - firstDayOfWeek)) ||
+                        (!inSameWeek &&
+                            now
+                                    .difference(DateTime(
+                                        currDate.year, currDate.month, day))
+                                    .inDays <
+                                0);
+                    bool isToday = isSameMonth(now, currDate) && now.day == day;
+
+                    return Column(
+                      children: [
+                        HTText(
+                          days[repeatAt[index] - 1],
+                          typoToken: HTTypoToken.captionXSmall,
+                          color: HTColors.grey050,
                         ),
-                        child: Center(
-                            child: isDone
-                                ? const Icon(
-                                    Icons.check_rounded,
-                                    color: HTColors.white,
-                                    size: 20,
-                                  )
-                                : HTText(
-                                    '$day',
-                                    typoToken: HTTypoToken.subtitleXSmall,
-                                    color: HTColors.grey040,
-                                    height: 1.25,
-                                  )),
-                      ),
-                      HTSpacers.height4,
-                      Container(
-                        width: 4,
-                        height: 4,
-                        decoration: BoxDecoration(
-                          color: isToday ? HTColors.red : HTColors.white,
-                          shape: BoxShape.circle,
+                        HTSpacers.height12,
+                        Container(
+                          width: itemWidth,
+                          height: itemWidth,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                                color:
+                                    isDone ? HTColors.black : HTColors.grey010,
+                                width: 1),
+                            color: isDone
+                                ? HTColors.black
+                                : isLater
+                                    ? HTColors.white
+                                    : HTColors.grey010,
+                          ),
+                          child: Center(
+                              child: isDone
+                                  ? const Icon(
+                                      Icons.check_rounded,
+                                      color: HTColors.white,
+                                      size: 20,
+                                    )
+                                  : HTText(
+                                      '$day',
+                                      typoToken: HTTypoToken.subtitleXSmall,
+                                      color: HTColors.grey040,
+                                      height: 1.25,
+                                    )),
                         ),
-                      ),
-                    ],
-                  );
-                },
-                separatorBuilder: (context, index) {
-                  return HTSpacers.width12;
-                },
-                itemCount: 7);
+                        HTSpacers.height4,
+                        Container(
+                          width: 4,
+                          height: 4,
+                          decoration: BoxDecoration(
+                            color: isToday ? HTColors.red : HTColors.white,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                  separatorBuilder: (context, index) {
+                    return SizedBox(width: spacing);
+                  },
+                  itemCount: repeatAt.length);
+            });
           }),
     );
   }
