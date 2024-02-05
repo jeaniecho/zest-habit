@@ -226,6 +226,7 @@ class TaskWeeklyTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     TaskDetailBloc taskDetailBloc = context.read<TaskDetailBloc>();
+    Task task = taskDetailBloc.task;
 
     return Column(
       children: [
@@ -236,7 +237,7 @@ class TaskWeeklyTitle extends StatelessWidget {
               DateTime currDate = snapshot.data ?? today;
               int weekNum = weekOfMonth(currDate, 0);
 
-              bool isBefore = currDate.isBefore(taskDetailBloc.task.from);
+              bool isBefore = currDate.isBefore(task.from);
               bool isLater = !mostRecentWeekday(currDate)
                   .isBefore(mostRecentWeekday(today));
 
@@ -286,11 +287,12 @@ class TaskWeeklyTitle extends StatelessWidget {
               );
             }),
         HTSpacers.height16,
-        const HTText(
-          'You are about 42% closer to our goal.',
-          typoToken: HTTypoToken.captionMedium,
-          color: HTColors.grey040,
-        )
+        if (task.until != null)
+          HTText(
+            'You are about ${progressPercentage(task.from, task.until!, task.doneAt)}% closer to our goal.',
+            typoToken: HTTypoToken.captionMedium,
+            color: HTColors.grey040,
+          )
       ],
     );
   }
@@ -622,6 +624,19 @@ class TaskDetailInfo extends StatelessWidget {
             ),
             child: HTText(
               '\u2022  ${repeatAtToText(taskDetailBloc.task.repeatAt)}',
+              typoToken: HTTypoToken.captionMedium,
+              color: HTColors.black,
+            ),
+          ),
+          HTSpacers.height12,
+          Container(
+            padding: HTEdgeInsets.h16v12,
+            decoration: BoxDecoration(
+              border: Border.all(color: HTColors.grey010, width: 1),
+              borderRadius: HTBorderRadius.circular10,
+            ),
+            child: HTText(
+              '\u2022  from ${DateFormat('yyyy.MM.dd').format(taskDetailBloc.task.from)}',
               typoToken: HTTypoToken.captionMedium,
               color: HTColors.black,
             ),

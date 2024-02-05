@@ -80,6 +80,16 @@ String stndrd(int num) {
   }
 }
 
+int progressPercentage(DateTime from, DateTime until, List<DateTime> doneAt) {
+  int difference = until.difference(from).inDays;
+
+  if (difference == 0) {
+    return 0;
+  }
+
+  return ((doneAt.length / difference) * 100).round();
+}
+
 extension DateTimeExtension on DateTime {
   DateTime getDate() {
     return DateTime(year, month, day);
