@@ -8,6 +8,7 @@ import 'package:habit_app/styles/tokens.dart';
 import 'package:habit_app/styles/typos.dart';
 import 'package:habit_app/utils/functions.dart';
 import 'package:habit_app/widgets/ht_text.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -88,41 +89,72 @@ class DailyDates extends StatelessWidget {
                   DateTime date = dailyBloc.dates[index];
                   bool isSelected = index == dateIndex;
 
-                  return GestureDetector(
-                    onTap: () {
-                      dailyBloc.setDateIndex(index);
-                    },
-                    child: Container(
-                      width: 52,
-                      height: 52,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: isSameDay(DateTime.now().getDate(), date)
-                            ? Border.all(
+                  return Row(
+                    children: [
+                      if (date.day == 1)
+                        Container(
+                          width: 52,
+                          height: 52,
+                          margin: HTEdgeInsets.right12,
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: HTColors.grey010,
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              HTText(
+                                date.year.toString(),
+                                typoToken: HTTypoToken.captionXSmall,
+                                color: HTColors.grey040,
+                              ),
+                              HTText(
+                                DateFormat.MMM().format(date),
+                                typoToken: HTTypoToken.captionSmall,
+                                color: HTColors.grey060,
+                              ),
+                            ],
+                          ),
+                        ),
+                      GestureDetector(
+                        onTap: () {
+                          dailyBloc.setDateIndex(index);
+                        },
+                        child: Container(
+                          width: 52,
+                          height: 52,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: isSameDay(DateTime.now().getDate(), date)
+                                ? Border.all(
+                                    color: isSelected
+                                        ? HTColors.black
+                                        : HTColors.grey020)
+                                : null,
+                            color: isSelected ? HTColors.black : HTColors.white,
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              HTText(
+                                weekdayToText(date.weekday),
+                                typoToken: HTTypoToken.captionXSmall,
+                                color: HTColors.grey030,
+                              ),
+                              HTSpacers.height1,
+                              HTText(
+                                date.day.toString(),
+                                typoToken: HTTypoToken.subtitleLarge,
                                 color: isSelected
-                                    ? HTColors.black
-                                    : HTColors.grey020)
-                            : null,
-                        color: isSelected ? HTColors.black : HTColors.white,
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          HTText(
-                            weekdayToText(date.weekday),
-                            typoToken: HTTypoToken.captionXSmall,
-                            color: HTColors.grey030,
+                                    ? HTColors.white
+                                    : HTColors.black,
+                                height: 1,
+                              ),
+                            ],
                           ),
-                          HTSpacers.height1,
-                          HTText(
-                            date.day.toString(),
-                            typoToken: HTTypoToken.subtitleLarge,
-                            color: isSelected ? HTColors.white : HTColors.black,
-                            height: 1,
-                          ),
-                        ],
+                        ),
                       ),
-                    ),
+                    ],
                   );
                 },
                 separatorBuilder: (context, index) {
