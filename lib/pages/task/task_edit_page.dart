@@ -257,7 +257,7 @@ class TaskAddFrom extends StatelessWidget {
                 onTap: () {
                   showDatePicker(
                           context: context,
-                          firstDate: today,
+                          firstDate: DateTime(2020),
                           lastDate: DateTime(2101))
                       .then((value) {
                     if (value != null) {
