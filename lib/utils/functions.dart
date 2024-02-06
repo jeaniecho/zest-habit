@@ -98,3 +98,15 @@ extension DateTimeExtension on DateTime {
     return DateTime(year, month, day);
   }
 }
+
+extension DurationExtension on Duration {
+  String toShortString() {
+    String negativeSign = isNegative ? '-' : '';
+    String twoDigits(int n) => n.toString().padLeft(2, "0");
+    String twoDigitsHours = twoDigits(inHours);
+    String twoDigitMinutes = twoDigits(inMinutes.remainder(60).abs());
+    String twoDigitSeconds = twoDigits(inSeconds.remainder(60).abs());
+
+    return "$negativeSign${twoDigitsHours == '00' ? '' : '$twoDigitsHours:'}$twoDigitMinutes:$twoDigitSeconds";
+  }
+}
