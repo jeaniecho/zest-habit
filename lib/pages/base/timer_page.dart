@@ -15,81 +15,78 @@ class TimerPage extends StatelessWidget {
   Widget build(BuildContext context) {
     TimerBloc timerBloc = context.read<TimerBloc>();
 
+    double timerSize = 280;
+
     return Padding(
       padding: HTEdgeInsets.horizontal24,
-      child: LayoutBuilder(builder: (context, constraints) {
-        double timerSize = constraints.maxWidth * 0.8;
+      child: StreamBuilder<List>(
+          stream: Rx.combineLatestList([timerBloc.start, timerBloc.curr]),
+          builder: (context, snapshot) {
+            Duration? start = snapshot.data?[0];
+            Duration? curr = snapshot.data?[1];
 
-        return StreamBuilder<List>(
-            stream: Rx.combineLatestList([timerBloc.start, timerBloc.curr]),
-            builder: (context, snapshot) {
-              Duration? start = snapshot.data?[0];
-              Duration? curr = snapshot.data?[1];
-
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  if (start != null && curr != null)
-                    Center(
-                      child: Stack(
-                        children: [
-                          SizedBox(
-                            width: timerSize,
-                            height: timerSize,
-                            child: CircularProgressIndicator(
-                              value: curr.inSeconds / start.inSeconds,
-                              strokeWidth: 20,
-                              backgroundColor: HTColors.black,
-                              color: HTColors.grey010,
-                            ),
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (start != null && curr != null)
+                  Center(
+                    child: Stack(
+                      children: [
+                        SizedBox(
+                          width: timerSize,
+                          height: timerSize,
+                          child: CircularProgressIndicator(
+                            value: curr.inSeconds / start.inSeconds,
+                            strokeWidth: 20,
+                            backgroundColor: HTColors.black,
+                            color: HTColors.grey010,
                           ),
-                          Positioned(
-                            width: timerSize,
-                            height: timerSize,
-                            child: Center(
-                              child: StreamBuilder<bool>(
-                                  stream: timerBloc.isTimerOn,
-                                  builder: (context, snapshot) {
-                                    bool isTimerOn = snapshot.data ?? false;
+                        ),
+                        Positioned(
+                          width: timerSize,
+                          height: timerSize,
+                          child: Center(
+                            child: StreamBuilder<bool>(
+                                stream: timerBloc.isTimerOn,
+                                builder: (context, snapshot) {
+                                  bool isTimerOn = snapshot.data ?? false;
 
-                                    return HTText(
-                                      (isTimerOn ? curr : start)
-                                          .toShortString(),
-                                      typoToken: HTTypoToken.headlineXXLarge,
-                                      color: HTColors.black,
-                                      height: 1,
-                                    );
-                                  }),
-                            ),
-                          )
-                        ],
-                      ),
+                                  return HTText(
+                                    (isTimerOn ? curr : start).toShortString(),
+                                    typoToken: HTTypoToken.headlineXXLarge,
+                                    color: HTColors.black,
+                                    height: 1,
+                                  );
+                                }),
+                          ),
+                        )
+                      ],
                     ),
-                  HTSpacers.height24,
-                  StreamBuilder<bool>(
-                      stream: timerBloc.isTimerOn,
-                      builder: (context, snapshot) {
-                        bool isTimerOn = snapshot.data ?? false;
+                  ),
+                HTSpacers.height48,
+                StreamBuilder<bool>(
+                    stream: timerBloc.isTimerOn,
+                    builder: (context, snapshot) {
+                      bool isTimerOn = snapshot.data ?? false;
 
-                        return ElevatedButton(
-                            onPressed: () {
-                              if (isTimerOn) {
-                                timerBloc.stopTimer();
-                              } else {
-                                timerBloc.startTimer();
-                              }
-                            },
-                            child: HTText(
-                              isTimerOn ? 'Stop' : 'Start',
-                              typoToken: HTTypoToken.buttonTextMedium,
-                              color: HTColors.white,
-                              height: 1.25,
-                            ));
-                      })
-                ],
-              );
-            });
-      }),
+                      return ElevatedButton(
+                          onPressed: () {
+                            if (isTimerOn) {
+                              timerBloc.stopTimer();
+                            } else {
+                              timerBloc.startTimer();
+                            }
+                          },
+                          child: HTText(
+                            isTimerOn ? 'Stop' : 'Start',
+                            typoToken: HTTypoToken.buttonTextMedium,
+                            color: HTColors.white,
+                            height: 1.25,
+                          ));
+                    })
+              ],
+            );
+          }),
     );
   }
 }

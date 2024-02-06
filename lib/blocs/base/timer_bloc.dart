@@ -6,7 +6,7 @@ import 'package:rxdart/rxdart.dart';
 
 class TimerBloc extends Disposable {
   final BehaviorSubject<Duration> _start =
-      BehaviorSubject.seeded(const Duration(minutes: 1));
+      BehaviorSubject.seeded(const Duration(minutes: 25));
   Stream<Duration> get start => _start.stream;
   Function(Duration) get setStart => _start.add;
 
