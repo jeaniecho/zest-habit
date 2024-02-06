@@ -1,68 +1,69 @@
 import 'package:flutter/material.dart';
 import 'package:habit_app/styles/colors.dart';
+import 'package:habit_app/styles/tokens.dart';
 
 class HTThemes {
   HTThemes._();
   static final lightTheme = ThemeData(
     brightness: Brightness.light,
     appBarTheme: const AppBarTheme(
-      backgroundColor: Colors.white,
+      backgroundColor: HTColors.white,
     ),
-    scaffoldBackgroundColor: Colors.white,
-    splashColor: Colors.transparent,
-    primaryColor: Colors.black,
-    focusColor: const Color(0xff39A0FF),
-    highlightColor: Colors.transparent,
-    cardColor: Colors.white,
-    disabledColor: const Color(0xFFCDCDCD),
+    scaffoldBackgroundColor: HTColors.white,
+    splashColor: HTColors.clear,
+    primaryColor: HTColors.black,
+    focusColor: HTColors.grey030,
+    highlightColor: HTColors.clear,
+    cardColor: HTColors.white,
+    disabledColor: HTColors.grey020,
     colorScheme: HTColors.lightColorScheme,
     textSelectionTheme:
-        const TextSelectionThemeData(cursorColor: Color(0xff39A0FF)),
+        const TextSelectionThemeData(cursorColor: HTColors.blue),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         elevation: 0,
         splashFactory: InkRipple.splashFactory,
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-        backgroundColor: Colors.black,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        backgroundColor: HTColors.black,
+        shape: RoundedRectangleBorder(borderRadius: HTBorderRadius.circular8),
       ),
     ),
     textButtonTheme: TextButtonThemeData(
       style: TextButton.styleFrom(
-        foregroundColor: Colors.black, // button text color
+        foregroundColor: HTColors.black,
       ),
     ),
     inputDecorationTheme: const InputDecorationTheme(
       focusedBorder: UnderlineInputBorder(
-          borderSide: BorderSide(color: Color(0xff39A0FF), width: 2)),
+          borderSide: BorderSide(color: HTColors.grey060, width: 2)),
     ),
     useMaterial3: true,
-    fontFamily: 'NotoSansKR',
+    fontFamily: 'Pretendard',
   );
 
   static final darkTheme = ThemeData(
     brightness: Brightness.dark,
     appBarTheme: const AppBarTheme(
-      backgroundColor: Color(0xff2D2D2D),
+      backgroundColor: HTColors.black,
     ),
-    scaffoldBackgroundColor: const Color(0xff2D2D2D),
-    splashColor: Colors.transparent,
-    primaryColor: const Color(0xff39A0FF),
-    focusColor: const Color(0xff39A0FF),
-    highlightColor: Colors.transparent,
-    cardColor: const Color(0xff242424),
-    disabledColor: const Color(0xFF757575),
+    scaffoldBackgroundColor: HTColors.black,
+    splashColor: HTColors.clear,
+    primaryColor: HTColors.white,
+    focusColor: HTColors.grey080,
+    highlightColor: HTColors.clear,
+    cardColor: HTColors.black,
+    disabledColor: HTColors.grey070,
     colorScheme: HTColors.darkColorScheme,
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         elevation: 0,
         splashFactory: InkRipple.splashFactory,
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-        backgroundColor: const Color.fromARGB(255, 40, 111, 178),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        backgroundColor: HTColors.white,
+        shape: RoundedRectangleBorder(borderRadius: HTBorderRadius.circular8),
       ),
     ),
     useMaterial3: true,
-    fontFamily: 'NotoSansKR',
+    fontFamily: 'Pretendard',
   );
 }

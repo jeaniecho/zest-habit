@@ -84,9 +84,6 @@ class TaskAddRepeatAt extends StatelessWidget {
   Widget build(BuildContext context) {
     TaskAddBloc taskAddBloc = context.read<TaskAddBloc>();
 
-    List<String> days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    List<int> dayNums = [7, 1, 2, 3, 4, 5, 6];
-
     double size = (MediaQuery.sizeOf(context).width - 48 - 48) / 7;
 
     return StreamBuilder<List<int>>(

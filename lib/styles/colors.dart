@@ -9,32 +9,32 @@ class HTColors {
       primary: white,
       onPrimary: black,
       secondary: grey010,
-      onSecondary: grey070,
-      tertiary: const Color(0xff39A0FF),
+      onSecondary: grey080,
+      tertiary: HTColors.grey020,
+      onTertiary: HTColors.grey070,
       error: error,
       onError: white,
-      background: background,
+      background: white,
       onBackground: black,
-      surface: surface,
+      surface: white,
       onSurface: black);
 
   static final darkColorScheme = ColorScheme.fromSeed(
       seedColor: black,
       brightness: Brightness.dark,
-      primary: grey070,
+      primary: black,
       onPrimary: white,
       secondary: grey080,
       onSecondary: grey010,
-      tertiary: const Color(0xffD8ECFF),
+      tertiary: HTColors.grey070,
+      onTertiary: HTColors.grey020,
       error: error,
       onError: black,
       background: black,
       onBackground: white,
       surface: black,
       onSurface: white);
-  // 30% 4C, 50% 7F, 80% CC
 
-  // secondary value
   static const _secondaryValue = 0xFF39D9C6;
 
   // secondary value

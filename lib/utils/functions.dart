@@ -1,6 +1,7 @@
 import 'package:intl/intl.dart';
 
 const List<String> days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+const List<int> dayNums = [1, 2, 3, 4, 5, 6, 7];
 const int firstDayOfWeek = 1; // 0: Sunday, 1: Monday
 
 String weekdayToText(int weekday) {
