@@ -232,8 +232,6 @@ class TaskAddFrom extends StatelessWidget {
   Widget build(BuildContext context) {
     TaskAddBloc taskAddBloc = context.read<TaskAddBloc>();
 
-    DateTime today = DateTime.now().getDate();
-
     return StreamBuilder<DateTime>(
         stream: taskAddBloc.from,
         builder: (context, snapshot) {
