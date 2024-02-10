@@ -36,7 +36,8 @@ target 'Runner' do
     inherit! :search_paths
   end
   target 'habitWidgetsExtension' do
-    inherit! :search_paths
+    # inherit! :search_paths
+    pod 'home_widget', :path => '.symlinks/plugins/home_widget/ios'
   end
 end
 

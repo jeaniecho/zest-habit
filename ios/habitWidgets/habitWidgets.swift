@@ -14,7 +14,7 @@ struct Provider: TimelineProvider {
     }
 
     func getSnapshot(in context: Context, completion: @escaping (SimpleEntry) -> ()) {
-        let prefs = UserDefaults(suiteName: "dev.jeanie.habitApp.habitWidgets")
+        let prefs = UserDefaults.init(suiteName: "group.dev.jeanie.habitApp.habitWidgets")
         let entry = SimpleEntry(date: Date(), count: prefs?.integer(forKey: "counter") ?? -1)
         completion(entry)
     }

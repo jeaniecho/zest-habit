@@ -1,7 +1,7 @@
 import 'package:home_widget/home_widget.dart';
 
 Future initiateDeviceWidget() async {
-  await HomeWidget.setAppGroupId('dev.jeanie.habitApp.habitWidgets');
+  await HomeWidget.setAppGroupId('group.dev.jeanie.habitApp.habitWidgets');
   await HomeWidget.registerInteractivityCallback(interactiveCallback);
 }
 
@@ -38,11 +38,11 @@ Future<int> _increment() async {
 
 /// Clears the saved Counter Value
 Future<void> _clear() async {
-  await _sendAndUpdate(null);
+  await _sendAndUpdate(0);
 }
 
 /// Stores [value] in the Widget Configuration
-Future<void> _sendAndUpdate([int? value]) async {
+Future<void> _sendAndUpdate(int value) async {
   await HomeWidget.saveWidgetData(_countKey, value);
   await HomeWidget.updateWidget(
     iOSName: 'habitWidgets',
