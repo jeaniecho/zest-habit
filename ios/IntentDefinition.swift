@@ -26,7 +26,7 @@ public struct BackgroundIntent: AppIntent {
 
   public func perform() async throws -> some IntentResult {
     await HomeWidgetBackgroundWorker.run(
-      url: URL(string: "homeWidgetCounter://\(method)"),
+      url: URL(string: "homeWidgetTasks://\(method)"),
       appGroup: "group.dev.jeanie.habitApp.habitWidgets")
 
     return .result()

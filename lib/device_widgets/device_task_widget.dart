@@ -10,18 +10,19 @@ Future initiateDeviceWidget() async {
 @pragma('vm:entry-point')
 Future<void> interactiveCallback(Uri? uri) async {
   // We check the host of the uri to determine which action should be triggered.
-  if (uri?.host == 'increment') {
-    await _increment();
-  } else if (uri?.host == 'clear') {
-    await _clear();
-  }
+  // if (uri?.host == 'increment') {
+  //   await _increment();
+  // } else if (uri?.host == 'clear') {
+  //   await _clear();
+  // }
 }
 
 const _countKey = 'counter';
 
 /// Gets the currently stored Value
-Future<int> get _value async {
-  final value = await HomeWidget.getWidgetData<int>(_countKey, defaultValue: 0);
+Future<List<String>> get _value async {
+  final value = await HomeWidget.getWidgetData<List<String>>(_countKey,
+      defaultValue: ['aa', 'bb', 'cc']);
   return value!;
 }
 
@@ -29,17 +30,17 @@ Future<int> get _value async {
 /// Increments it by one
 /// Saves that new value
 /// @returns the new saved value
-Future<int> _increment() async {
-  final oldValue = await _value;
-  final newValue = oldValue + 1;
-  await _sendAndUpdate(newValue);
-  return newValue;
-}
+// Future<int> _increment() async {
+//   final oldValue = await _value;
+//   // final newValue = oldValue + 1;
+//   // await _sendAndUpdate(newValue);
+//   return newValue;
+// }
 
 /// Clears the saved Counter Value
-Future<void> _clear() async {
-  await _sendAndUpdate(0);
-}
+// Future<void> _clear() async {
+//   await _sendAndUpdate(0);
+// }
 
 /// Stores [value] in the Widget Configuration
 Future<void> _sendAndUpdate(int value) async {

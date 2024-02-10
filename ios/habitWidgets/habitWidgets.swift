@@ -10,12 +10,12 @@ import SwiftUI
 
 struct Provider: TimelineProvider {
     func placeholder(in context: Context) -> SimpleEntry {
-        SimpleEntry(date: Date(), count: 0)
+        SimpleEntry(date: Date(), tasks: ["aa", "bb"])
     }
 
     func getSnapshot(in context: Context, completion: @escaping (SimpleEntry) -> ()) {
-        let prefs = UserDefaults.init(suiteName: "group.dev.jeanie.habitApp.habitWidgets")
-        let entry = SimpleEntry(date: Date(), count: prefs?.integer(forKey: "counter") ?? -1)
+        let prefs = UserDefaults(suiteName: "group.dev.jeanie.habitApp.habitWidgets")
+        let entry = SimpleEntry(date: Date(), tasks: prefs?.list(forKey: "counter") ?? [])
         completion(entry)
     }
 
@@ -29,7 +29,7 @@ struct Provider: TimelineProvider {
 
 struct SimpleEntry: TimelineEntry {
     let date: Date
-    let count: Int
+    let tasks: List<String>
 }
 
 struct habitWidgetsEntryView : View {
@@ -37,26 +37,8 @@ struct habitWidgetsEntryView : View {
 
     var body: some View {
         VStack {
-            Text("You have pushed the button this many times:").font(.caption2).frame(
-                maxWidth: .infinity, alignment: .center)
-            Spacer()
-            Text(entry.count.description).font(.title).frame(maxWidth: .infinity, alignment: .center)
-            Spacer()
-            HStack {
-                // This button is for clearing
-                Button(intent: BackgroundIntent(method: "clear")) {
-                Image(systemName: "xmark").font(.system(size: 16)).foregroundColor(.red).frame(
-                    width: 24, height: 24)
-                }.buttonStyle(.plain).frame(alignment: .leading)
-                Spacer()
-                // This button is for incrementing
-                Button(intent: BackgroundIntent(method: "increment")) {
-                Image(systemName: "plus").font(.system(size: 16)).foregroundColor(.white)
-
-                }.frame(width: 24, height: 24)
-                .background(.blue)
-                .cornerRadius(12).frame(alignment: .trailing)
-            }
+            Text(entry.tasks).font(.caption2).frame(
+                maxWidth: .infinity)
         }
     }
 }
@@ -75,13 +57,13 @@ struct habitWidgets: Widget {
                     .background()
             }
         }
-        .configurationDisplayName("Counter Widget")
-        .description("Count the Number Up")
+        .configurationDisplayName("Task  Widget")
+        .description("Get list of tasks")
     }
 }
 
 #Preview(as: .systemSmall) {
     habitWidgets()
 } timeline: {
-    SimpleEntry(date: .now, count: 0)
+    SimpleEntry(date: .now, tasks: ["cc", "dd"])
 }
