@@ -9,12 +9,6 @@ import Flutter
   ) -> Bool {
     GeneratedPluginRegistrant.register(with: self)
 
-    if #available(iOS 17, *) {
-      HomeWidgetBackgroundWorker.setPluginRegistrantCallback { registry in
-          GeneratedPluginRegistrant.register(with: registry)
-      }
-    }
-
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 }
