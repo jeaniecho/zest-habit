@@ -10,12 +10,12 @@ import SwiftUI
 
 struct Provider: TimelineProvider {
     func placeholder(in context: Context) -> SimpleEntry {
-        SimpleEntry(date: Date(), tasks: ["aa", "bb"])
+        SimpleEntry(date: Date(), tasks: "aa")
     }
 
     func getSnapshot(in context: Context, completion: @escaping (SimpleEntry) -> ()) {
-        let prefs = UserDefaults(suiteName: "group.dev.jeanie.habitApp.habitWidgets")
-        let entry = SimpleEntry(date: Date(), tasks: prefs?.list(forKey: "counter") ?? [])
+        let prefs = UserDefaults.init(suiteName: "group.dev.jeanie.habitApp.habitWidgets")
+        let entry = SimpleEntry(date: Date(), tasks: prefs?.string(forKey: "counter") ?? "none")
         completion(entry)
     }
 
@@ -29,7 +29,7 @@ struct Provider: TimelineProvider {
 
 struct SimpleEntry: TimelineEntry {
     let date: Date
-    let tasks: List<String>
+    let tasks: String
 }
 
 struct habitWidgetsEntryView : View {
@@ -65,5 +65,5 @@ struct habitWidgets: Widget {
 #Preview(as: .systemSmall) {
     habitWidgets()
 } timeline: {
-    SimpleEntry(date: .now, tasks: ["cc", "dd"])
+    SimpleEntry(date: .now, tasks: "task preview")
 }

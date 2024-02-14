@@ -20,9 +20,9 @@ Future<void> interactiveCallback(Uri? uri) async {
 const _countKey = 'counter';
 
 /// Gets the currently stored Value
-Future<List<String>> get _value async {
-  final value = await HomeWidget.getWidgetData<List<String>>(_countKey,
-      defaultValue: ['aa', 'bb', 'cc']);
+Future<String> get _value async {
+  final value = await HomeWidget.getWidgetData<String>(_countKey,
+      defaultValue: 'defualt task');
   return value!;
 }
 
