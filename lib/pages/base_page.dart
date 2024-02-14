@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:habit_app/blocs/app_bloc.dart';
 import 'package:habit_app/blocs/base/daily_bloc.dart';
 import 'package:habit_app/blocs/base/timer_bloc.dart';
@@ -81,7 +82,7 @@ class BasePage extends StatelessWidget {
                     GestureDetector(
                         behavior: HitTestBehavior.opaque,
                         onTap: () {
-                          Navigator.pushNamed(context, TaskAddPage.routeName);
+                          context.push(TaskAddPage.routeName);
                         },
                         child: SizedBox(
                           width: 88,

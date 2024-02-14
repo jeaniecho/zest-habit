@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:habit_app/blocs/task/task_edit_bloc.dart';
 import 'package:habit_app/styles/colors.dart';
 import 'package:habit_app/styles/tokens.dart';
@@ -67,7 +68,7 @@ class TaskEditPage extends StatelessWidget {
             ElevatedButton(
                 onPressed: () {
                   taskEditBloc.updateTask();
-                  Navigator.pop(context, taskEditBloc.getUpdatedTask());
+                  context.pop(taskEditBloc.getUpdatedTask());
                 },
                 child: const Text('Edit Task')),
           ],

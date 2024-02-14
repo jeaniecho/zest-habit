@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:habit_app/blocs/app_bloc.dart';
 import 'package:habit_app/blocs/task/task_detail_bloc.dart';
 import 'package:habit_app/models/task_model.dart';
@@ -79,8 +80,8 @@ class TaskEditButton extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, TaskEditPage.routeName,
-                arguments: taskDetailBloc.taskObjValue)
+        context
+            .push(TaskEditPage.routeName, extra: taskDetailBloc.taskObjValue)
             .then((task) {
           if (task != null && task.runtimeType == Task) {
             taskDetailBloc.setTaskObj(task as Task);
@@ -726,7 +727,7 @@ class TaskDangerZone extends StatelessWidget {
         padding: HTEdgeInsets.horizontal24,
         child: ElevatedButton(
             onPressed: () {
-              Navigator.pop(context);
+              context.pop();
               appBloc.deleteTask(taskDetailBloc.taskObjValue);
             },
             child: const HTText(

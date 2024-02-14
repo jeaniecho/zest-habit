@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:habit_app/styles/colors.dart';
 import 'package:habit_app/styles/tokens.dart';
 import 'package:habit_app/styles/typos.dart';
@@ -38,15 +39,16 @@ class HTAppbar extends StatelessWidget implements PreferredSizeWidget {
       automaticallyImplyLeading: false,
       centerTitle: centerTitle,
       titleSpacing: titleSpacing,
-      leadingWidth: leading == null ? 50 : null,
+      leadingWidth:
+          (showBack == true && showClose == false) || leading != null ? 50 : 0,
       leading: leading ??
           ((showBack == false || showClose == true)
               ? const SizedBox.shrink()
               : GestureDetector(
                   behavior: HitTestBehavior.opaque,
                   onTap: () {
-                    if (Navigator.canPop(context)) {
-                      Navigator.pop(context);
+                    if (context.canPop()) {
+                      context.pop();
                     }
                   },
                   child: Container(
@@ -70,7 +72,7 @@ class HTAppbar extends StatelessWidget implements PreferredSizeWidget {
         if (showClose == true)
           GestureDetector(
             onTap: () {
-              Navigator.pop(context);
+              context.pop();
             },
             child: Container(
               margin: HTEdgeInsets.right4,

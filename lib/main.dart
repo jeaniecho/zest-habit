@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:habit_app/blocs/app_bloc.dart';
 import 'package:habit_app/models/task_model.dart';
 import 'package:habit_app/pages/base_page.dart';
-import 'package:habit_app/routes.dart';
+import 'package:habit_app/router.dart';
 import 'package:habit_app/styles/themes.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
@@ -33,13 +33,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return Provider(
       create: (context) => AppBloc(isar: isar),
-      child: MaterialApp(
+      child: MaterialApp.router(
+        routerConfig: router,
         debugShowCheckedModeBanner: false,
         theme: HTThemes.lightTheme,
         darkTheme: HTThemes.darkTheme,
         themeMode: ThemeMode.light,
-        initialRoute: BasePage.routeName,
-        routes: routes,
       ),
     );
   }

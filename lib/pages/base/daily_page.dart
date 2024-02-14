@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:habit_app/blocs/app_bloc.dart';
 import 'package:habit_app/blocs/base/daily_bloc.dart';
 import 'package:habit_app/models/task_model.dart';
@@ -240,7 +241,7 @@ class TaskBox extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, TaskDetailPage.routeName, arguments: task);
+        context.push(TaskDetailPage.routeName, extra: task);
       },
       child: Container(
         width: double.infinity,

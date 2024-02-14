@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:habit_app/blocs/task/task_add_bloc.dart';
 import 'package:habit_app/styles/colors.dart';
 import 'package:habit_app/styles/tokens.dart';
@@ -67,7 +68,7 @@ class TaskAddPage extends StatelessWidget {
             ElevatedButton(
                 onPressed: () {
                   taskAddBloc.addTask();
-                  Navigator.pop(context);
+                  context.pop();
                 },
                 child: const Text('Add Task')),
           ],
