@@ -17,8 +17,8 @@ class HTAppbar extends StatelessWidget implements PreferredSizeWidget {
 
   const HTAppbar(
       {this.title,
-      this.showBack,
-      this.showClose,
+      this.showBack = true,
+      this.showClose = false,
       this.leading,
       this.actions,
       this.bottom,
@@ -38,11 +38,12 @@ class HTAppbar extends StatelessWidget implements PreferredSizeWidget {
       automaticallyImplyLeading: false,
       centerTitle: centerTitle,
       titleSpacing: titleSpacing,
-      leadingWidth: leading == null ? 0 : null,
+      leadingWidth: leading == null ? 50 : null,
       leading: leading ??
           ((showBack == false || showClose == true)
               ? const SizedBox.shrink()
               : GestureDetector(
+                  behavior: HitTestBehavior.opaque,
                   onTap: () {
                     if (Navigator.canPop(context)) {
                       Navigator.pop(context);
