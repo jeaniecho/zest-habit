@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:habit_app/blocs/app_bloc.dart';
 import 'package:habit_app/pages/base/daily_page.dart';
 import 'package:habit_app/pages/base/timer_page.dart';
+import 'package:habit_app/pages/drawer/licenses_page.dart';
+import 'package:habit_app/pages/drawer/mode_page.dart';
 import 'package:habit_app/pages/drawer/privacy_page.dart';
 import 'package:habit_app/pages/drawer/term_page.dart';
 import 'package:habit_app/pages/task/task_add_page.dart';
@@ -176,9 +178,17 @@ class BaseEndDrawer extends StatelessWidget {
                   },
                   text: 'Privacy Policy'),
               HTSpacers.height8,
-              BaseEndDrawerItem(onTap: () {}, text: 'Licenses'),
+              BaseEndDrawerItem(
+                  onTap: () {
+                    context.push(LicensesPage.routeName);
+                  },
+                  text: 'Licenses'),
               HTSpacers.height8,
-              BaseEndDrawerItem(onTap: () {}, text: 'Mode'),
+              BaseEndDrawerItem(
+                  onTap: () {
+                    context.push(ModePage.routeName);
+                  },
+                  text: 'Mode'),
               const Spacer(),
               FutureBuilder<PackageInfo>(
                   future: PackageInfo.fromPlatform(),

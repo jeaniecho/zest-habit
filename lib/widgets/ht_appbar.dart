@@ -65,7 +65,7 @@ class HTAppbar extends StatelessWidget implements PreferredSizeWidget {
           ? null
           : HTText(
               title!,
-              typoToken: HTTypoToken.headlineSmall,
+              typoToken: HTTypoToken.subtitleLarge,
               color: HTColors.grey070,
             ),
       actions: [
