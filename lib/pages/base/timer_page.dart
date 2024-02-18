@@ -11,6 +11,8 @@ import 'package:rxdart/rxdart.dart';
 class TimerPage extends StatelessWidget {
   const TimerPage({super.key});
 
+  static const routeName = '/timer';
+
   @override
   Widget build(BuildContext context) {
     TimerBloc timerBloc = context.read<TimerBloc>();

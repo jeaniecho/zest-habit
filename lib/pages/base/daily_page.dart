@@ -16,6 +16,8 @@ import 'package:rxdart/rxdart.dart';
 class DailyPage extends StatelessWidget {
   const DailyPage({super.key});
 
+  static const routeName = '/daily';
+
   @override
   Widget build(BuildContext context) {
     return const Column(

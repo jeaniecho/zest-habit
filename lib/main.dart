@@ -1,6 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:habit_app/blocs/app_bloc.dart';
+import 'package:habit_app/blocs/base/daily_bloc.dart';
+import 'package:habit_app/blocs/base/timer_bloc.dart';
 import 'package:habit_app/models/task_model.dart';
 import 'package:habit_app/pages/base_page.dart';
 import 'package:habit_app/router.dart';
@@ -31,8 +33,19 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Provider(
-      create: (context) => AppBloc(isar: isar),
+    AppBloc appBloc = AppBloc(isar: isar);
+
+    double deviceWidth = MediaQuery.sizeOf(context).width;
+
+    return MultiProvider(
+      providers: [
+        Provider(create: (context) => appBloc),
+        Provider(
+          create: (context) =>
+              DailyBloc(appBloc: appBloc, deviceWidth: deviceWidth),
+        ),
+        Provider(create: (context) => TimerBloc()),
+      ],
       child: MaterialApp.router(
         routerConfig: router,
         debugShowCheckedModeBanner: false,

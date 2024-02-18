@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:habit_app/blocs/app_bloc.dart';
-import 'package:habit_app/blocs/base/daily_bloc.dart';
-import 'package:habit_app/blocs/base/timer_bloc.dart';
 import 'package:habit_app/pages/base/daily_page.dart';
 import 'package:habit_app/pages/base/timer_page.dart';
 import 'package:habit_app/pages/task/task_add_page.dart';
@@ -10,16 +8,14 @@ import 'package:habit_app/styles/colors.dart';
 import 'package:provider/provider.dart';
 
 class BasePage extends StatelessWidget {
-  const BasePage({super.key});
+  final Widget child;
+  const BasePage({required this.child, super.key});
 
   static const routeName = '/base';
 
   @override
   Widget build(BuildContext context) {
     AppBloc appBloc = context.read<AppBloc>();
-    DailyBloc dailyBloc = DailyBloc(
-        appBloc: appBloc, deviceWidth: MediaQuery.sizeOf(context).width);
-    TimerBloc timerBloc = TimerBloc();
 
     return StreamBuilder<int>(
         stream: appBloc.bottomIndex,
@@ -28,25 +24,7 @@ class BasePage extends StatelessWidget {
 
           return Scaffold(
             body: SafeArea(
-              child: IndexedStack(
-                index: bottomIndex,
-                children: [
-                  MultiProvider(
-                    providers: [
-                      Provider(create: (context) => appBloc),
-                      Provider(create: (context) => dailyBloc),
-                    ],
-                    child: const DailyPage(),
-                  ),
-                  MultiProvider(
-                    providers: [
-                      Provider(create: (context) => appBloc),
-                      Provider(create: (context) => timerBloc),
-                    ],
-                    child: const TimerPage(),
-                  ),
-                ],
-              ),
+              child: child,
             ),
             bottomNavigationBar: SafeArea(
               child: Container(
@@ -66,6 +44,7 @@ class BasePage extends StatelessWidget {
                     GestureDetector(
                       behavior: HitTestBehavior.opaque,
                       onTap: () {
+                        context.replace(DailyPage.routeName);
                         appBloc.setBottomIndex(0);
                       },
                       child: SizedBox(
@@ -105,6 +84,7 @@ class BasePage extends StatelessWidget {
                     GestureDetector(
                       behavior: HitTestBehavior.opaque,
                       onTap: () {
+                        context.replace(TimerPage.routeName);
                         appBloc.setBottomIndex(1);
                       },
                       child: SizedBox(
