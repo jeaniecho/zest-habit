@@ -4,7 +4,6 @@ import 'package:habit_app/blocs/app_bloc.dart';
 import 'package:habit_app/blocs/base/daily_bloc.dart';
 import 'package:habit_app/blocs/base/timer_bloc.dart';
 import 'package:habit_app/models/task_model.dart';
-import 'package:habit_app/pages/base_page.dart';
 import 'package:habit_app/router.dart';
 import 'package:habit_app/styles/themes.dart';
 import 'package:isar/isar.dart';

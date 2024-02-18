@@ -2,8 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:habit_app/blocs/app_bloc.dart';
-import 'package:habit_app/blocs/base/daily_bloc.dart';
-import 'package:habit_app/blocs/base/timer_bloc.dart';
 import 'package:habit_app/blocs/task/task_add_bloc.dart';
 import 'package:habit_app/blocs/task/task_detail_bloc.dart';
 import 'package:habit_app/blocs/task/task_edit_bloc.dart';
@@ -18,6 +16,8 @@ import 'package:provider/provider.dart';
 
 final GlobalKey<NavigatorState> rootNavKey = GlobalKey<NavigatorState>();
 final GlobalKey<NavigatorState> shellNavKey = GlobalKey<NavigatorState>();
+
+final GlobalKey<ScaffoldState> rootScaffoldKey = GlobalKey<ScaffoldState>();
 
 final router =
     GoRouter(navigatorKey: rootNavKey, initialLocation: '/daily', routes: [

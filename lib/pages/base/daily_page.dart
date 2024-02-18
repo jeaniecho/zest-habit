@@ -4,6 +4,7 @@ import 'package:habit_app/blocs/app_bloc.dart';
 import 'package:habit_app/blocs/base/daily_bloc.dart';
 import 'package:habit_app/models/task_model.dart';
 import 'package:habit_app/pages/task/task_detail_page.dart';
+import 'package:habit_app/router.dart';
 import 'package:habit_app/styles/colors.dart';
 import 'package:habit_app/styles/tokens.dart';
 import 'package:habit_app/styles/typos.dart';
@@ -35,20 +36,23 @@ class DailyAppbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    return Column(
       children: [
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
           child: Row(
             children: [
-              HTText(
+              const HTText(
                 'Task',
                 typoToken: HTTypoToken.headlineLarge,
                 color: HTColors.black,
               ),
-              Spacer(),
+              const Spacer(),
               InkWell(
-                child: Icon(
+                onTap: () {
+                  rootScaffoldKey.currentState!.openEndDrawer();
+                },
+                child: const Icon(
                   Icons.menu_rounded,
                   size: 24,
                 ),

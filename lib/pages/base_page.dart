@@ -4,7 +4,12 @@ import 'package:habit_app/blocs/app_bloc.dart';
 import 'package:habit_app/pages/base/daily_page.dart';
 import 'package:habit_app/pages/base/timer_page.dart';
 import 'package:habit_app/pages/task/task_add_page.dart';
+import 'package:habit_app/router.dart';
 import 'package:habit_app/styles/colors.dart';
+import 'package:habit_app/styles/tokens.dart';
+import 'package:habit_app/styles/typos.dart';
+import 'package:habit_app/widgets/ht_text.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 
 class BasePage extends StatelessWidget {
@@ -23,6 +28,7 @@ class BasePage extends StatelessWidget {
           int bottomIndex = snapshot.data ?? 0;
 
           return Scaffold(
+            key: rootScaffoldKey,
             body: SafeArea(
               child: child,
             ),
@@ -102,7 +108,95 @@ class BasePage extends StatelessWidget {
                 ),
               ),
             ),
+            endDrawer: const BaseEndDrawer(),
           );
         });
+  }
+}
+
+class BaseEndDrawer extends StatelessWidget {
+  const BaseEndDrawer({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
+      backgroundColor: HTColors.white,
+      surfaceTintColor: HTColors.white,
+      shape: RoundedRectangleBorder(borderRadius: HTBorderRadius.circularZero),
+      width: 320,
+      child: SafeArea(
+        child: Padding(
+          padding: HTEdgeInsets.all16,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              GestureDetector(
+                onTap: () {
+                  rootScaffoldKey.currentState!.closeEndDrawer();
+                },
+                child: const Padding(
+                  padding: HTEdgeInsets.all12,
+                  child: Icon(
+                    Icons.close_rounded,
+                    color: HTColors.grey040,
+                    size: 24,
+                  ),
+                ),
+              ),
+              HTSpacers.height20,
+              BaseEndDrawerItem(onTap: () {}, text: 'Support'),
+              HTSpacers.height8,
+              BaseEndDrawerItem(onTap: () {}, text: 'Terms of Use'),
+              HTSpacers.height8,
+              BaseEndDrawerItem(onTap: () {}, text: 'Privacy Policy'),
+              HTSpacers.height8,
+              BaseEndDrawerItem(onTap: () {}, text: 'Licenses'),
+              HTSpacers.height8,
+              BaseEndDrawerItem(onTap: () {}, text: 'Mode'),
+              const Spacer(),
+              FutureBuilder<PackageInfo>(
+                  future: PackageInfo.fromPlatform(),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return const SizedBox.shrink();
+                    }
+
+                    PackageInfo packageInfo = snapshot.data!;
+
+                    return HTText(
+                      'App Version ${packageInfo.version} (${packageInfo.buildNumber})',
+                      typoToken: HTTypoToken.bodyMedium,
+                      color: HTColors.grey040,
+                    );
+                  }),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class BaseEndDrawerItem extends StatelessWidget {
+  final Function onTap;
+  final String text;
+  const BaseEndDrawerItem({super.key, required this.onTap, required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        rootScaffoldKey.currentState!.closeEndDrawer();
+        onTap();
+      },
+      child: Padding(
+        padding: HTEdgeInsets.all12,
+        child: HTText(
+          text,
+          typoToken: HTTypoToken.bodyLarge,
+          color: HTColors.black,
+        ),
+      ),
+    );
   }
 }

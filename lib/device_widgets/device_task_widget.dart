@@ -17,14 +17,14 @@ Future<void> interactiveCallback(Uri? uri) async {
   // }
 }
 
-const _countKey = 'counter';
+// const _countKey = 'counter';
 
 /// Gets the currently stored Value
-Future<String> get _value async {
-  final value = await HomeWidget.getWidgetData<String>(_countKey,
-      defaultValue: 'defualt task');
-  return value!;
-}
+// Future<String> get _value async {
+//   final value = await HomeWidget.getWidgetData<String>(_countKey,
+//       defaultValue: 'defualt task');
+//   return value!;
+// }
 
 /// Retrieves the current stored value
 /// Increments it by one
@@ -43,10 +43,10 @@ Future<String> get _value async {
 // }
 
 /// Stores [value] in the Widget Configuration
-Future<void> _sendAndUpdate(int value) async {
-  await HomeWidget.saveWidgetData(_countKey, value);
-  await HomeWidget.updateWidget(
-    iOSName: 'habitWidgets',
-    androidName: 'habitWidgetsProvider',
-  );
-}
+// Future<void> _sendAndUpdate(int value) async {
+//   await HomeWidget.saveWidgetData(_countKey, value);
+//   await HomeWidget.updateWidget(
+//     iOSName: 'habitWidgets',
+//     androidName: 'habitWidgetsProvider',
+//   );
+// }
