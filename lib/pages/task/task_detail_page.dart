@@ -456,8 +456,9 @@ class TaskWeeklyCalendar extends StatelessWidget {
                   scrollDirection: Axis.horizontal,
                   padding: HTEdgeInsets.horizontal24,
                   itemBuilder: (context, index) {
-                    int day =
-                        firstDay.day + (repeatAt[index] % 7) - firstDayOfWeek;
+                    int dayOfWeek = dayNums.indexOf(repeatAt[index]);
+
+                    int day = firstDay.day + (dayOfWeek % 7);
                     if (day > lastDate) {
                       day -= lastDate;
                     }
@@ -466,7 +467,7 @@ class TaskWeeklyCalendar extends StatelessWidget {
                     int diff = now.difference(firstDay).inDays;
                     bool inSameWeek = diff >= 0 && diff < 7;
                     bool isLater = (inSameWeek &&
-                            index >= (now.weekday - firstDayOfWeek) % 7) ||
+                            dayNums.indexOf(now.weekday) <= dayOfWeek) ||
                         (!inSameWeek && diff < 0);
                     bool isToday = inSameWeek && now.day == day;
 
@@ -580,8 +581,12 @@ class TaskMonthlyCalendar extends StatelessWidget {
                       mainAxisSpacing: 8,
                     ),
                     itemBuilder: (context, index) {
+                      int currWeekday = index % 7;
+                      if (currWeekday == 0) {
+                        currWeekday = 7;
+                      }
                       bool repeatToday =
-                          repeatAt.contains((index % 7) + firstDayOfWeek);
+                          repeatAt.contains(currWeekday + firstDayOfWeek);
 
                       // fill days
                       if (index < fillDays) {

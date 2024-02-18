@@ -22,7 +22,10 @@ String weekdayToText(int weekday) {
 String repeatAtToText(List<int>? repeatAt) {
   if (repeatAt == null || repeatAt.isEmpty) {
     return 'One time';
-  } else if (repeatAt.length == 7) {
+  }
+
+  repeatAt = sortRepeatAt(repeatAt);
+  if (repeatAt.length == 7) {
     return 'Everyday';
   } else if (repeatAt.length == 5 &&
       !(repeatAt.contains(6) || repeatAt.contains(7))) {
