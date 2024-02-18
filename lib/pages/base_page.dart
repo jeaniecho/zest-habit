@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:habit_app/blocs/app_bloc.dart';
 import 'package:habit_app/pages/base/daily_page.dart';
 import 'package:habit_app/pages/base/timer_page.dart';
+import 'package:habit_app/pages/drawer/privacy_page.dart';
+import 'package:habit_app/pages/drawer/term_page.dart';
 import 'package:habit_app/pages/task/task_add_page.dart';
 import 'package:habit_app/router.dart';
 import 'package:habit_app/styles/colors.dart';
@@ -124,7 +126,7 @@ class BaseEndDrawer extends StatelessWidget {
       backgroundColor: HTColors.white,
       surfaceTintColor: HTColors.white,
       shape: RoundedRectangleBorder(borderRadius: HTBorderRadius.circularZero),
-      width: 320,
+      width: 300,
       child: SafeArea(
         child: Padding(
           padding: HTEdgeInsets.all16,
@@ -162,9 +164,17 @@ class BaseEndDrawer extends StatelessWidget {
                   },
                   text: 'Support'),
               HTSpacers.height8,
-              BaseEndDrawerItem(onTap: () {}, text: 'Terms of Use'),
+              BaseEndDrawerItem(
+                  onTap: () {
+                    context.push(TermPage.routeName);
+                  },
+                  text: 'Terms of Use'),
               HTSpacers.height8,
-              BaseEndDrawerItem(onTap: () {}, text: 'Privacy Policy'),
+              BaseEndDrawerItem(
+                  onTap: () {
+                    context.push(PrivacyPage.routeName);
+                  },
+                  text: 'Privacy Policy'),
               HTSpacers.height8,
               BaseEndDrawerItem(onTap: () {}, text: 'Licenses'),
               HTSpacers.height8,

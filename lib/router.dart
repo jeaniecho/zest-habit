@@ -9,6 +9,8 @@ import 'package:habit_app/models/task_model.dart';
 import 'package:habit_app/pages/base/daily_page.dart';
 import 'package:habit_app/pages/base/timer_page.dart';
 import 'package:habit_app/pages/base_page.dart';
+import 'package:habit_app/pages/drawer/privacy_page.dart';
+import 'package:habit_app/pages/drawer/term_page.dart';
 import 'package:habit_app/pages/task/task_add_page.dart';
 import 'package:habit_app/pages/task/task_detail_page.dart';
 import 'package:habit_app/pages/task/task_edit_page.dart';
@@ -19,9 +21,11 @@ final GlobalKey<NavigatorState> shellNavKey = GlobalKey<NavigatorState>();
 
 final GlobalKey<ScaffoldState> rootScaffoldKey = GlobalKey<ScaffoldState>();
 
-final router =
-    GoRouter(navigatorKey: rootNavKey, initialLocation: '/daily', routes: [
-  ShellRoute(
+final router = GoRouter(
+  navigatorKey: rootNavKey,
+  initialLocation: '/daily',
+  routes: [
+    ShellRoute(
       navigatorKey: shellNavKey,
       builder: (context, state, child) {
         return BasePage(child: child);
@@ -71,5 +75,19 @@ final router =
             );
           },
         ),
-      ]),
-]);
+      ],
+    ),
+    GoRoute(
+      path: TermPage.routeName,
+      builder: (context, state) {
+        return const TermPage();
+      },
+    ),
+    GoRoute(
+      path: PrivacyPage.routeName,
+      builder: (context, state) {
+        return const PrivacyPage();
+      },
+    ),
+  ],
+);

@@ -80,7 +80,7 @@ class HTAppbar extends StatelessWidget implements PreferredSizeWidget {
               child: const Icon(
                 Icons.close_rounded,
                 size: 24,
-                color: HTColors.grey080,
+                color: HTColors.grey040,
               ),
             ),
           ),
