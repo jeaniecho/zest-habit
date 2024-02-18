@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:go_router/go_router.dart';
 import 'package:habit_app/blocs/app_bloc.dart';
 import 'package:habit_app/pages/base/daily_page.dart';
@@ -144,7 +145,22 @@ class BaseEndDrawer extends StatelessWidget {
                 ),
               ),
               HTSpacers.height20,
-              BaseEndDrawerItem(onTap: () {}, text: 'Support'),
+              BaseEndDrawerItem(
+                  onTap: () async {
+                    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+
+                    String body =
+                        "\n\n\n\n\nApp Version: ${packageInfo.version} (${packageInfo.buildNumber})";
+
+                    Email email = Email(
+                      subject: '[${packageInfo.appName}] Feedback',
+                      body: body,
+                      recipients: ['yeajeanie@gmail.com'],
+                    );
+
+                    await FlutterEmailSender.send(email);
+                  },
+                  text: 'Support'),
               HTSpacers.height8,
               BaseEndDrawerItem(onTap: () {}, text: 'Terms of Use'),
               HTSpacers.height8,
