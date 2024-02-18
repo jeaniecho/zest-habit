@@ -258,7 +258,7 @@ class TaskWeeklyTitle extends StatelessWidget {
                   builder: (context, snapshot) {
                     DateTime today = DateTime.now().getDate();
                     DateTime currDate = snapshot.data ?? today;
-                    int weekNum = weekOfMonth(currDate, 0);
+                    int weekNum = weekOfMonth(currDate);
 
                     bool isBefore = currDate.isBefore(task.from);
                     bool isLater = !mostRecentWeekday(currDate)
@@ -430,7 +430,7 @@ class TaskWeeklyCalendar extends StatelessWidget {
             Task task = snapshot.data?[2] ?? taskDetailBloc.task;
 
             DateTime now = DateTime.now().getDate();
-            DateTime currDate = snapshot.data?[0] ?? now;
+            DateTime currDate = mostRecentWeekday(snapshot.data?[0] ?? now);
             DateTime firstDay = mostRecentWeekday(currDate);
 
             int lastDate = DateTime(currDate.year, currDate.month, 1)
@@ -461,16 +461,12 @@ class TaskWeeklyCalendar extends StatelessWidget {
                     }
 
                     bool isDone = doneDates.contains(day);
-                    bool inSameWeek = isSameWeek(currDate, now);
+                    int diff = now.difference(currDate).inDays;
+                    bool inSameWeek = diff >= 0 && diff < 7;
                     bool isLater = (inSameWeek &&
-                            index >= (now.weekday % 7 - firstDayOfWeek)) ||
-                        (!inSameWeek &&
-                            now
-                                    .difference(DateTime(
-                                        currDate.year, currDate.month, day))
-                                    .inDays <
-                                0);
-                    bool isToday = isSameMonth(now, currDate) && now.day == day;
+                            index >= (now.weekday - firstDayOfWeek)) ||
+                        (!inSameWeek && diff < 0);
+                    bool isToday = inSameWeek && now.day == day;
 
                     return Column(
                       children: [

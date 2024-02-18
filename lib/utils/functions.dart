@@ -40,7 +40,7 @@ bool isSameDay(DateTime one, DateTime two) {
 bool isSameWeek(DateTime one, DateTime two) {
   return one.month == two.month &&
       one.year == two.year &&
-      weekOfMonth(one, 0) == weekOfMonth(two, 0);
+      weekOfMonth(one) == weekOfMonth(two);
 }
 
 bool isSameMonth(DateTime one, DateTime two) {
@@ -60,10 +60,12 @@ bool isDone(DateTime currDate, List<DateTime> doneAt) {
 DateTime mostRecentWeekday(DateTime date, {int weekday = firstDayOfWeek}) =>
     DateTime(date.year, date.month, date.day - (date.weekday - weekday) % 7);
 
-int weekOfMonth(DateTime date, int weekday) {
+int weekOfMonth(DateTime date) {
   DateTime firstDayOfTheMonth = DateTime(date.year, date.month, 1);
-  int sum =
-      firstDayOfTheMonth.weekday - ((date.weekday - weekday) % 7) + date.day;
+  // int sum = firstDayOfTheMonth.weekday -
+  //     ((date.weekday - firstDayOfWeek) % 7) +
+  //     date.day;
+  int sum = date.day + firstDayOfTheMonth.weekday - firstDayOfWeek;
   if (sum % 7 == 0) {
     return sum ~/ 7;
   } else {
