@@ -1,11 +1,22 @@
 import 'package:intl/intl.dart';
 
-const List<String> days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-const List<int> dayNums = [1, 2, 3, 4, 5, 6, 7];
-const int firstDayOfWeek = 1; // 0: Sunday, 1: Monday
+const int firstDayOfWeek = 0; // 0: Sunday, 1: Monday
+
+const List daysList = [
+  ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+  ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+];
+
+const List dayNumsList = [
+  [7, 1, 2, 3, 4, 5, 6],
+  [1, 2, 3, 4, 5, 6, 7]
+];
+
+List<String> days = daysList[firstDayOfWeek];
+List<int> dayNums = dayNumsList[firstDayOfWeek];
 
 String weekdayToText(int weekday) {
-  return days[weekday - 1];
+  return days[dayNums.indexOf(weekday)];
 }
 
 String repeatAtToText(List<int>? repeatAt) {
@@ -22,7 +33,7 @@ String repeatAtToText(List<int>? repeatAt) {
     return 'Weekend';
   }
 
-  return repeatAt.map((e) => days[e - 1]).join(', ');
+  return repeatAt.map((e) => days[dayNums.indexOf(e)]).join(', ');
 }
 
 String untilToText(DateTime? until, {bool long = false}) {
@@ -58,19 +69,28 @@ bool isDone(DateTime currDate, List<DateTime> doneAt) {
 
 /// The [weekday] may be 0 for Sunday, 1 for Monday, etc. up to 7 for Sunday.
 DateTime mostRecentWeekday(DateTime date, {int weekday = firstDayOfWeek}) =>
-    DateTime(date.year, date.month, date.day - (date.weekday - weekday) % 7);
+    DateTime(date.year, date.month, date.day - ((date.weekday - weekday) % 7));
 
 int weekOfMonth(DateTime date) {
   DateTime firstDayOfTheMonth = DateTime(date.year, date.month, 1);
-  // int sum = firstDayOfTheMonth.weekday -
-  //     ((date.weekday - firstDayOfWeek) % 7) +
-  //     date.day;
   int sum = date.day + firstDayOfTheMonth.weekday - firstDayOfWeek;
   if (sum % 7 == 0) {
     return sum ~/ 7;
   } else {
     return sum ~/ 7 + 1;
   }
+}
+
+List<int> sortRepeatAt(List<int> repeatAt) {
+  List<int> copy = repeatAt.toList();
+  copy.sort();
+
+  if (firstDayOfWeek == 0 && copy.contains(7)) {
+    copy.remove(7);
+    copy.insert(0, 7);
+  }
+
+  return copy;
 }
 
 String stndrd(int num) {

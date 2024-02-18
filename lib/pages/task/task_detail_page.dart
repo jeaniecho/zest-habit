@@ -441,6 +441,7 @@ class TaskWeeklyCalendar extends StatelessWidget {
 
             return LayoutBuilder(builder: (context, constraints) {
               List<int> repeatAt = task.repeatAt ?? [];
+              repeatAt = sortRepeatAt(repeatAt);
 
               double maxWidth = constraints.maxWidth;
               double itemWidth = 38;
@@ -455,23 +456,24 @@ class TaskWeeklyCalendar extends StatelessWidget {
                   scrollDirection: Axis.horizontal,
                   padding: HTEdgeInsets.horizontal24,
                   itemBuilder: (context, index) {
-                    int day = firstDay.day + repeatAt[index] - firstDayOfWeek;
+                    int day =
+                        firstDay.day + (repeatAt[index] % 7) - firstDayOfWeek;
                     if (day > lastDate) {
                       day -= lastDate;
                     }
 
                     bool isDone = doneDates.contains(day);
-                    int diff = now.difference(currDate).inDays;
+                    int diff = now.difference(firstDay).inDays;
                     bool inSameWeek = diff >= 0 && diff < 7;
                     bool isLater = (inSameWeek &&
-                            index >= (now.weekday - firstDayOfWeek)) ||
+                            index >= (now.weekday - firstDayOfWeek) % 7) ||
                         (!inSameWeek && diff < 0);
                     bool isToday = inSameWeek && now.day == day;
 
                     return Column(
                       children: [
                         HTText(
-                          days[repeatAt[index] - 1],
+                          weekdayToText(repeatAt[index]),
                           typoToken: HTTypoToken.captionXSmall,
                           color: HTColors.grey050,
                         ),
