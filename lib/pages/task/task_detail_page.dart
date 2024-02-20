@@ -80,11 +80,14 @@ class TaskEditButton extends StatelessWidget {
     TaskDetailBloc taskDetailBloc = context.read<TaskDetailBloc>();
 
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: () {
         showModalBottomSheet(
             context: context,
             useRootNavigator: true,
             isScrollControlled: true,
+            backgroundColor: HTColors.clear,
+            useSafeArea: true,
             builder: (context) {
               return Provider(
                   create: (context) => TaskEditBloc(
