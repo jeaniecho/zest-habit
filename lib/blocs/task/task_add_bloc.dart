@@ -42,6 +42,10 @@ class TaskAddBloc extends Disposable {
   Stream<DateTime?> get until => _until.stream;
   Function(DateTime?) get setUntil => _until.add;
 
+  final BehaviorSubject<bool> _openEmoji = BehaviorSubject.seeded(false);
+  Stream<bool> get openEmoji => _openEmoji.stream;
+  Function(bool) get setOpenEmoji => _openEmoji.add;
+
   TaskAddBloc({required this.appBloc});
 
   @override
@@ -54,6 +58,7 @@ class TaskAddBloc extends Disposable {
     _repeatAt.close();
     _from.close();
     _until.close();
+    _openEmoji.close();
   }
 
   toggleRepeatAt(int day) {
@@ -77,5 +82,13 @@ class TaskAddBloc extends Disposable {
       desc: '',
       until: _until.value,
     ));
+  }
+
+  toggleOpenEmoji() {
+    if (_openEmoji.value) {
+      setOpenEmoji(false);
+    } else {
+      setOpenEmoji(true);
+    }
   }
 }

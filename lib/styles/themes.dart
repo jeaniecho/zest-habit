@@ -50,6 +50,11 @@ class HTThemes {
         borderRadius: HTBorderRadius.circular10,
       ),
     ),
+    buttonTheme: const ButtonThemeData(
+      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      buttonColor: HTColors.black,
+      disabledColor: HTColors.grey030,
+    ),
     radioTheme: RadioThemeData(
       visualDensity: const VisualDensity(
         horizontal: VisualDensity.minimumDensity,

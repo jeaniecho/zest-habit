@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:habit_app/blocs/task/task_add_bloc.dart';
 import 'package:habit_app/styles/colors.dart';
+import 'package:habit_app/styles/effects.dart';
 import 'package:habit_app/styles/tokens.dart';
 import 'package:habit_app/styles/typos.dart';
+import 'package:habit_app/utils/emojis.dart';
 import 'package:habit_app/utils/enums.dart';
 import 'package:habit_app/utils/functions.dart';
 import 'package:habit_app/widgets/ht_radio.dart';
@@ -53,75 +55,231 @@ class TaskAddBody extends StatelessWidget {
   Widget build(BuildContext context) {
     TaskAddBloc taskAddBloc = context.read<TaskAddBloc>();
 
-    return Column(
+    return Stack(
       children: [
-        HTSpacers.height8,
-        const TaskAddClose(),
-        Expanded(
-          child: SingleChildScrollView(
-            padding: HTEdgeInsets.h24v16,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                InkWell(
-                  onTap: () {},
-                  child: Container(
-                    padding: HTEdgeInsets.all8,
-                    decoration: BoxDecoration(
-                      color: HTColors.grey010,
-                      borderRadius: HTBorderRadius.circular10,
-                    ),
-                    child: const Icon(
-                      Icons.emoji_emotions_rounded,
-                      color: HTColors.grey030,
-                      size: 32,
-                    ),
-                  ),
-                ),
-                HTSpacers.height8,
-                const TaskAddTitle(),
-                HTSpacers.height10,
-                const TaskAddGoal(),
-                HTSpacers.height24,
-                const TaskAddRepeatAt(),
-                const TaskAddFrom(),
-                const TaskAddUntil(),
-                HTSpacers.height48,
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          padding: HTEdgeInsets.vertical16,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: HTBorderRadius.circular10)),
-                      onPressed: () {
-                        taskAddBloc.addTask();
-                        context.pop();
+        Column(
+          children: [
+            HTSpacers.height8,
+            const TaskAddClose(),
+            Expanded(
+              child: SingleChildScrollView(
+                padding: HTEdgeInsets.h24v16,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        taskAddBloc.toggleOpenEmoji();
                       },
-                      child: const Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.check_rounded,
-                            color: HTColors.white,
-                            size: 24,
-                          ),
-                          HTSpacers.width4,
-                          HTText(
-                            'Done',
-                            typoToken: HTTypoToken.subtitleXLarge,
-                            color: HTColors.white,
-                            height: 1.25,
-                          ),
-                        ],
-                      )),
+                      child: Container(
+                        width: 48,
+                        height: 48,
+                        decoration: BoxDecoration(
+                          color: HTColors.grey010,
+                          borderRadius: HTBorderRadius.circular10,
+                        ),
+                        child: StreamBuilder<String>(
+                            stream: taskAddBloc.emoji,
+                            builder: (context, snapshot) {
+                              String emoji = snapshot.data ?? '';
+
+                              if (emoji.isEmpty) {
+                                return const Icon(
+                                  Icons.emoji_emotions_rounded,
+                                  color: HTColors.grey030,
+                                  size: 32,
+                                );
+                              } else {
+                                return Center(
+                                    child: Text(
+                                  emoji,
+                                  style: const TextStyle(fontSize: 28),
+                                ));
+                              }
+                            }),
+                      ),
+                    ),
+                    HTSpacers.height8,
+                    const TaskAddTitle(),
+                    HTSpacers.height10,
+                    const TaskAddGoal(),
+                    HTSpacers.height24,
+                    const TaskAddRepeatAt(),
+                    const TaskAddFrom(),
+                    const TaskAddUntil(),
+                    HTSpacers.height48,
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              padding: HTEdgeInsets.vertical16,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: HTBorderRadius.circular10)),
+                          onPressed: () {
+                            taskAddBloc.addTask();
+                            context.pop();
+                          },
+                          child: const Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.check_rounded,
+                                color: HTColors.white,
+                                size: 24,
+                              ),
+                              HTSpacers.width4,
+                              HTText(
+                                'Done',
+                                typoToken: HTTypoToken.subtitleXLarge,
+                                color: HTColors.white,
+                                height: 1.25,
+                              ),
+                            ],
+                          )),
+                    ),
+                    HTSpacers.height48,
+                  ],
                 ),
-                HTSpacers.height48,
-              ],
+              ),
             ),
+          ],
+        ),
+        StreamBuilder<bool>(
+            stream: taskAddBloc.openEmoji,
+            builder: (context, snapshot) {
+              bool openEmoji = snapshot.data ?? false;
+
+              if (openEmoji) {
+                return const TaskAddEmojiPicker();
+              } else {
+                return const SizedBox.shrink();
+              }
+            }),
+      ],
+    );
+  }
+}
+
+class TaskAddEmojiPicker extends StatelessWidget {
+  const TaskAddEmojiPicker({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    TaskAddBloc taskAddBloc = context.read<TaskAddBloc>();
+
+    return Positioned(
+      top: 128,
+      left: 24,
+      child: Container(
+        decoration: BoxDecoration(
+          color: HTColors.white,
+          borderRadius: HTBorderRadius.circular10,
+          boxShadow: HTBoxShadows.shadows01,
+        ),
+        child: SizedBox(
+          width: MediaQuery.sizeOf(context).width - 48,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              SizedBox(
+                height: MediaQuery.sizeOf(context).height * 0.6,
+                child: LayoutBuilder(builder: (context, constraints) {
+                  int crossAxisCount = 7;
+                  double spacing = 12;
+                  double emojiSize = (constraints.maxWidth -
+                          (spacing * (crossAxisCount - 1))) /
+                      crossAxisCount;
+
+                  ScrollController emojiScrollController = ScrollController();
+
+                  return RawScrollbar(
+                    thickness: 6,
+                    minThumbLength: 80,
+                    thumbColor: HTColors.grey020,
+                    radius: const Radius.circular(10),
+                    controller: emojiScrollController,
+                    child: GridView.builder(
+                      controller: emojiScrollController,
+                      padding: HTEdgeInsets.all16,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: crossAxisCount,
+                          mainAxisSpacing: spacing,
+                          crossAxisSpacing: spacing,
+                          childAspectRatio: 1),
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          onTap: () {
+                            taskAddBloc.setEmoji(allEmojis[index]);
+                          },
+                          child: SizedBox(
+                            width: emojiSize,
+                            height: emojiSize,
+                            child: Text(
+                              allEmojis[index],
+                              style: TextStyle(fontSize: emojiSize * 0.8),
+                            ),
+                          ),
+                        );
+                      },
+                      itemCount: allEmojis.length,
+                    ),
+                  );
+                }),
+              ),
+              Padding(
+                padding: HTEdgeInsets.all16,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        taskAddBloc.setOpenEmoji(false);
+                      },
+                      child: const HTText(
+                        'Close',
+                        typoToken: HTTypoToken.subtitleLarge,
+                        color: HTColors.grey040,
+                      ),
+                    ),
+                    StreamBuilder<String>(
+                        stream: taskAddBloc.emoji,
+                        builder: (context, snapshot) {
+                          String emoji = snapshot.data ?? '';
+
+                          return ElevatedButton(
+                            onPressed: emoji.isEmpty
+                                ? null
+                                : () {
+                                    taskAddBloc.setOpenEmoji(false);
+                                  },
+                            style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: HTBorderRadius.circularMax)),
+                            child: const Row(
+                              children: [
+                                Icon(
+                                  Icons.check_rounded,
+                                  color: HTColors.white,
+                                  size: 22,
+                                ),
+                                HTSpacers.width4,
+                                HTText(
+                                  'Done',
+                                  typoToken: HTTypoToken.subtitleXLarge,
+                                  color: HTColors.white,
+                                  height: 1.1,
+                                ),
+                              ],
+                            ),
+                          );
+                        }),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
-      ],
+      ),
     );
   }
 }
