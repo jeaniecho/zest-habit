@@ -11,22 +11,23 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
 
-class TaskEditPage extends StatelessWidget {
-  const TaskEditPage({super.key});
-
-  static const routeName = '/task-edit';
+class TaskEditWidget extends StatelessWidget {
+  const TaskEditWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
     TaskEditBloc taskEditBloc = context.read<TaskEditBloc>();
 
-    return Scaffold(
-      appBar: const HTAppbar(
-        showClose: true,
-        title: 'Edit Task',
-        centerTitle: false,
+    return Container(
+      height: MediaQuery.sizeOf(context).height * 0.9,
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(30),
+          topRight: Radius.circular(30),
+        ),
       ),
-      body: SingleChildScrollView(
+      child: SingleChildScrollView(
         padding: HTEdgeInsets.h24v16,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,

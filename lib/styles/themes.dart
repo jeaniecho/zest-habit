@@ -18,7 +18,7 @@ class HTThemes {
     disabledColor: HTColors.grey020,
     colorScheme: HTColors.lightColorScheme,
     textSelectionTheme:
-        const TextSelectionThemeData(cursorColor: HTColors.blue),
+        const TextSelectionThemeData(cursorColor: HTColors.grey060),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         elevation: 0,
@@ -33,9 +33,22 @@ class HTThemes {
         foregroundColor: HTColors.black,
       ),
     ),
-    inputDecorationTheme: const InputDecorationTheme(
-      focusedBorder: UnderlineInputBorder(
-          borderSide: BorderSide(color: HTColors.grey060, width: 2)),
+    inputDecorationTheme: InputDecorationTheme(
+      filled: true,
+      fillColor: HTColors.grey010,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      enabledBorder: OutlineInputBorder(
+        borderSide: const BorderSide(color: HTColors.grey010, width: 1),
+        borderRadius: HTBorderRadius.circular10,
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderSide: const BorderSide(color: HTColors.grey030, width: 1),
+        borderRadius: HTBorderRadius.circular10,
+      ),
+      errorBorder: OutlineInputBorder(
+        borderSide: const BorderSide(color: HTColors.red, width: 1),
+        borderRadius: HTBorderRadius.circular10,
+      ),
     ),
     useMaterial3: true,
     fontFamily: 'Pretendard',

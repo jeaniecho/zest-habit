@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:habit_app/blocs/app_bloc.dart';
 import 'package:habit_app/blocs/task/task_detail_bloc.dart';
+import 'package:habit_app/blocs/task/task_edit_bloc.dart';
 import 'package:habit_app/models/task_model.dart';
 import 'package:habit_app/pages/task/task_edit_page.dart';
 import 'package:habit_app/styles/colors.dart';
@@ -80,9 +81,24 @@ class TaskEditButton extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        context
-            .push(TaskEditPage.routeName, extra: taskDetailBloc.taskObjValue)
-            .then((task) {
+        showModalBottomSheet(
+            context: context,
+            isScrollControlled: true,
+            enableDrag: false,
+            builder: (context) {
+              return Provider(
+                  create: (context) => TaskEditBloc(
+                      appBloc: context.read<AppBloc>(),
+                      task: taskDetailBloc.taskObjValue),
+                  dispose: (context, value) => value.dispose(),
+                  child: Provider(
+                      create: (context) => TaskEditBloc(
+                            appBloc: context.read<AppBloc>(),
+                            task: taskDetailBloc.taskObjValue,
+                          ),
+                      dispose: (context, value) => value.dispose(),
+                      child: const TaskEditWidget()));
+            }).then((task) {
           if (task != null && task.runtimeType == Task) {
             taskDetailBloc.setTaskObj(task as Task);
           }

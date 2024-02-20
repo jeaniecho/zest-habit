@@ -94,6 +94,7 @@ class HTSpacers {
   static const height4 = SizedBox(height: 4);
   static const height6 = SizedBox(height: 6);
   static const height8 = SizedBox(height: 8);
+  static const height10 = SizedBox(height: 10);
   static const height12 = SizedBox(height: 12);
   static const height16 = SizedBox(height: 16);
   static const height20 = SizedBox(height: 20);
@@ -154,8 +155,12 @@ class HTBorderRadius {
       BorderRadius.vertical(bottom: Radius.zero, top: Radius.circular(16));
   static const top20 =
       BorderRadius.vertical(bottom: Radius.zero, top: Radius.circular(20));
+  static const top24 =
+      BorderRadius.vertical(bottom: Radius.zero, top: Radius.circular(24));
   static const top32 =
       BorderRadius.vertical(bottom: Radius.zero, top: Radius.circular(32));
+  static const top40 =
+      BorderRadius.vertical(bottom: Radius.zero, top: Radius.circular(40));
   static const left4 =
       BorderRadius.horizontal(right: Radius.zero, left: Radius.circular(4));
   static const left8 =

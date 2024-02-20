@@ -5,73 +5,168 @@ import 'package:habit_app/styles/colors.dart';
 import 'package:habit_app/styles/tokens.dart';
 import 'package:habit_app/styles/typos.dart';
 import 'package:habit_app/utils/functions.dart';
-import 'package:habit_app/widgets/ht_appbar.dart';
 import 'package:habit_app/widgets/ht_text.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
 
-class TaskAddPage extends StatelessWidget {
-  const TaskAddPage({super.key});
-
-  static const routeName = '/task-add';
+class TaskAddWidget extends StatelessWidget {
+  const TaskAddWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
     TaskAddBloc taskAddBloc = context.read<TaskAddBloc>();
 
-    return Scaffold(
-      appBar: const HTAppbar(
-        showClose: true,
-        title: 'Add Task',
-        centerTitle: false,
+    double mainHeight = MediaQuery.sizeOf(context).height * 0.92;
+
+    return SizedBox(
+      height: mainHeight + 12,
+      child: Column(
+        children: [
+          Container(
+            height: 12,
+            width: MediaQuery.sizeOf(context).width * 0.9,
+            decoration: const BoxDecoration(
+              color: HTColors.white50,
+              borderRadius: HTBorderRadius.top40,
+            ),
+          ),
+          Container(
+            height: mainHeight,
+            decoration: const BoxDecoration(
+              color: HTColors.white,
+              borderRadius: HTBorderRadius.top24,
+            ),
+            child: const TaskAddBody(),
+          ),
+        ],
       ),
-      body: SingleChildScrollView(
-        padding: HTEdgeInsets.h24v16,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            TextField(
-              controller: taskAddBloc.titleController,
-              onTapOutside: (event) => FocusScope.of(context).unfocus(),
-              style: HTTypoToken.subtitleSmall.textStyle.copyWith(height: 1.25),
-              decoration: const InputDecoration(
-                  labelText: 'Title',
-                  hintText: 'Title',
-                  floatingLabelBehavior: FloatingLabelBehavior.always),
+    );
+  }
+}
+
+class TaskAddBody extends StatelessWidget {
+  const TaskAddBody({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    TaskAddBloc taskAddBloc = context.read<TaskAddBloc>();
+
+    return Column(
+      children: [
+        HTSpacers.height8,
+        const TaskAddClose(),
+        Expanded(
+          child: SingleChildScrollView(
+            padding: HTEdgeInsets.h24v16,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                InkWell(
+                  onTap: () {},
+                  child: Container(
+                    padding: HTEdgeInsets.all8,
+                    decoration: BoxDecoration(
+                      color: HTColors.grey010,
+                      borderRadius: HTBorderRadius.circular10,
+                    ),
+                    child: const Icon(
+                      Icons.emoji_emotions_rounded,
+                      color: HTColors.grey030,
+                      size: 32,
+                    ),
+                  ),
+                ),
+                HTSpacers.height8,
+                Stack(
+                  children: [
+                    TextField(
+                      controller: taskAddBloc.titleController,
+                      onChanged: (value) => taskAddBloc.setTitle(value),
+                      onTapOutside: (event) => FocusScope.of(context).unfocus(),
+                      style: HTTypoToken.headlineSmall.textStyle,
+                      maxLength: 30,
+                      decoration: const InputDecoration(counterText: ''),
+                    ),
+                    Positioned.fill(
+                      right: 16,
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: StreamBuilder<String>(
+                            stream: taskAddBloc.title,
+                            builder: (context, snapshot) {
+                              String title = snapshot.data ?? '';
+
+                              return HTText(
+                                '${title.length}/30',
+                                typoToken: HTTypoToken.captionMedium,
+                                color: HTColors.grey040,
+                              );
+                            }),
+                      ),
+                    ),
+                  ],
+                ),
+                HTSpacers.height10,
+                TextField(
+                  controller: taskAddBloc.goalController,
+                  onTapOutside: (event) => FocusScope.of(context).unfocus(),
+                  style:
+                      HTTypoToken.subtitleSmall.textStyle.copyWith(height: 1),
+                  decoration: const InputDecoration(
+                      labelText: 'Goal',
+                      hintText: 'Goal',
+                      floatingLabelBehavior: FloatingLabelBehavior.always),
+                ),
+                HTSpacers.height24,
+                const TaskAddRepeatAt(),
+                HTSpacers.height24,
+                const TaskAddFrom(),
+                HTSpacers.height24,
+                const TaskAddUntil(),
+                HTSpacers.height48,
+                ElevatedButton(
+                    onPressed: () {
+                      taskAddBloc.addTask();
+                      context.pop();
+                    },
+                    child: const Text('Add Task')),
+                HTSpacers.width48,
+              ],
             ),
-            TextField(
-              controller: taskAddBloc.emojiController,
-              onTapOutside: (event) => FocusScope.of(context).unfocus(),
-              style: HTTypoToken.subtitleSmall.textStyle.copyWith(height: 1.25),
-              decoration: const InputDecoration(
-                  labelText: 'Emoji',
-                  hintText: 'Emoji',
-                  floatingLabelBehavior: FloatingLabelBehavior.always),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class TaskAddClose extends StatelessWidget {
+  const TaskAddClose({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.centerRight,
+      child: SizedBox(
+        height: 56,
+        child: GestureDetector(
+          onTap: () {
+            context.pop();
+          },
+          child: Container(
+            width: 28,
+            height: 28,
+            margin: HTEdgeInsets.horizontal16,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: HTColors.grey040,
             ),
-            TextField(
-              controller: taskAddBloc.goalController,
-              onTapOutside: (event) => FocusScope.of(context).unfocus(),
-              style: HTTypoToken.subtitleSmall.textStyle.copyWith(height: 1.25),
-              decoration: const InputDecoration(
-                  labelText: 'Goal',
-                  hintText: 'Goal',
-                  floatingLabelBehavior: FloatingLabelBehavior.always),
+            child: const Icon(
+              Icons.close_rounded,
+              color: HTColors.white,
             ),
-            HTSpacers.height24,
-            const TaskAddRepeatAt(),
-            HTSpacers.height24,
-            const TaskAddFrom(),
-            HTSpacers.height24,
-            const TaskAddUntil(),
-            HTSpacers.height48,
-            ElevatedButton(
-                onPressed: () {
-                  taskAddBloc.addTask();
-                  context.pop();
-                },
-                child: const Text('Add Task')),
-          ],
+          ),
         ),
       ),
     );

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:go_router/go_router.dart';
 import 'package:habit_app/blocs/app_bloc.dart';
+import 'package:habit_app/blocs/task/task_add_bloc.dart';
 import 'package:habit_app/pages/base/daily_page.dart';
 import 'package:habit_app/pages/base/timer_page.dart';
 import 'package:habit_app/pages/drawer/licenses_page.dart';
@@ -72,7 +73,20 @@ class BasePage extends StatelessWidget {
                     GestureDetector(
                         behavior: HitTestBehavior.opaque,
                         onTap: () {
-                          context.push(TaskAddPage.routeName);
+                          showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              enableDrag: false,
+                              backgroundColor: HTColors.clear,
+                              useSafeArea: true,
+                              builder: (context) {
+                                return Provider(
+                                    create: (context) => TaskAddBloc(
+                                        appBloc: context.read<AppBloc>()),
+                                    dispose: (context, value) =>
+                                        value.dispose(),
+                                    child: const TaskAddWidget());
+                              });
                         },
                         child: SizedBox(
                           width: 88,

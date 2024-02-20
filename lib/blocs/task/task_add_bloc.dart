@@ -8,6 +8,10 @@ import 'package:rxdart/rxdart.dart';
 class TaskAddBloc extends Disposable {
   final AppBloc appBloc;
 
+  final BehaviorSubject<String> _title = BehaviorSubject.seeded('');
+  Stream<String> get title => _title.stream;
+  Function(String) get setTitle => _title.add;
+
   final BehaviorSubject<List<int>> _repeatAt = BehaviorSubject.seeded([]);
   Stream<List<int>> get repeatAt => _repeatAt.stream;
   Function(List<int>) get setRepeatAt => _repeatAt.add;
