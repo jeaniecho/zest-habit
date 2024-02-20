@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:habit_app/blocs/task/task_add_bloc.dart';
+import 'package:habit_app/pages/base/daily_page.dart';
+import 'package:habit_app/pages/task/task_detail_page.dart';
 import 'package:habit_app/styles/colors.dart';
 import 'package:habit_app/styles/effects.dart';
 import 'package:habit_app/styles/tokens.dart';
@@ -270,7 +272,7 @@ class TaskAddClose extends StatelessWidget {
         height: 56,
         child: GestureDetector(
           onTap: () {
-            context.pop();
+            Navigator.pop(context);
           },
           child: Container(
             width: 28,
@@ -713,7 +715,10 @@ class TaskAddSubmit extends StatelessWidget {
                 onPressed: canSubmit
                     ? () {
                         taskAddBloc.addTask();
-                        context.pop();
+
+                        context.push(TaskDetailPage.routeName,
+                            extra: taskAddBloc.getNewTask());
+                        Navigator.pop(context);
                       }
                     : null,
                 child: const Row(

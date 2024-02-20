@@ -72,8 +72,8 @@ class TaskAddBloc extends Disposable {
     _repeatAt.add(rep);
   }
 
-  addTask() {
-    appBloc.addTask(Task(
+  Task getNewTask() {
+    return Task(
       from: _from.value,
       emoji: _emoji.value,
       title: _title.value,
@@ -81,7 +81,11 @@ class TaskAddBloc extends Disposable {
       goal: _goal.value,
       desc: '',
       until: _until.value,
-    ));
+    );
+  }
+
+  addTask() {
+    appBloc.addTask(getNewTask());
   }
 
   toggleOpenEmoji() {
