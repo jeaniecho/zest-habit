@@ -84,18 +84,39 @@ class TaskAddBody extends StatelessWidget {
                 const TaskAddGoal(),
                 HTSpacers.height24,
                 const TaskAddRepeatAt(),
-                HTSpacers.height24,
                 const TaskAddFrom(),
-                HTSpacers.height24,
                 const TaskAddUntil(),
                 HTSpacers.height48,
-                ElevatedButton(
-                    onPressed: () {
-                      taskAddBloc.addTask();
-                      context.pop();
-                    },
-                    child: const Text('Add Task')),
-                HTSpacers.width48,
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          padding: HTEdgeInsets.vertical16,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: HTBorderRadius.circular10)),
+                      onPressed: () {
+                        taskAddBloc.addTask();
+                        context.pop();
+                      },
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.check_rounded,
+                            color: HTColors.white,
+                            size: 24,
+                          ),
+                          HTSpacers.width4,
+                          HTText(
+                            'Done',
+                            typoToken: HTTypoToken.subtitleXLarge,
+                            color: HTColors.white,
+                            height: 1.25,
+                          ),
+                        ],
+                      )),
+                ),
+                HTSpacers.height48,
               ],
             ),
           ),
@@ -137,45 +158,60 @@ class TaskAddClose extends StatelessWidget {
   }
 }
 
-class TaskAddTitle extends StatelessWidget {
+class TaskAddTitle extends StatefulWidget {
   const TaskAddTitle({super.key});
+
+  @override
+  State<TaskAddTitle> createState() => _TaskAddTitleState();
+}
+
+class _TaskAddTitleState extends State<TaskAddTitle> {
+  bool hasFocus = false;
 
   @override
   Widget build(BuildContext context) {
     TaskAddBloc taskAddBloc = context.read<TaskAddBloc>();
 
-    return Stack(
-      children: [
-        TextField(
-          onChanged: (value) => taskAddBloc.setTitle(value),
-          onTapOutside: (event) => FocusScope.of(context).unfocus(),
-          style: HTTypoToken.headlineSmall.textStyle,
-          maxLength: 30,
-          decoration: const InputDecoration(
-            counterText: '',
-            suffix: SizedBox(
-              width: 48,
+    return Focus(
+      child: Stack(
+        children: [
+          TextField(
+            onChanged: (value) => taskAddBloc.setTitle(value),
+            onTapOutside: (event) => FocusScope.of(context).unfocus(),
+            style: HTTypoToken.headlineSmall.textStyle,
+            maxLength: 30,
+            decoration: const InputDecoration(
+              counterText: '',
+              suffix: SizedBox(
+                width: 48,
+              ),
             ),
           ),
-        ),
-        Positioned.fill(
-          right: 16,
-          child: Align(
-            alignment: Alignment.centerRight,
-            child: StreamBuilder<String>(
-                stream: taskAddBloc.title,
-                builder: (context, snapshot) {
-                  String title = snapshot.data ?? '';
+          if (hasFocus)
+            Positioned.fill(
+              right: 16,
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: StreamBuilder<String>(
+                    stream: taskAddBloc.title,
+                    builder: (context, snapshot) {
+                      String title = snapshot.data ?? '';
 
-                  return HTText(
-                    '${title.length}/30',
-                    typoToken: HTTypoToken.captionMedium,
-                    color: HTColors.grey040,
-                  );
-                }),
-          ),
-        ),
-      ],
+                      return HTText(
+                        '${title.length}/30',
+                        typoToken: HTTypoToken.captionMedium,
+                        color: HTColors.grey040,
+                      );
+                    }),
+              ),
+            ),
+        ],
+      ),
+      onFocusChange: (value) {
+        setState(() {
+          hasFocus = value;
+        });
+      },
     );
   }
 }
@@ -190,7 +226,7 @@ class TaskAddGoal extends StatelessWidget {
     return TextField(
       onChanged: (value) => taskAddBloc.setGoal(value),
       onTapOutside: (event) => FocusScope.of(context).unfocus(),
-      style: HTTypoToken.subtitleSmall.textStyle,
+      style: HTTypoToken.bodyMedium.textStyle.copyWith(color: HTColors.black),
       maxLines: 7,
       minLines: 7,
     );
@@ -209,12 +245,12 @@ class TaskAddRepeatAt extends StatelessWidget {
         builder: (context, snapshot) {
           bool isRepeat = snapshot.data ?? false;
 
-          return Padding(
-            padding: HTEdgeInsets.vertical16,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Row(
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              SizedBox(
+                height: 56,
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const HTText(
@@ -229,130 +265,127 @@ class TaskAddRepeatAt extends StatelessWidget {
                         onChanged: (value) => taskAddBloc.setIsRepeat(value)),
                   ],
                 ),
-                if (isRepeat)
-                  StreamBuilder<List>(
-                      stream: Rx.combineLatestList(
-                          [taskAddBloc.repeatAt, taskAddBloc.repeatType]),
-                      builder: (context, snapshot) {
-                        List<int> repeatAt = snapshot.data?[0] ?? [];
-                        RepeatType repeatType =
-                            snapshot.data?[1] ?? RepeatType.everyday;
+              ),
+              if (isRepeat)
+                StreamBuilder<List>(
+                    stream: Rx.combineLatestList(
+                        [taskAddBloc.repeatAt, taskAddBloc.repeatType]),
+                    builder: (context, snapshot) {
+                      List<int> repeatAt = snapshot.data?[0] ?? [];
+                      RepeatType repeatType =
+                          snapshot.data?[1] ?? RepeatType.everyday;
 
-                        return Container(
-                          margin: HTEdgeInsets.top16,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 8),
-                          decoration: BoxDecoration(
-                            color: HTColors.grey010,
-                            borderRadius: HTBorderRadius.circular10,
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              HTRadio(
-                                  value: RepeatType.everyday,
-                                  groupValue: repeatType,
-                                  text: 'Everyday',
-                                  padding: HTEdgeInsets.vertical8,
-                                  onTap: () {
-                                    taskAddBloc
-                                        .setRepeatType(RepeatType.everyday);
-                                    taskAddBloc
-                                        .setRepeatAt([1, 2, 3, 4, 5, 6, 7]);
-                                  }),
-                              HTRadio(
-                                  value: RepeatType.weekday,
-                                  groupValue: repeatType,
-                                  text: 'Weekday',
-                                  padding: HTEdgeInsets.vertical8,
-                                  onTap: () {
-                                    taskAddBloc
-                                        .setRepeatType(RepeatType.weekday);
-                                    taskAddBloc.setRepeatAt([1, 2, 3, 4, 5]);
-                                  }),
-                              HTRadio(
-                                  value: RepeatType.weekend,
-                                  groupValue: repeatType,
-                                  text: 'Weekend',
-                                  padding: HTEdgeInsets.vertical8,
-                                  onTap: () {
-                                    taskAddBloc
-                                        .setRepeatType(RepeatType.weekend);
-                                    taskAddBloc.setRepeatAt([6, 7]);
-                                  }),
-                              HTRadio(
-                                  value: RepeatType.custom,
-                                  groupValue: repeatType,
-                                  text: 'Custom',
-                                  padding: HTEdgeInsets.vertical8,
-                                  onTap: () {
-                                    taskAddBloc
-                                        .setRepeatType(RepeatType.custom);
-                                    taskAddBloc.setRepeatAt([1, 3, 5]);
-                                  }),
-                              if (repeatType == RepeatType.custom)
-                                LayoutBuilder(builder: (context, constraints) {
-                                  double size =
-                                      (constraints.maxWidth - (8 * 6)) / 7;
-
-                                  return Container(
-                                    height: size,
-                                    margin: HTEdgeInsets.vertical8,
-                                    child: ListView.separated(
-                                        shrinkWrap: true,
-                                        physics:
-                                            const NeverScrollableScrollPhysics(),
-                                        scrollDirection: Axis.horizontal,
-                                        padding: HTEdgeInsets.zero,
-                                        itemBuilder: (context, index) {
-                                          bool isSelected =
-                                              repeatAt.contains(dayNums[index]);
-
-                                          return GestureDetector(
-                                            onTap: () {
-                                              taskAddBloc.toggleRepeatAt(
-                                                  dayNums[index]);
-                                            },
-                                            child: Container(
-                                              width: size,
-                                              height: size,
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                border: Border.all(
-                                                    color: isSelected
-                                                        ? HTColors.black
-                                                        : HTColors.grey020,
-                                                    width: 1),
-                                                color: isSelected
-                                                    ? HTColors.black
-                                                    : HTColors.clear,
-                                              ),
-                                              child: Center(
-                                                  child: HTText(
-                                                days[index],
-                                                typoToken: isSelected
-                                                    ? HTTypoToken.subtitleXSmall
-                                                    : HTTypoToken.bodyXSmall,
-                                                color: isSelected
-                                                    ? HTColors.white
-                                                    : HTColors.grey060,
-                                                height: 1.25,
-                                              )),
-                                            ),
-                                          );
-                                        },
-                                        separatorBuilder: (context, index) {
-                                          return HTSpacers.width8;
-                                        },
-                                        itemCount: 7),
-                                  );
+                      return Container(
+                        margin: HTEdgeInsets.bottom16,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: HTColors.grey010,
+                          borderRadius: HTBorderRadius.circular10,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            HTRadio(
+                                value: RepeatType.everyday,
+                                groupValue: repeatType,
+                                text: 'Everyday',
+                                padding: HTEdgeInsets.vertical8,
+                                onTap: () {
+                                  taskAddBloc
+                                      .setRepeatType(RepeatType.everyday);
+                                  taskAddBloc
+                                      .setRepeatAt([1, 2, 3, 4, 5, 6, 7]);
                                 }),
-                            ],
-                          ),
-                        );
-                      }),
-              ],
-            ),
+                            HTRadio(
+                                value: RepeatType.weekday,
+                                groupValue: repeatType,
+                                text: 'Weekday',
+                                padding: HTEdgeInsets.vertical8,
+                                onTap: () {
+                                  taskAddBloc.setRepeatType(RepeatType.weekday);
+                                  taskAddBloc.setRepeatAt([1, 2, 3, 4, 5]);
+                                }),
+                            HTRadio(
+                                value: RepeatType.weekend,
+                                groupValue: repeatType,
+                                text: 'Weekend',
+                                padding: HTEdgeInsets.vertical8,
+                                onTap: () {
+                                  taskAddBloc.setRepeatType(RepeatType.weekend);
+                                  taskAddBloc.setRepeatAt([6, 7]);
+                                }),
+                            HTRadio(
+                                value: RepeatType.custom,
+                                groupValue: repeatType,
+                                text: 'Custom',
+                                padding: HTEdgeInsets.vertical8,
+                                onTap: () {
+                                  taskAddBloc.setRepeatType(RepeatType.custom);
+                                  taskAddBloc.setRepeatAt([1, 3, 5]);
+                                }),
+                            if (repeatType == RepeatType.custom)
+                              LayoutBuilder(builder: (context, constraints) {
+                                double size =
+                                    (constraints.maxWidth - (8 * 6)) / 7;
+
+                                return Container(
+                                  height: size,
+                                  margin: HTEdgeInsets.vertical8,
+                                  child: ListView.separated(
+                                      shrinkWrap: true,
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      scrollDirection: Axis.horizontal,
+                                      padding: HTEdgeInsets.zero,
+                                      itemBuilder: (context, index) {
+                                        bool isSelected =
+                                            repeatAt.contains(dayNums[index]);
+
+                                        return GestureDetector(
+                                          onTap: () {
+                                            taskAddBloc
+                                                .toggleRepeatAt(dayNums[index]);
+                                          },
+                                          child: Container(
+                                            width: size,
+                                            height: size,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              border: Border.all(
+                                                  color: isSelected
+                                                      ? HTColors.black
+                                                      : HTColors.grey020,
+                                                  width: 1),
+                                              color: isSelected
+                                                  ? HTColors.black
+                                                  : HTColors.clear,
+                                            ),
+                                            child: Center(
+                                                child: HTText(
+                                              days[index],
+                                              typoToken: isSelected
+                                                  ? HTTypoToken.subtitleXSmall
+                                                  : HTTypoToken.bodyXSmall,
+                                              color: isSelected
+                                                  ? HTColors.white
+                                                  : HTColors.grey060,
+                                              height: 1.25,
+                                            )),
+                                          ),
+                                        );
+                                      },
+                                      separatorBuilder: (context, index) {
+                                        return HTSpacers.width8;
+                                      },
+                                      itemCount: 7),
+                                );
+                              }),
+                          ],
+                        ),
+                      );
+                    }),
+            ],
           );
         });
   }
@@ -365,43 +398,56 @@ class TaskAddFrom extends StatelessWidget {
   Widget build(BuildContext context) {
     TaskAddBloc taskAddBloc = context.read<TaskAddBloc>();
 
-    return StreamBuilder<DateTime>(
-        stream: taskAddBloc.from,
-        builder: (context, snapshot) {
-          DateTime from = snapshot.data ?? DateTime.now().getDate();
+    return SizedBox(
+      height: 56,
+      child: StreamBuilder<DateTime>(
+          stream: taskAddBloc.from,
+          builder: (context, snapshot) {
+            DateTime from = snapshot.data ?? DateTime.now().getDate();
 
-          return Row(
-            children: [
-              const SizedBox(
-                width: 40,
-                child: HTText(
-                  'From',
-                  typoToken: HTTypoToken.subtitleMedium,
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const HTText(
+                  'Start Date',
+                  typoToken: HTTypoToken.headlineSmall,
                   color: HTColors.black,
+                  height: 1,
                 ),
-              ),
-              HTSpacers.width12,
-              GestureDetector(
-                onTap: () {
-                  showDatePicker(
-                          context: context,
-                          firstDate: DateTime(2020),
-                          lastDate: DateTime(2101))
-                      .then((value) {
-                    if (value != null) {
-                      taskAddBloc.setFrom(value);
-                    }
-                  });
-                },
-                child: HTText(
-                  DateFormat('yyyy.MM.dd (E)').format(from),
-                  typoToken: HTTypoToken.subtitleMedium,
-                  color: HTColors.grey040,
-                ),
-              )
-            ],
-          );
-        });
+                GestureDetector(
+                  onTap: () {
+                    showDatePicker(
+                            context: context,
+                            firstDate: DateTime(2020),
+                            lastDate: DateTime(2101))
+                        .then((value) {
+                      if (value != null) {
+                        taskAddBloc.setFrom(value);
+                      }
+                    });
+                  },
+                  child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: HTColors.grey010,
+                      borderRadius: HTBorderRadius.circular10,
+                    ),
+                    child: HTText(
+                      DateFormat('yyyy.MM.dd').format(from) +
+                          (isSameDay(from, DateTime.now())
+                              ? ' (Today)'
+                              : DateFormat(' (E)').format(from)),
+                      typoToken: HTTypoToken.bodyMedium,
+                      color: HTColors.black,
+                      height: 1.2,
+                    ),
+                  ),
+                )
+              ],
+            );
+          }),
+    );
   }
 }
 
@@ -414,45 +460,57 @@ class TaskAddUntil extends StatelessWidget {
 
     DateTime today = DateTime.now().getDate();
 
-    return StreamBuilder<List>(
-        stream: Rx.combineLatestList([taskAddBloc.until, taskAddBloc.from]),
-        builder: (context, snapshot) {
-          DateTime? until = snapshot.data?[0];
-          DateTime from = snapshot.data?[1] ?? today;
+    return SizedBox(
+      height: 56,
+      child: StreamBuilder<List>(
+          stream: Rx.combineLatestList([taskAddBloc.until, taskAddBloc.from]),
+          builder: (context, snapshot) {
+            DateTime? until = snapshot.data?[0];
+            DateTime from = snapshot.data?[1] ?? today;
 
-          if (until != null && until.isBefore(from)) {
-            taskAddBloc.setUntil(null);
-          }
+            if (until != null && until.isBefore(from)) {
+              taskAddBloc.setUntil(null);
+            }
 
-          return Row(
-            children: [
-              const SizedBox(
-                width: 40,
-                child: HTText(
-                  'Until',
-                  typoToken: HTTypoToken.subtitleMedium,
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const HTText(
+                  'End Date',
+                  typoToken: HTTypoToken.headlineSmall,
                   color: HTColors.black,
+                  height: 1,
                 ),
-              ),
-              HTSpacers.width12,
-              GestureDetector(
-                onTap: () {
-                  showDatePicker(
-                          context: context,
-                          firstDate: from,
-                          lastDate: DateTime(2101))
-                      .then((value) => taskAddBloc.setUntil(value));
-                },
-                child: HTText(
-                  until != null
-                      ? DateFormat('yyyy.MM.dd (E)').format(until)
-                      : 'Forever',
-                  typoToken: HTTypoToken.subtitleMedium,
-                  color: HTColors.grey040,
-                ),
-              )
-            ],
-          );
-        });
+                CupertinoSwitch(
+                    value: until != null,
+                    activeColor: HTColors.black,
+                    onChanged: (value) {
+                      if (value) {
+                        taskAddBloc.setUntil(
+                            today.getDate().add(const Duration(days: 7)));
+                      } else {
+                        taskAddBloc.setUntil(null);
+                      }
+                    }),
+                // GestureDetector(
+                //   onTap: () {
+                //     showDatePicker(
+                //             context: context,
+                //             firstDate: from,
+                //             lastDate: DateTime(2101))
+                //         .then((value) => taskAddBloc.setUntil(value));
+                //   },
+                //   child: HTText(
+                //     until != null
+                //         ? DateFormat('yyyy.MM.dd (E)').format(until)
+                //         : 'Forever',
+                //     typoToken: HTTypoToken.subtitleMedium,
+                //     color: HTColors.grey040,
+                //   ),
+                // )
+              ],
+            );
+          }),
+    );
   }
 }

@@ -97,7 +97,8 @@ class HTColors {
 
   // Black
   static const materialBlack = Colors.black;
-  static const black = Color(0xFF181E2D);
+  // static const black = Color(0xFF181E2D);
+  static const black = Colors.black;
   static const black30 = Color(0x4C181E2D);
   static const black50 = Color(0x7F181E2D);
   static const black80 = Color(0xCC181E2D);
