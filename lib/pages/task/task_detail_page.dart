@@ -83,8 +83,8 @@ class TaskEditButton extends StatelessWidget {
       onTap: () {
         showModalBottomSheet(
             context: context,
+            useRootNavigator: true,
             isScrollControlled: true,
-            enableDrag: false,
             builder: (context) {
               return Provider(
                   create: (context) => TaskEditBloc(
@@ -564,7 +564,7 @@ class TaskMonthlyCalendar extends StatelessWidget {
           int daysCount = daysInMonth(currMonth.year, currMonth.month);
 
           // fill first week
-          int fillDays = 7 - ((7 + firstDayOfWeek) - currMonth.weekday);
+          int fillDays = 7 - ((7 + 1) - currMonth.weekday);
           daysCount += fillDays;
 
           List<int> repeatAt = task.repeatAt ?? [];
@@ -601,8 +601,7 @@ class TaskMonthlyCalendar extends StatelessWidget {
                       if (currWeekday == 0) {
                         currWeekday = 7;
                       }
-                      bool repeatToday =
-                          repeatAt.contains(currWeekday + firstDayOfWeek);
+                      bool repeatToday = repeatAt.contains(currWeekday);
 
                       // fill days
                       if (index < fillDays) {

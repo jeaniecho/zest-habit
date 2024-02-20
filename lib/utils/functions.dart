@@ -1,7 +1,7 @@
 import 'package:habit_app/utils/enums.dart';
 import 'package:intl/intl.dart';
 
-const int firstDayOfWeek = 0; // 0: Sunday, 1: Monday
+const int firstDayOfWeek = 1; // 0: Sunday, 1: Monday
 
 const List daysList = [
   ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],

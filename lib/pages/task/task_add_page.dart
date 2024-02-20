@@ -28,7 +28,7 @@ class TaskAddWidget extends StatelessWidget {
         children: [
           Container(
             height: 12,
-            width: MediaQuery.sizeOf(context).width * 0.9,
+            width: MediaQuery.sizeOf(context).width - 48,
             decoration: const BoxDecoration(
               color: HTColors.white50,
               borderRadius: HTBorderRadius.top40,

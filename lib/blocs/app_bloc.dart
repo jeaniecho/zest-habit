@@ -37,21 +37,21 @@ class AppBloc {
     await isar.writeTxn(() async {
       await isar.tasks.put(task);
     });
-    getTasks();
+    await getTasks();
   }
 
   deleteTask(Task task) async {
     await isar.writeTxn(() async {
       await isar.tasks.delete(task.id);
     });
-    getTasks();
+    await getTasks();
   }
 
   updateTask(Task task) async {
     await isar.writeTxn(() async {
       await isar.tasks.put(task);
     });
-    getTasks();
+    await getTasks();
   }
 
   toggleTask(Task task, DateTime date) async {
@@ -66,7 +66,7 @@ class AppBloc {
     await isar.writeTxn(() async {
       await isar.tasks.put(task);
     });
-    getTasks();
+    await getTasks();
   }
 
   bool isDone(Task task, DateTime date) {
