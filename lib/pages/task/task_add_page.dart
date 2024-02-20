@@ -108,35 +108,7 @@ class TaskAddBody extends StatelessWidget {
                     const TaskAddFrom(),
                     const TaskAddUntil(),
                     HTSpacers.height48,
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              padding: HTEdgeInsets.vertical16,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: HTBorderRadius.circular10)),
-                          onPressed: () {
-                            taskAddBloc.addTask();
-                            context.pop();
-                          },
-                          child: const Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.check_rounded,
-                                color: HTColors.white,
-                                size: 24,
-                              ),
-                              HTSpacers.width4,
-                              HTText(
-                                'Done',
-                                typoToken: HTTypoToken.subtitleXLarge,
-                                color: HTColors.white,
-                                height: 1.25,
-                              ),
-                            ],
-                          )),
-                    ),
+                    const TaskAddSubmit(),
                     HTSpacers.height48,
                   ],
                 ),
@@ -214,9 +186,12 @@ class TaskAddEmojiPicker extends StatelessWidget {
                           child: SizedBox(
                             width: emojiSize,
                             height: emojiSize,
-                            child: Text(
-                              allEmojis[index],
-                              style: TextStyle(fontSize: emojiSize * 0.8),
+                            child: Center(
+                              child: Text(
+                                allEmojis[index],
+                                style: TextStyle(
+                                    fontSize: emojiSize * 0.8, height: 1),
+                              ),
                             ),
                           ),
                         );
@@ -324,7 +299,7 @@ class TaskAddTitle extends StatefulWidget {
 }
 
 class _TaskAddTitleState extends State<TaskAddTitle> {
-  bool hasFocus = false;
+  bool _hasFocus = false;
 
   @override
   Widget build(BuildContext context) {
@@ -345,7 +320,7 @@ class _TaskAddTitleState extends State<TaskAddTitle> {
               ),
             ),
           ),
-          if (hasFocus)
+          if (_hasFocus)
             Positioned.fill(
               right: 16,
               child: Align(
@@ -367,26 +342,63 @@ class _TaskAddTitleState extends State<TaskAddTitle> {
       ),
       onFocusChange: (value) {
         setState(() {
-          hasFocus = value;
+          _hasFocus = value;
         });
       },
     );
   }
 }
 
-class TaskAddGoal extends StatelessWidget {
+class TaskAddGoal extends StatefulWidget {
   const TaskAddGoal({super.key});
+
+  @override
+  State<TaskAddGoal> createState() => _TaskAddGoalState();
+}
+
+class _TaskAddGoalState extends State<TaskAddGoal> {
+  bool _hasFocus = false;
 
   @override
   Widget build(BuildContext context) {
     TaskAddBloc taskAddBloc = context.read<TaskAddBloc>();
 
-    return TextField(
-      onChanged: (value) => taskAddBloc.setGoal(value),
-      onTapOutside: (event) => FocusScope.of(context).unfocus(),
-      style: HTTypoToken.bodyMedium.textStyle.copyWith(color: HTColors.black),
-      maxLines: 7,
-      minLines: 7,
+    return Focus(
+      child: Stack(
+        children: [
+          TextField(
+            onChanged: (value) => taskAddBloc.setGoal(value),
+            onTapOutside: (event) => FocusScope.of(context).unfocus(),
+            style: HTTypoToken.bodyMedium.textStyle
+                .copyWith(color: HTColors.black),
+            maxLength: 100,
+            maxLines: 7,
+            minLines: 7,
+            decoration: const InputDecoration(counterText: ''),
+          ),
+          if (_hasFocus)
+            Positioned(
+              bottom: 12,
+              right: 12,
+              child: StreamBuilder<String>(
+                  stream: taskAddBloc.goal,
+                  builder: (context, snapshot) {
+                    String goal = snapshot.data ?? '';
+
+                    return HTText(
+                      '${goal.length}/100',
+                      typoToken: HTTypoToken.captionMedium,
+                      color: HTColors.grey040,
+                    );
+                  }),
+            )
+        ],
+      ),
+      onFocusChange: (value) {
+        setState(() {
+          _hasFocus = value;
+        });
+      },
     );
   }
 }
@@ -670,5 +682,58 @@ class TaskAddUntil extends StatelessWidget {
             );
           }),
     );
+  }
+}
+
+class TaskAddSubmit extends StatelessWidget {
+  const TaskAddSubmit({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    TaskAddBloc taskAddBloc = context.read<TaskAddBloc>();
+
+    return StreamBuilder<List>(
+        stream: Rx.combineLatestList(
+            [taskAddBloc.emoji, taskAddBloc.title, taskAddBloc.goal]),
+        builder: (context, snapshot) {
+          String emoji = snapshot.data?[0] ?? '';
+          String title = snapshot.data?[1] ?? '';
+          String goal = snapshot.data?[2] ?? '';
+
+          bool canSubmit =
+              emoji.isNotEmpty && title.isNotEmpty && goal.isNotEmpty;
+
+          return SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    padding: HTEdgeInsets.vertical16,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: HTBorderRadius.circular10)),
+                onPressed: canSubmit
+                    ? () {
+                        taskAddBloc.addTask();
+                        context.pop();
+                      }
+                    : null,
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.check_rounded,
+                      color: HTColors.white,
+                      size: 24,
+                    ),
+                    HTSpacers.width4,
+                    HTText(
+                      'Done',
+                      typoToken: HTTypoToken.subtitleXLarge,
+                      color: HTColors.white,
+                      height: 1.25,
+                    ),
+                  ],
+                )),
+          );
+        });
   }
 }
