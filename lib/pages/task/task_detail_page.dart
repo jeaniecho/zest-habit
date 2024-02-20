@@ -604,7 +604,8 @@ class TaskMonthlyCalendar extends StatelessWidget {
                       if (currWeekday == 0) {
                         currWeekday = 7;
                       }
-                      bool repeatToday = repeatAt.contains(currWeekday);
+                      bool repeatToday =
+                          repeatAt.contains(currWeekday + firstDayOfWeek);
 
                       // fill days
                       if (index < fillDays) {
@@ -621,7 +622,7 @@ class TaskMonthlyCalendar extends StatelessWidget {
                       // no repeat || before
                       if (!repeatToday ||
                           DateTime(currMonth.year, currMonth.month,
-                                  index - fillDays + 1)
+                                  index - fillDays + firstDayOfWeek)
                               .isBefore(task.from)) {
                         return Container(
                           width: 28,
@@ -633,7 +634,8 @@ class TaskMonthlyCalendar extends StatelessWidget {
                         );
                       }
 
-                      bool isDone = doneDates.contains(index - fillDays);
+                      bool isDone =
+                          doneDates.contains(index - fillDays + firstDayOfWeek);
 
                       bool inSameMonth = isSameMonth(currMonth, now);
                       bool isLater = (inSameMonth && index >= todayDateInCal) ||

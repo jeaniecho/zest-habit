@@ -62,7 +62,7 @@ class TaskAddBloc extends Disposable {
   }
 
   toggleRepeatAt(int day) {
-    List<int> rep = _repeatAt.value;
+    List<int> rep = _repeatAt.value.toList();
     if (rep.contains(day)) {
       rep.remove(day);
     } else {
