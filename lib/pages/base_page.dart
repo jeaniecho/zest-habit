@@ -76,7 +76,6 @@ class BasePage extends StatelessWidget {
                           showModalBottomSheet(
                               context: context,
                               isScrollControlled: true,
-                              enableDrag: false,
                               backgroundColor: HTColors.clear,
                               useSafeArea: true,
                               builder: (context) {

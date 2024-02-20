@@ -28,13 +28,15 @@ class ModePage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   HTRadio(
-                    isSelected: true,
+                    value: true,
+                    groupValue: true,
                     text: 'Light (Default)',
                     onTap: () {},
                   ),
                   HTSpacers.height8,
                   HTRadio(
-                    isSelected: false,
+                    value: false,
+                    groupValue: true,
                     text: 'Dark',
                     onTap: () {},
                   ),

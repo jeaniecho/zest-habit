@@ -5,7 +5,6 @@ import 'package:habit_app/styles/colors.dart';
 import 'package:habit_app/styles/tokens.dart';
 import 'package:habit_app/styles/typos.dart';
 import 'package:habit_app/utils/functions.dart';
-import 'package:habit_app/widgets/ht_appbar.dart';
 import 'package:habit_app/widgets/ht_text.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';

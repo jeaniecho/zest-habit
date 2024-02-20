@@ -1,3 +1,4 @@
+import 'package:habit_app/utils/enums.dart';
 import 'package:intl/intl.dart';
 
 const int firstDayOfWeek = 0; // 0: Sunday, 1: Monday
@@ -94,6 +95,21 @@ List<int> sortRepeatAt(List<int> repeatAt) {
   }
 
   return copy;
+}
+
+RepeatType getRepeatType(List<int> repeatAt) {
+  if (repeatAt.length == 7) {
+    return RepeatType.everyday;
+  } else if (repeatAt.length == 5 &&
+      !(repeatAt.contains(6) || repeatAt.contains(7))) {
+    return RepeatType.weekday;
+  } else if (repeatAt.length == 2 &&
+      repeatAt.contains(6) &&
+      repeatAt.contains(7)) {
+    return RepeatType.weekend;
+  } else {
+    return RepeatType.custom;
+  }
 }
 
 String stndrd(int num) {

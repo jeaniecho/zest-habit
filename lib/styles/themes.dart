@@ -50,6 +50,19 @@ class HTThemes {
         borderRadius: HTBorderRadius.circular10,
       ),
     ),
+    radioTheme: RadioThemeData(
+      visualDensity: const VisualDensity(
+        horizontal: VisualDensity.minimumDensity,
+        vertical: VisualDensity.minimumDensity,
+      ),
+      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      fillColor:
+          MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
+        return (states.contains(MaterialState.selected))
+            ? HTColors.black
+            : HTColors.grey040;
+      }),
+    ),
     useMaterial3: true,
     fontFamily: 'Pretendard',
   );
