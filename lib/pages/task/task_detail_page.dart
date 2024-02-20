@@ -279,7 +279,7 @@ class TaskWeeklyTitle extends StatelessWidget {
                     DateTime currDate = snapshot.data ?? today;
                     int weekNum = weekOfMonth(currDate);
 
-                    bool isBefore = currDate.isBefore(task.from);
+                    bool isBefore = !currDate.isAfter(task.from);
                     bool isLater = !mostRecentWeekday(currDate)
                         .isBefore(mostRecentWeekday(today));
 
@@ -633,7 +633,7 @@ class TaskMonthlyCalendar extends StatelessWidget {
                         );
                       }
 
-                      bool isDone = doneDates.contains(index - fillDays + 1);
+                      bool isDone = doneDates.contains(index - fillDays);
 
                       bool inSameMonth = isSameMonth(currMonth, now);
                       bool isLater = (inSameMonth && index >= todayDateInCal) ||
