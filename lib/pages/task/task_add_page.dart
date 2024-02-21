@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:habit_app/blocs/task/task_add_bloc.dart';
-import 'package:habit_app/pages/base/daily_page.dart';
 import 'package:habit_app/pages/task/task_detail_page.dart';
 import 'package:habit_app/styles/colors.dart';
 import 'package:habit_app/styles/effects.dart';
@@ -156,7 +155,7 @@ class TaskAddEmojiPicker extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               SizedBox(
-                height: MediaQuery.sizeOf(context).height * 0.6,
+                height: MediaQuery.sizeOf(context).height * 0.7,
                 child: LayoutBuilder(builder: (context, constraints) {
                   int crossAxisCount = 7;
                   double spacing = 12;
@@ -184,6 +183,7 @@ class TaskAddEmojiPicker extends StatelessWidget {
                         return GestureDetector(
                           onTap: () {
                             taskAddBloc.setEmoji(allEmojis[index]);
+                            taskAddBloc.setOpenEmoji(false);
                           },
                           child: SizedBox(
                             width: emojiSize,
@@ -202,56 +202,6 @@ class TaskAddEmojiPicker extends StatelessWidget {
                     ),
                   );
                 }),
-              ),
-              Padding(
-                padding: HTEdgeInsets.all16,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    TextButton(
-                      onPressed: () {
-                        taskAddBloc.setOpenEmoji(false);
-                      },
-                      child: const HTText(
-                        'Close',
-                        typoToken: HTTypoToken.subtitleLarge,
-                        color: HTColors.grey040,
-                      ),
-                    ),
-                    StreamBuilder<String>(
-                        stream: taskAddBloc.emoji,
-                        builder: (context, snapshot) {
-                          String emoji = snapshot.data ?? '';
-
-                          return ElevatedButton(
-                            onPressed: emoji.isEmpty
-                                ? null
-                                : () {
-                                    taskAddBloc.setOpenEmoji(false);
-                                  },
-                            style: ElevatedButton.styleFrom(
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: HTBorderRadius.circularMax)),
-                            child: const Row(
-                              children: [
-                                Icon(
-                                  Icons.check_rounded,
-                                  color: HTColors.white,
-                                  size: 22,
-                                ),
-                                HTSpacers.width4,
-                                HTText(
-                                  'Done',
-                                  typoToken: HTTypoToken.subtitleXLarge,
-                                  color: HTColors.white,
-                                  height: 1.1,
-                                ),
-                              ],
-                            ),
-                          );
-                        }),
-                  ],
-                ),
               ),
             ],
           ),
@@ -313,7 +263,7 @@ class _TaskAddTitleState extends State<TaskAddTitle> {
           TextField(
             onChanged: (value) => taskAddBloc.setTitle(value),
             onTapOutside: (event) => FocusScope.of(context).unfocus(),
-            style: HTTypoToken.headlineSmall.textStyle,
+            style: HTTypoToken.subtitleXLarge.textStyle,
             maxLength: 30,
             decoration: const InputDecoration(
               counterText: '',
@@ -427,7 +377,7 @@ class TaskAddRepeatAt extends StatelessWidget {
                   children: [
                     const HTText(
                       'Repeat',
-                      typoToken: HTTypoToken.headlineSmall,
+                      typoToken: HTTypoToken.subtitleXLarge,
                       color: HTColors.black,
                       height: 1,
                     ),
@@ -582,7 +532,7 @@ class TaskAddFrom extends StatelessWidget {
               children: [
                 const HTText(
                   'Start Date',
-                  typoToken: HTTypoToken.headlineSmall,
+                  typoToken: HTTypoToken.subtitleXLarge,
                   color: HTColors.black,
                   height: 1,
                 ),
@@ -649,7 +599,7 @@ class TaskAddUntil extends StatelessWidget {
               children: [
                 const HTText(
                   'End Date',
-                  typoToken: HTTypoToken.headlineSmall,
+                  typoToken: HTTypoToken.subtitleXLarge,
                   color: HTColors.black,
                   height: 1,
                 ),
