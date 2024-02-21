@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:habit_app/blocs/app_bloc.dart';
 import 'package:habit_app/blocs/base/daily_bloc.dart';
@@ -301,6 +302,7 @@ class TaskBox extends StatelessWidget {
 
                   return GestureDetector(
                     onTap: () {
+                      HapticFeedback.lightImpact();
                       appBloc.toggleTask(task, date);
                     },
                     child: Column(
