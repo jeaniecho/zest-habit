@@ -4,6 +4,7 @@ import 'package:habit_app/router.dart';
 import 'package:habit_app/styles/colors.dart';
 import 'package:habit_app/styles/tokens.dart';
 import 'package:habit_app/styles/typos.dart';
+import 'package:habit_app/utils/enums.dart';
 import 'package:habit_app/utils/functions.dart';
 import 'package:habit_app/widgets/ht_text.dart';
 import 'package:provider/provider.dart';
@@ -89,7 +90,8 @@ class TimerWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     TimerBloc timerBloc = context.read<TimerBloc>();
 
-    double timerSize = MediaQuery.sizeOf(context).width * 0.75;
+    double timerSize = 320;
+    // double timerSize = MediaQuery.sizeOf(context).width * 0.75;
 
     return Center(
       child: SingleChildScrollView(
@@ -224,6 +226,7 @@ class EditableTimerText extends StatelessWidget {
       enabledBorder: InputBorder.none,
       focusedBorder: InputBorder.none,
       fillColor: HTColors.clear,
+      counterText: '',
     );
 
     TextEditingController hourController =
@@ -251,13 +254,13 @@ class EditableTimerText extends StatelessWidget {
             bool isFocused = snapshot.data ?? false;
 
             return Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              padding: HTEdgeInsets.horizontal16,
               decoration: BoxDecoration(
                 color: isFocused ? HTColors.grey010 : HTColors.white,
                 borderRadius: HTBorderRadius.circular10,
               ),
               child: SizedBox(
-                height: boxWidth * 0.35,
+                height: 72,
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -270,10 +273,12 @@ class EditableTimerText extends StatelessWidget {
                             FocusScope.of(context).unfocus();
                           },
                           onChanged: (value) {
-                            String checked = timerBloc.timeStringCheck(value);
+                            String checked =
+                                timerBloc.timeStringCheck(value, TimeType.hour);
                             timerBloc.setHour(checked);
                           },
                           keyboardType: TextInputType.number,
+                          maxLength: 2,
                           style: timerStyle,
                           textAlign: TextAlign.center,
                           decoration: timerDecoration,
@@ -294,10 +299,12 @@ class EditableTimerText extends StatelessWidget {
                             FocusScope.of(context).unfocus();
                           },
                           onChanged: (value) {
-                            String checked = timerBloc.timeStringCheck(value);
+                            String checked = timerBloc.timeStringCheck(
+                                value, TimeType.minute);
                             timerBloc.setMinute(checked);
                           },
                           keyboardType: TextInputType.number,
+                          maxLength: 2,
                           textAlign: TextAlign.center,
                           style: timerStyle,
                           decoration: timerDecoration,
@@ -318,10 +325,12 @@ class EditableTimerText extends StatelessWidget {
                             FocusScope.of(context).unfocus();
                           },
                           onChanged: (value) {
-                            String checked = timerBloc.timeStringCheck(value);
+                            String checked = timerBloc.timeStringCheck(
+                                value, TimeType.second);
                             timerBloc.setSecond(checked);
                           },
                           keyboardType: TextInputType.number,
+                          maxLength: 2,
                           style: timerStyle,
                           textAlign: TextAlign.center,
                           decoration: timerDecoration,

@@ -7,3 +7,9 @@ enum RepeatType {
   final String text;
   const RepeatType(this.text);
 }
+
+enum TimeType {
+  hour,
+  minute,
+  second,
+}

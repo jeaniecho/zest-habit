@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:ffi';
 
 import 'package:habit_app/utils/disposable.dart';
+import 'package:habit_app/utils/enums.dart';
 import 'package:quiver/async.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -54,6 +56,12 @@ class TimerBloc extends Disposable {
   }
 
   startTimer() {
+    _start.add(Duration(
+      hours: int.tryParse(hourValue) ?? 0,
+      minutes: int.tryParse(minuteValue) ?? 0,
+      seconds: int.tryParse(secondValue) ?? 0,
+    ));
+
     timer = CountdownTimer(_start.value, const Duration(seconds: 1));
 
     _curr.add(_start.value);
@@ -79,13 +87,21 @@ class TimerBloc extends Disposable {
     }
   }
 
-  String timeStringCheck(String string) {
+  String timeStringCheck(String string, TimeType timeType) {
+    if (timeType != TimeType.hour) {
+      int parsed = int.tryParse(string) ?? 0;
+
+      if (parsed >= 60) {
+        string = '59';
+      }
+    }
+
     if (string.isEmpty) {
       return '00';
     } else if (string.length == 1) {
       return '0$string';
     } else if (string.length > 2) {
-      return string.substring(0, 2);
+      return '99';
     } else {
       return string;
     }
