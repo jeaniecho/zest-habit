@@ -4,18 +4,36 @@ import 'package:habit_app/utils/disposable.dart';
 import 'package:quiver/async.dart';
 import 'package:rxdart/rxdart.dart';
 
+const int defaultMin = 25;
+
 class TimerBloc extends Disposable {
   final BehaviorSubject<Duration> _start =
-      BehaviorSubject.seeded(const Duration(minutes: 25));
+      BehaviorSubject.seeded(const Duration(minutes: defaultMin));
   Stream<Duration> get start => _start.stream;
   Function(Duration) get setStart => _start.add;
 
   final BehaviorSubject<Duration> _curr =
-      BehaviorSubject.seeded(const Duration(minutes: 0));
+      BehaviorSubject.seeded(const Duration(minutes: 25));
   Stream<Duration> get curr => _curr.stream;
 
   final BehaviorSubject<bool> _isTimerOn = BehaviorSubject.seeded(false);
   Stream<bool> get isTimerOn => _isTimerOn.stream;
+
+  final BehaviorSubject<bool> _isFocused = BehaviorSubject.seeded(false);
+  Stream<bool> get isFocused => _isFocused.stream;
+  Function(bool) get setIsFocused => _isFocused.add;
+
+  final BehaviorSubject<String> _hour = BehaviorSubject.seeded('00');
+  Stream<String> get hour => _hour.stream;
+  Function(String) get setHour => _hour.add;
+
+  final BehaviorSubject<String> _minute = BehaviorSubject.seeded('$defaultMin');
+  Stream<String> get minute => _minute.stream;
+  Function(String) get setMinute => _minute.add;
+
+  final BehaviorSubject<String> _second = BehaviorSubject.seeded('00');
+  Stream<String> get second => _second.stream;
+  Function(String) get setSecond => _second.add;
 
   late CountdownTimer timer;
 
@@ -25,6 +43,11 @@ class TimerBloc extends Disposable {
   void dispose() {
     _start.close();
     _curr.close();
+    _isTimerOn.close();
+    _isFocused.close();
+    _hour.close();
+    _minute.close();
+    _second.close();
   }
 
   startTimer() {
