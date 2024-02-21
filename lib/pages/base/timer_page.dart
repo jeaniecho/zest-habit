@@ -166,112 +166,8 @@ class TimerWidget extends StatelessWidget {
                                           height: 1,
                                         );
                                       } else {
-                                        double boxWidth = timerSize * 0.65;
-                                        double stringWidth = boxWidth / 3;
-
-                                        TextStyle timerStyle = TextStyle(
-                                            fontFamily: 'Pretendard',
-                                            fontSize: stringWidth * 0.65,
-                                            fontWeight: FontWeight.w500,
-                                            height: 1.25);
-                                        InputDecoration timerDecoration =
-                                            const InputDecoration(
-                                          contentPadding: HTEdgeInsets.zero,
-                                          enabledBorder: InputBorder.none,
-                                          focusedBorder: InputBorder.none,
-                                        );
-
-                                        return StreamBuilder<List>(
-                                            stream: Rx.combineLatestList([
-                                              timerBloc.hour,
-                                              timerBloc.minute,
-                                              timerBloc.second
-                                            ]),
-                                            builder: (context, snapshot) {
-                                              TextEditingController
-                                                  hourController =
-                                                  TextEditingController(
-                                                      text: snapshot.data?[0] ??
-                                                          '00');
-                                              TextEditingController
-                                                  minuteController =
-                                                  TextEditingController(
-                                                      text: snapshot.data?[1] ??
-                                                          '00');
-                                              TextEditingController
-                                                  secondController =
-                                                  TextEditingController(
-                                                      text: snapshot.data?[2] ??
-                                                          '00');
-
-                                              return Container(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 12,
-                                                        vertical: 8),
-                                                decoration: BoxDecoration(
-                                                  color: HTColors.grey010,
-                                                  borderRadius:
-                                                      HTBorderRadius.circular10,
-                                                ),
-                                                child: SizedBox(
-                                                  height: boxWidth * 0.35,
-                                                  child: Row(
-                                                    mainAxisSize:
-                                                        MainAxisSize.min,
-                                                    children: [
-                                                      SizedBox(
-                                                          width: stringWidth,
-                                                          child: TextField(
-                                                            controller:
-                                                                hourController,
-                                                            style: timerStyle,
-                                                            textAlign: TextAlign
-                                                                .center,
-                                                            decoration:
-                                                                timerDecoration,
-                                                          )),
-                                                      const HTText(
-                                                        ':',
-                                                        typoToken: HTTypoToken
-                                                            .bodyHuge,
-                                                        color: HTColors.black,
-                                                        height: 1,
-                                                      ),
-                                                      SizedBox(
-                                                          width: stringWidth,
-                                                          child: TextField(
-                                                            controller:
-                                                                minuteController,
-                                                            textAlign: TextAlign
-                                                                .center,
-                                                            style: timerStyle,
-                                                            decoration:
-                                                                timerDecoration,
-                                                          )),
-                                                      const HTText(
-                                                        ':',
-                                                        typoToken: HTTypoToken
-                                                            .bodyHuge,
-                                                        color: HTColors.black,
-                                                        height: 1,
-                                                      ),
-                                                      SizedBox(
-                                                          width: stringWidth,
-                                                          child: TextField(
-                                                            controller:
-                                                                secondController,
-                                                            style: timerStyle,
-                                                            textAlign: TextAlign
-                                                                .center,
-                                                            decoration:
-                                                                timerDecoration,
-                                                          )),
-                                                    ],
-                                                  ),
-                                                ),
-                                              );
-                                            });
+                                        return EditableTimerText(
+                                            timerSize: timerSize);
                                       }
                                     }),
                               ),
@@ -306,6 +202,136 @@ class TimerWidget extends StatelessWidget {
               }),
         ),
       ),
+    );
+  }
+}
+
+class EditableTimerText extends StatelessWidget {
+  final double timerSize;
+  const EditableTimerText({super.key, required this.timerSize});
+
+  @override
+  Widget build(BuildContext context) {
+    TimerBloc timerBloc = context.read<TimerBloc>();
+
+    double boxWidth = timerSize * 0.65;
+    // double stringWidth = boxWidth / 3;
+    double stringWidth = 64;
+
+    TextStyle timerStyle = HTTypoToken.bodyHuge.textStyle;
+    InputDecoration timerDecoration = const InputDecoration(
+      contentPadding: HTEdgeInsets.zero,
+      enabledBorder: InputBorder.none,
+      focusedBorder: InputBorder.none,
+      fillColor: HTColors.clear,
+    );
+
+    TextEditingController hourController =
+        TextEditingController(text: timerBloc.hourValue);
+    hourController.selection = TextSelection.fromPosition(
+        TextPosition(offset: hourController.text.length));
+
+    TextEditingController minuteController =
+        TextEditingController(text: timerBloc.minuteValue);
+    minuteController.selection = TextSelection.fromPosition(
+        TextPosition(offset: minuteController.text.length));
+
+    TextEditingController secondController =
+        TextEditingController(text: timerBloc.secondValue);
+    secondController.selection = TextSelection.fromPosition(
+        TextPosition(offset: secondController.text.length));
+
+    return Focus(
+      onFocusChange: (value) {
+        timerBloc.setIsFocused(value);
+      },
+      child: StreamBuilder<bool>(
+          stream: timerBloc.isFocused,
+          builder: (context, snapshot) {
+            bool isFocused = snapshot.data ?? false;
+
+            return Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                color: isFocused ? HTColors.grey010 : HTColors.white,
+                borderRadius: HTBorderRadius.circular10,
+              ),
+              child: SizedBox(
+                height: boxWidth * 0.35,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(
+                        width: stringWidth,
+                        child: TextField(
+                          controller: hourController,
+                          onTapOutside: (event) {
+                            hourController.text = timerBloc.hourValue;
+                            FocusScope.of(context).unfocus();
+                          },
+                          onChanged: (value) {
+                            String checked = timerBloc.timeStringCheck(value);
+                            timerBloc.setHour(checked);
+                          },
+                          keyboardType: TextInputType.number,
+                          style: timerStyle,
+                          textAlign: TextAlign.center,
+                          decoration: timerDecoration,
+                          cursorHeight: 40,
+                        )),
+                    const HTText(
+                      ':',
+                      typoToken: HTTypoToken.bodyHuge,
+                      color: HTColors.black,
+                      height: 1,
+                    ),
+                    SizedBox(
+                        width: stringWidth,
+                        child: TextField(
+                          controller: minuteController,
+                          onTapOutside: (event) {
+                            minuteController.text = timerBloc.minuteValue;
+                            FocusScope.of(context).unfocus();
+                          },
+                          onChanged: (value) {
+                            String checked = timerBloc.timeStringCheck(value);
+                            timerBloc.setMinute(checked);
+                          },
+                          keyboardType: TextInputType.number,
+                          textAlign: TextAlign.center,
+                          style: timerStyle,
+                          decoration: timerDecoration,
+                          cursorHeight: 40,
+                        )),
+                    const HTText(
+                      ':',
+                      typoToken: HTTypoToken.bodyHuge,
+                      color: HTColors.black,
+                      height: 1,
+                    ),
+                    SizedBox(
+                        width: stringWidth,
+                        child: TextField(
+                          controller: secondController,
+                          onTapOutside: (event) {
+                            secondController.text = timerBloc.secondValue;
+                            FocusScope.of(context).unfocus();
+                          },
+                          onChanged: (value) {
+                            String checked = timerBloc.timeStringCheck(value);
+                            timerBloc.setSecond(checked);
+                          },
+                          keyboardType: TextInputType.number,
+                          style: timerStyle,
+                          textAlign: TextAlign.center,
+                          decoration: timerDecoration,
+                          cursorHeight: 40,
+                        )),
+                  ],
+                ),
+              ),
+            );
+          }),
     );
   }
 }

@@ -26,14 +26,17 @@ class TimerBloc extends Disposable {
   final BehaviorSubject<String> _hour = BehaviorSubject.seeded('00');
   Stream<String> get hour => _hour.stream;
   Function(String) get setHour => _hour.add;
+  String get hourValue => _hour.value;
 
   final BehaviorSubject<String> _minute = BehaviorSubject.seeded('$defaultMin');
   Stream<String> get minute => _minute.stream;
   Function(String) get setMinute => _minute.add;
+  String get minuteValue => _minute.value;
 
   final BehaviorSubject<String> _second = BehaviorSubject.seeded('00');
   Stream<String> get second => _second.stream;
   Function(String) get setSecond => _second.add;
+  String get secondValue => _second.value;
 
   late CountdownTimer timer;
 
@@ -73,6 +76,18 @@ class TimerBloc extends Disposable {
     if (timer.isRunning) {
       timer.listen(null).cancel();
       timer.cancel();
+    }
+  }
+
+  String timeStringCheck(String string) {
+    if (string.isEmpty) {
+      return '00';
+    } else if (string.length == 1) {
+      return '0$string';
+    } else if (string.length > 2) {
+      return string.substring(0, 2);
+    } else {
+      return string;
     }
   }
 }
