@@ -148,6 +148,6 @@ extension DurationExtension on Duration {
     String twoDigitMinutes = twoDigits(inMinutes.remainder(60).abs());
     String twoDigitSeconds = twoDigits(inSeconds.remainder(60).abs());
 
-    return "$negativeSign${twoDigitsHours == '00' ? '' : '$twoDigitsHours:'}$twoDigitMinutes:$twoDigitSeconds";
+    return "$negativeSign$twoDigitsHours:$twoDigitMinutes:$twoDigitSeconds";
   }
 }

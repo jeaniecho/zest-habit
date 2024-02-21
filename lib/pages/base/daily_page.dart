@@ -314,7 +314,7 @@ class TaskBox extends StatelessWidget {
                         HTText(
                           'Done',
                           typoToken: HTTypoToken.headlineXXSmall,
-                          color: isDone ? HTColors.black : HTColors.grey030,
+                          color: isDone ? HTColors.black : HTColors.grey050,
                         )
                       ],
                     ),

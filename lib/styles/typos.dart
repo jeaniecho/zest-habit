@@ -31,6 +31,10 @@ enum HTTypoToken {
 
   subtitleXXSmall(12, 1.4, 0, FontWeight.w700),
 
+  bodyHuge(48, 1.4, 0, FontWeight.w500),
+
+  bodyXXXLarge(36, 1.4, 0, FontWeight.w500),
+
   bodyXXLarge(24, 1.5, 0, FontWeight.w500),
 
   bodyXLarge(20, 1.5, 0, FontWeight.w500),
