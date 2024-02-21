@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:habit_app/blocs/app_bloc.dart';
@@ -16,6 +17,7 @@ import 'package:habit_app/widgets/ht_text.dart';
 import 'package:habit_app/widgets/ht_toggle.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:pull_down_button/pull_down_button.dart';
 import 'package:quiver/time.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -26,9 +28,41 @@ class TaskDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      appBar: HTAppbar(),
-      body: TaskDetailBody(),
+    return Scaffold(
+      appBar: HTAppbar(
+        actions: [
+          PullDownButton(
+            itemBuilder: (context) => [
+              PullDownMenuItem(
+                title: 'Edit',
+                icon: CupertinoIcons.pen,
+                onTap: () {},
+              ),
+              PullDownMenuItem(
+                title: 'Delete',
+                icon: CupertinoIcons.trash,
+                isDestructive: true,
+                onTap: () {},
+              ),
+            ],
+            buttonBuilder: (context, showMenu) => SizedBox(
+              width: 24,
+              height: 24,
+              child: CupertinoButton(
+                minSize: 24,
+                padding: HTEdgeInsets.zero,
+                onPressed: showMenu,
+                child: const Icon(
+                  Icons.more_horiz,
+                  color: HTColors.black,
+                  size: 24,
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
+      body: const TaskDetailBody(),
     );
   }
 }
