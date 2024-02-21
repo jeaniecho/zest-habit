@@ -5,10 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:habit_app/blocs/app_bloc.dart';
 import 'package:habit_app/blocs/task/task_detail_bloc.dart';
-import 'package:habit_app/blocs/task/task_edit_bloc.dart';
 import 'package:habit_app/models/task_model.dart';
-import 'package:habit_app/pages/task/task_edit_page.dart';
 import 'package:habit_app/styles/colors.dart';
+import 'package:habit_app/styles/effects.dart';
 import 'package:habit_app/styles/tokens.dart';
 import 'package:habit_app/styles/typos.dart';
 import 'package:habit_app/utils/functions.dart';
@@ -16,8 +15,8 @@ import 'package:habit_app/widgets/ht_appbar.dart';
 import 'package:habit_app/widgets/ht_text.dart';
 import 'package:habit_app/widgets/ht_toggle.dart';
 import 'package:intl/intl.dart';
+import 'package:kr_pull_down_button/pull_down_button.dart';
 import 'package:provider/provider.dart';
-import 'package:pull_down_button/pull_down_button.dart';
 import 'package:quiver/time.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -28,42 +27,59 @@ class TaskDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       appBar: HTAppbar(
         actions: [
-          PullDownButton(
-            itemBuilder: (context) => [
+          TaskDetailAction(),
+          HTSpacers.width16,
+        ],
+      ),
+      body: TaskDetailBody(),
+    );
+  }
+}
+
+class TaskDetailAction extends StatelessWidget {
+  const TaskDetailAction({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    AppBloc appBloc = context.read<AppBloc>();
+    TaskDetailBloc taskDetailBloc = context.read<TaskDetailBloc>();
+
+    return PullDownButton(
+        offset: const Offset(4, 4),
+        routeTheme: const PullDownMenuRouteTheme().copyWith(
+            backgroundColor: HTColors.white,
+            beginShadow: HTBoxShadows.dropDownBlur12SpreadOpacity8,
+            endShadow: HTBoxShadows.dropDownBlur24Spread4pacity8),
+        itemBuilder: (context) => [
               PullDownMenuItem(
                 title: 'Edit',
                 icon: CupertinoIcons.pen,
-                onTap: () {},
+                onTap: () {
+                  taskDetailBloc.showEditModal(context);
+                },
               ),
+              const PullDownMenuDivider(),
               PullDownMenuItem(
                 title: 'Delete',
                 icon: CupertinoIcons.trash,
                 isDestructive: true,
-                onTap: () {},
+                onTap: () {
+                  context.pop();
+                  appBloc.deleteTask(taskDetailBloc.taskObjValue);
+                },
               ),
             ],
-            buttonBuilder: (context, showMenu) => SizedBox(
-              width: 24,
-              height: 24,
-              child: CupertinoButton(
-                minSize: 24,
-                padding: HTEdgeInsets.zero,
-                onPressed: showMenu,
-                child: const Icon(
-                  Icons.more_horiz,
-                  color: HTColors.black,
-                  size: 24,
-                ),
+        buttonBuilder: (context, showMenu) => GestureDetector(
+              onTap: showMenu,
+              child: const Icon(
+                Icons.more_horiz,
+                color: HTColors.black,
+                size: 24,
               ),
-            ),
-          )
-        ],
-      ),
-      body: const TaskDetailBody(),
-    );
+            ));
   }
 }
 
@@ -72,29 +88,19 @@ class TaskDetailBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TaskDetailBloc taskDetailBloc = context.read<TaskDetailBloc>();
-
-    return SingleChildScrollView(
+    return const SingleChildScrollView(
       padding: HTEdgeInsets.vertical24,
       child: Column(
         children: [
-          const TaskDesc(),
-          const Divider(color: HTColors.grey010, thickness: 12, height: 12),
-          StreamBuilder<Task>(
-              stream: taskDetailBloc.taskObj,
-              builder: (context, snapshot) {
-                Task task = snapshot.data ?? taskDetailBloc.task;
-
-                return const Column(
-                  children: [
-                    TaskCalendar(),
-                    Divider(color: HTColors.grey010, thickness: 12, height: 12),
-                  ],
-                );
-              }),
-          const TaskDetailInfo(),
-          HTSpacers.height48,
-          const TaskDangerZone(),
+          TaskDesc(),
+          Divider(color: HTColors.grey010, thickness: 12, height: 12),
+          Column(
+            children: [
+              TaskCalendar(),
+              Divider(color: HTColors.grey010, thickness: 12, height: 12),
+            ],
+          ),
+          TaskDetailInfo(),
           HTSpacers.height48,
         ],
       ),
@@ -112,30 +118,7 @@ class TaskEditButton extends StatelessWidget {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
-        showModalBottomSheet(
-            context: context,
-            useRootNavigator: true,
-            isScrollControlled: true,
-            backgroundColor: HTColors.clear,
-            useSafeArea: true,
-            builder: (context) {
-              return Provider(
-                  create: (context) => TaskEditBloc(
-                      appBloc: context.read<AppBloc>(),
-                      task: taskDetailBloc.taskObjValue),
-                  dispose: (context, value) => value.dispose(),
-                  child: Provider(
-                      create: (context) => TaskEditBloc(
-                            appBloc: context.read<AppBloc>(),
-                            task: taskDetailBloc.taskObjValue,
-                          ),
-                      dispose: (context, value) => value.dispose(),
-                      child: const TaskEditWidget()));
-            }).then((task) {
-          if (task != null && task.runtimeType == Task) {
-            taskDetailBloc.setTaskObj(task as Task);
-          }
-        });
+        taskDetailBloc.showEditModal(context);
       },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -814,7 +797,7 @@ class TaskDetailInfo extends StatelessWidget {
                     borderRadius: HTBorderRadius.circular10,
                   ),
                   child: HTText(
-                    '\u2022  from ${DateFormat('yyyy.MM.dd').format(task.from)}',
+                    '\u2022  From ${DateFormat('yyyy.MM.dd').format(task.from)}',
                     typoToken: HTTypoToken.captionMedium,
                     color: HTColors.black,
                   ),
@@ -836,33 +819,5 @@ class TaskDetailInfo extends StatelessWidget {
             ),
           );
         });
-  }
-}
-
-class TaskDangerZone extends StatelessWidget {
-  const TaskDangerZone({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    AppBloc appBloc = context.read<AppBloc>();
-    TaskDetailBloc taskDetailBloc = context.read<TaskDetailBloc>();
-
-    return Align(
-      alignment: Alignment.centerRight,
-      child: Padding(
-        padding: HTEdgeInsets.horizontal24,
-        child: ElevatedButton(
-            onPressed: () {
-              context.pop();
-              appBloc.deleteTask(taskDetailBloc.taskObjValue);
-            },
-            child: const HTText(
-              'Delete Task',
-              typoToken: HTTypoToken.buttonTextMedium,
-              color: HTColors.white,
-              height: 1.25,
-            )),
-      ),
-    );
   }
 }

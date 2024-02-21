@@ -24,7 +24,7 @@ dependencies:
   go_router: ^13.2.0
   package_info_plus: ^5.0.1
   flutter_email_sender: ^6.0.2
-  pull_down_button: ^0.9.3
+  kr_pull_down_button: ^1.0.1
   flutter_ringtone_player: ^4.0.0+2
 
 dev_dependencies:

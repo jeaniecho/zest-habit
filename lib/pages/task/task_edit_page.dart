@@ -1,9 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:habit_app/blocs/task/task_edit_bloc.dart';
-import 'package:habit_app/pages/task/task_detail_page.dart';
-import 'package:habit_app/router.dart';
 import 'package:habit_app/styles/colors.dart';
 import 'package:habit_app/styles/effects.dart';
 import 'package:habit_app/styles/tokens.dart';
