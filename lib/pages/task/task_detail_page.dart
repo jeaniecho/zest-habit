@@ -51,16 +51,12 @@ class TaskDetailBody extends StatelessWidget {
               builder: (context, snapshot) {
                 Task task = snapshot.data ?? taskDetailBloc.task;
 
-                if (task.repeatAt != null && task.repeatAt!.isNotEmpty) {
-                  return const Column(
-                    children: [
-                      TaskCalendar(),
-                      Divider(
-                          color: HTColors.grey010, thickness: 12, height: 12),
-                    ],
-                  );
-                }
-                return const SizedBox.shrink();
+                return const Column(
+                  children: [
+                    TaskCalendar(),
+                    Divider(color: HTColors.grey010, thickness: 12, height: 12),
+                  ],
+                );
               }),
           const TaskDetailInfo(),
           HTSpacers.height48,
@@ -469,6 +465,62 @@ class TaskWeeklyCalendar extends StatelessWidget {
                   (maxWidth - (itemWidth * itemCount) - 48) / (itemCount - 1),
                   24);
 
+              if (repeatAt.isEmpty) {
+                bool isDone = doneDates.contains(
+                    firstDay.day + (dayNums.indexOf(task.from.weekday) % 7));
+                bool isLater = task.from.difference(now).inDays > 0;
+
+                return Column(
+                  children: [
+                    HTText(
+                      weekdayToText(task.from.weekday),
+                      typoToken: HTTypoToken.captionXSmall,
+                      color: HTColors.grey050,
+                    ),
+                    HTSpacers.height12,
+                    Container(
+                      width: itemWidth,
+                      height: itemWidth,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                            color: isDone ? HTColors.black : HTColors.grey010,
+                            width: 1),
+                        color: isDone
+                            ? HTColors.black
+                            : isLater
+                                ? HTColors.white
+                                : HTColors.grey010,
+                      ),
+                      child: Center(
+                          child: isDone
+                              ? const Icon(
+                                  Icons.check_rounded,
+                                  color: HTColors.white,
+                                  size: 20,
+                                )
+                              : HTText(
+                                  '${task.from.day}',
+                                  typoToken: HTTypoToken.subtitleXSmall,
+                                  color: HTColors.grey040,
+                                  height: 1.25,
+                                )),
+                    ),
+                    HTSpacers.height4,
+                    Container(
+                      width: 4,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: isSameDay(task.from, now)
+                            ? HTColors.red
+                            : HTColors.white,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  ],
+                );
+              }
+
               return ListView.separated(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
@@ -607,6 +659,32 @@ class TaskMonthlyCalendar extends StatelessWidget {
                       bool repeatToday =
                           repeatAt.contains(currWeekday + firstDayOfWeek);
 
+                      bool isDone =
+                          doneDates.contains(index - fillDays + firstDayOfWeek);
+
+                      bool inSameMonth = isSameMonth(currMonth, now);
+                      bool isLater = (inSameMonth && index >= todayDateInCal) ||
+                          (!inSameMonth &&
+                              DateTime(currMonth.year, currMonth.month)
+                                  .isAfter(DateTime(now.year, now.month)));
+
+                      if (repeatAt.isEmpty &&
+                          task.from.day - 1 + fillDays == index) {
+                        return Container(
+                          width: 28,
+                          height: 28,
+                          decoration: BoxDecoration(
+                            border: Border.all(color: HTColors.black, width: 2),
+                            color: isDone
+                                ? HTColors.black
+                                : isLater
+                                    ? HTColors.white
+                                    : HTColors.grey030,
+                            borderRadius: HTBorderRadius.circular8,
+                          ),
+                        );
+                      }
+
                       // fill days
                       if (index < fillDays) {
                         return Container(
@@ -633,15 +711,6 @@ class TaskMonthlyCalendar extends StatelessWidget {
                           ),
                         );
                       }
-
-                      bool isDone =
-                          doneDates.contains(index - fillDays + firstDayOfWeek);
-
-                      bool inSameMonth = isSameMonth(currMonth, now);
-                      bool isLater = (inSameMonth && index >= todayDateInCal) ||
-                          (!inSameMonth &&
-                              DateTime(currMonth.year, currMonth.month)
-                                  .isAfter(DateTime(now.year, now.month)));
 
                       return Container(
                         width: 28,
