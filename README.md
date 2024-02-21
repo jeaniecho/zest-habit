@@ -5,3 +5,7 @@
 flutter build ipa --release --export-method=ad-hoc
 
 flutter pub run build_runner build --delete-conflicting-outputs
+
+
+
+FlutterRingtonePlayer().playAlarm();

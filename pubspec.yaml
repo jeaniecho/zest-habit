@@ -25,6 +25,7 @@ dependencies:
   package_info_plus: ^5.0.1
   flutter_email_sender: ^6.0.2
   pull_down_button: ^0.9.3
+  flutter_ringtone_player: ^4.0.0+2
 
 dev_dependencies:
   flutter_test:
