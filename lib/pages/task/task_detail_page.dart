@@ -636,7 +636,7 @@ class TaskMonthlyCalendar extends StatelessWidget {
           int daysCount = daysInMonth(currMonth.year, currMonth.month);
 
           // fill first week
-          int fillDays = 7 - ((7 + 1) - currMonth.weekday);
+          int fillDays = 7 - ((7 + firstDayOfWeek) - currMonth.weekday);
           daysCount += fillDays;
 
           List<int> repeatAt = task.repeatAt ?? [];
@@ -676,8 +676,7 @@ class TaskMonthlyCalendar extends StatelessWidget {
                       bool repeatToday =
                           repeatAt.contains(currWeekday + firstDayOfWeek);
 
-                      bool isDone =
-                          doneDates.contains(index - fillDays + firstDayOfWeek);
+                      bool isDone = doneDates.contains(index - fillDays + 1);
 
                       bool inSameMonth = isSameMonth(currMonth, now);
                       bool isLater = (inSameMonth && index >= todayDateInCal) ||
