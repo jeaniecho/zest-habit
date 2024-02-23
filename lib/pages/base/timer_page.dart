@@ -10,6 +10,9 @@ import 'package:habit_app/widgets/ht_text.dart';
 import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
 
+double timeStringWidth = 60;
+double timerStringHeight = 72;
+
 class TimerPage extends StatelessWidget {
   const TimerPage({super.key});
 
@@ -161,12 +164,7 @@ class TimerWidget extends StatelessWidget {
                                       bool isTimerOn = snapshot.data ?? false;
 
                                       if (isTimerOn) {
-                                        return HTText(
-                                          curr.toShortString(),
-                                          typoToken: HTTypoToken.bodyHuge,
-                                          color: HTColors.black,
-                                          height: 1,
-                                        );
+                                        return const FixedTimerText();
                                       } else {
                                         return EditableTimerText(
                                             timerSize: timerSize);
@@ -208,6 +206,71 @@ class TimerWidget extends StatelessWidget {
   }
 }
 
+class FixedTimerText extends StatelessWidget {
+  const FixedTimerText({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    TimerBloc timerBloc = context.read<TimerBloc>();
+
+    return StreamBuilder<Duration>(
+        stream: timerBloc.curr,
+        builder: (context, snapshot) {
+          Duration curr = snapshot.data ?? const Duration(minutes: defaultMin);
+          String currString = curr.toShortString();
+          List<String> currList = currString.split(':');
+
+          return SizedBox(
+            height: timerStringHeight,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(
+                    width: timeStringWidth,
+                    child: HTText(
+                      currList[0],
+                      typoToken: HTTypoToken.bodyHuge,
+                      color: HTColors.black,
+                      height: 1.25,
+                      textAlign: TextAlign.center,
+                    )),
+                const HTText(
+                  ':',
+                  typoToken: HTTypoToken.bodyHuge,
+                  color: HTColors.black,
+                  height: 1,
+                ),
+                SizedBox(
+                    width: timeStringWidth,
+                    child: HTText(
+                      currList[1],
+                      typoToken: HTTypoToken.bodyHuge,
+                      color: HTColors.black,
+                      height: 1.25,
+                      textAlign: TextAlign.center,
+                    )),
+                const HTText(
+                  ':',
+                  typoToken: HTTypoToken.bodyHuge,
+                  color: HTColors.black,
+                  height: 1,
+                ),
+                SizedBox(
+                    width: timeStringWidth,
+                    child: HTText(
+                      currList[2],
+                      typoToken: HTTypoToken.bodyHuge,
+                      color: HTColors.black,
+                      height: 1.25,
+                      textAlign: TextAlign.center,
+                    )),
+              ],
+            ),
+          );
+        });
+  }
+}
+
 class EditableTimerText extends StatelessWidget {
   final double timerSize;
   const EditableTimerText({super.key, required this.timerSize});
@@ -216,11 +279,8 @@ class EditableTimerText extends StatelessWidget {
   Widget build(BuildContext context) {
     TimerBloc timerBloc = context.read<TimerBloc>();
 
-    double boxWidth = timerSize * 0.65;
-    // double stringWidth = boxWidth / 3;
-    double stringWidth = 64;
-
-    TextStyle timerStyle = HTTypoToken.bodyHuge.textStyle;
+    TextStyle timerStyle =
+        HTTypoToken.bodyHuge.textStyle.copyWith(height: 1.25);
     InputDecoration timerDecoration = const InputDecoration(
       contentPadding: HTEdgeInsets.zero,
       enabledBorder: InputBorder.none,
@@ -260,12 +320,12 @@ class EditableTimerText extends StatelessWidget {
                 borderRadius: HTBorderRadius.circular10,
               ),
               child: SizedBox(
-                height: 72,
+                height: timerStringHeight,
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     SizedBox(
-                        width: stringWidth,
+                        width: timeStringWidth,
                         child: TextField(
                           controller: hourController,
                           onTapOutside: (event) {
@@ -291,7 +351,7 @@ class EditableTimerText extends StatelessWidget {
                       height: 1,
                     ),
                     SizedBox(
-                        width: stringWidth,
+                        width: timeStringWidth,
                         child: TextField(
                           controller: minuteController,
                           onTapOutside: (event) {
@@ -317,7 +377,7 @@ class EditableTimerText extends StatelessWidget {
                       height: 1,
                     ),
                     SizedBox(
-                        width: stringWidth,
+                        width: timeStringWidth,
                         child: TextField(
                           controller: secondController,
                           onTapOutside: (event) {
