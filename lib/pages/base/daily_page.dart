@@ -10,6 +10,7 @@ import 'package:habit_app/styles/colors.dart';
 import 'package:habit_app/styles/tokens.dart';
 import 'package:habit_app/styles/typos.dart';
 import 'package:habit_app/utils/functions.dart';
+import 'package:habit_app/widgets/ht_scale.dart';
 import 'package:habit_app/widgets/ht_text.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -319,6 +320,7 @@ class DailyTaskList extends StatelessWidget {
                           physics: const NeverScrollableScrollPhysics(),
                           itemBuilder: (context, index) {
                             Task task = currTasks[index];
+
                             return TaskBox(task: task);
                           },
                           separatorBuilder: (context, index) {
@@ -342,7 +344,7 @@ class TaskBox extends StatelessWidget {
     AppBloc appBloc = context.read<AppBloc>();
     DailyBloc dailyBloc = context.read<DailyBloc>();
 
-    return GestureDetector(
+    return HTScale(
       onTap: () {
         context.push(TaskDetailPage.routeName, extra: task);
       },

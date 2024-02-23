@@ -40,10 +40,6 @@ class _HTScaleState extends State<HTScale> with TickerProviderStateMixin {
     return GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: () {
-          setState(() {
-            _animationController.reverse();
-          });
-
           if (widget.onTap != null) {
             widget.onTap!();
           }
@@ -55,12 +51,12 @@ class _HTScaleState extends State<HTScale> with TickerProviderStateMixin {
         },
         onTapCancel: () {
           setState(() {
-            _animationController.forward();
+            _animationController.forward(from: 0);
           });
         },
         onTapUp: (details) {
           setState(() {
-            _animationController.forward();
+            _animationController.forward(from: 0);
           });
         },
         child: Transform.scale(
