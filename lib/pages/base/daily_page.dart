@@ -78,8 +78,11 @@ class DailyDates extends StatelessWidget {
         builder: (context, snapshot) {
           int dateIndex = snapshot.data ?? 0;
 
+          double dateSize = 52;
+          double totalHeight = dateSize + 16;
+
           return Container(
-            height: 52 + 16,
+            height: totalHeight,
             decoration: const BoxDecoration(
               border: Border(
                 bottom: BorderSide(
@@ -88,87 +91,180 @@ class DailyDates extends StatelessWidget {
                 ),
               ),
             ),
-            child: ListView.separated(
-                controller: dailyBloc.dateScrollController,
-                scrollDirection: Axis.horizontal,
-                padding: HTEdgeInsets.horizontal16,
-                shrinkWrap: true,
-                itemBuilder: (context, index) {
-                  DateTime date = dailyBloc.dates[index];
-                  bool isSelected = index == dateIndex;
+            child: Stack(
+              children: [
+                ListView.separated(
+                    controller: dailyBloc.dateScrollController,
+                    scrollDirection: Axis.horizontal,
+                    padding: HTEdgeInsets.horizontal16,
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      DateTime date = dailyBloc.dates[index];
+                      bool isSelected = index == dateIndex;
 
-                  return Row(
-                    children: [
-                      if (date.day == 1)
-                        Container(
-                          width: 52,
-                          height: 52,
-                          margin: HTEdgeInsets.right12,
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: HTColors.grey010,
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              HTText(
-                                date.year.toString(),
-                                typoToken: HTTypoToken.captionXSmall,
-                                color: HTColors.grey040,
+                      return Row(
+                        children: [
+                          if (date.day == 1)
+                            Container(
+                              width: dateSize,
+                              height: dateSize,
+                              margin: HTEdgeInsets.right12,
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: HTColors.grey010,
                               ),
-                              HTText(
-                                DateFormat.MMM().format(date),
-                                typoToken: HTTypoToken.captionSmall,
-                                color: HTColors.grey060,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  HTText(
+                                    date.year.toString(),
+                                    typoToken: HTTypoToken.captionXSmall,
+                                    color: HTColors.grey040,
+                                  ),
+                                  HTText(
+                                    DateFormat.MMM().format(date),
+                                    typoToken: HTTypoToken.captionSmall,
+                                    color: HTColors.grey060,
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                        ),
-                      GestureDetector(
-                        onTap: () {
-                          dailyBloc.setDateIndex(index);
-                        },
-                        child: Container(
-                          width: 52,
-                          height: 52,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: isSameDay(DateTime.now().getDate(), date)
-                                ? Border.all(
-                                    color: isSelected
-                                        ? HTColors.black
-                                        : HTColors.grey020)
-                                : null,
-                            color: isSelected ? HTColors.black : HTColors.white,
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              HTText(
-                                weekdayToText(date.weekday),
-                                typoToken: HTTypoToken.captionXSmall,
-                                color: HTColors.grey030,
-                              ),
-                              HTSpacers.height1,
-                              HTText(
-                                date.day.toString(),
-                                typoToken: HTTypoToken.subtitleLarge,
+                            ),
+                          GestureDetector(
+                            onTap: () {
+                              dailyBloc.setDateIndex(index);
+                            },
+                            child: Container(
+                              width: dateSize,
+                              height: dateSize,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border:
+                                    isSameDay(DateTime.now().getDate(), date)
+                                        ? Border.all(
+                                            color: isSelected
+                                                ? HTColors.black
+                                                : HTColors.grey020)
+                                        : null,
                                 color: isSelected
-                                    ? HTColors.white
-                                    : HTColors.black,
-                                height: 1,
+                                    ? HTColors.black
+                                    : HTColors.white,
                               ),
-                            ],
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  HTText(
+                                    weekdayToText(date.weekday),
+                                    typoToken: HTTypoToken.captionXSmall,
+                                    color: HTColors.grey030,
+                                  ),
+                                  HTSpacers.height1,
+                                  HTText(
+                                    date.day.toString(),
+                                    typoToken: HTTypoToken.subtitleLarge,
+                                    color: isSelected
+                                        ? HTColors.white
+                                        : HTColors.black,
+                                    height: 1,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                    separatorBuilder: (context, index) {
+                      return HTSpacers.width12;
+                    },
+                    itemCount: dailyBloc.dates.length),
+                StreamBuilder<int>(
+                    stream: dailyBloc.notToday,
+                    builder: (context, snapshot) {
+                      int notToday = snapshot.data ?? 0;
+
+                      if (notToday >= 0) {
+                        return const SizedBox.shrink();
+                      }
+
+                      return Positioned(
+                        left: 0,
+                        child: Container(
+                          height: totalHeight,
+                          color: HTColors.white,
+                          child: GestureDetector(
+                            onTap: () {
+                              dailyBloc.scrollToToday();
+                            },
+                            child: const Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Padding(
+                                  padding: HTEdgeInsets.horizontal12,
+                                  child: Icon(
+                                    Icons.keyboard_double_arrow_left_rounded,
+                                    size: 24,
+                                    color: HTColors.grey040,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: HTEdgeInsets.vertical8,
+                                  child: VerticalDivider(
+                                    width: 1,
+                                    thickness: 1,
+                                    color: HTColors.grey020,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  );
-                },
-                separatorBuilder: (context, index) {
-                  return HTSpacers.width12;
-                },
-                itemCount: dailyBloc.dates.length),
+                      );
+                    }),
+                StreamBuilder<int>(
+                    stream: dailyBloc.notToday,
+                    builder: (context, snapshot) {
+                      int notToday = snapshot.data ?? 0;
+
+                      if (notToday <= 0) {
+                        return const SizedBox.shrink();
+                      }
+
+                      return Positioned(
+                        right: 0,
+                        child: Container(
+                          height: totalHeight,
+                          color: HTColors.white,
+                          child: GestureDetector(
+                            onTap: () {
+                              dailyBloc.scrollToToday();
+                            },
+                            child: const Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Padding(
+                                  padding: HTEdgeInsets.vertical8,
+                                  child: VerticalDivider(
+                                    width: 1,
+                                    thickness: 1,
+                                    color: HTColors.grey020,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: HTEdgeInsets.horizontal12,
+                                  child: Icon(
+                                    Icons.keyboard_double_arrow_right_rounded,
+                                    size: 24,
+                                    color: HTColors.grey040,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    }),
+              ],
+            ),
           );
         });
   }

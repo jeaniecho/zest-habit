@@ -6,6 +6,7 @@ import 'package:habit_app/utils/functions.dart';
 import 'package:rxdart/rxdart.dart';
 
 const int prevDates = 30;
+const double dateWidth = 52 + 12;
 
 class DailyBloc extends Disposable {
   final AppBloc appBloc;
@@ -19,17 +20,35 @@ class DailyBloc extends Disposable {
   final BehaviorSubject<List<Task>> _currTasks = BehaviorSubject.seeded([]);
   Stream<List<Task>> get currTasks => _currTasks.stream;
 
+  final BehaviorSubject<int> _notToday = BehaviorSubject.seeded(0);
+  Stream<int> get notToday => _notToday.stream;
+  Function(int) get setNotToday => _notToday.add;
+
   late final ScrollController dateScrollController;
+  late final double dateScrollOffset;
 
   DailyBloc({required this.appBloc, required this.deviceWidth}) {
     dates = getDates();
-    dateScrollController = ScrollController(
-        initialScrollOffset:
-            ((52 + 12) * (prevDates + 1) - ((deviceWidth - 84) / 2))
-                .toDouble());
+    dateScrollOffset =
+        (dateWidth * (prevDates + 1) - ((deviceWidth - 84) / 2)).toDouble();
+
+    dateScrollController =
+        ScrollController(initialScrollOffset: dateScrollOffset);
 
     appBloc.tasks.listen((tasks) {
       getCurrTasks(tasks, dates[_dateIndex.value]);
+    });
+
+    dateScrollController.addListener(() {
+      if (dateScrollController.offset <
+          dateScrollOffset - ((deviceWidth - 84) / 2)) {
+        _notToday.add(1);
+      } else if (dateScrollController.offset >
+          dateScrollOffset + ((deviceWidth - 84) / 2)) {
+        _notToday.add(-1);
+      } else {
+        _notToday.add(0);
+      }
     });
   }
 
@@ -37,6 +56,8 @@ class DailyBloc extends Disposable {
   void dispose() {
     _dateIndex.close();
     _currTasks.close();
+    _notToday.close();
+    dateScrollController.dispose();
   }
 
   List<DateTime> getDates() {
@@ -74,5 +95,10 @@ class DailyBloc extends Disposable {
 
     _currTasks.add(currTasks);
     return currTasks;
+  }
+
+  scrollToToday() {
+    dateScrollController.animateTo(dateScrollOffset,
+        duration: const Duration(milliseconds: 300), curve: Curves.ease);
   }
 }
