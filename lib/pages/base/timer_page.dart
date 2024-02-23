@@ -554,7 +554,8 @@ class TimerTaskList extends StatelessWidget {
 
     return Expanded(
       child: ListView.separated(
-          padding: HTEdgeInsets.h24v16.copyWith(top: 8),
+          padding:
+              const EdgeInsets.only(left: 24, right: 24, top: 8, bottom: 56),
           itemBuilder: (context, index) {
             Task task = tasks[index];
 
