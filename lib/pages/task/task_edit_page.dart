@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:habit_app/blocs/task/task_edit_bloc.dart';
 import 'package:habit_app/styles/colors.dart';
 import 'package:habit_app/styles/effects.dart';
@@ -9,6 +10,7 @@ import 'package:habit_app/utils/emojis.dart';
 import 'package:habit_app/utils/enums.dart';
 import 'package:habit_app/utils/functions.dart';
 import 'package:habit_app/widgets/ht_bottom_modal.dart';
+import 'package:habit_app/widgets/ht_calendar.dart';
 import 'package:habit_app/widgets/ht_radio.dart';
 import 'package:habit_app/widgets/ht_text.dart';
 import 'package:intl/intl.dart';
@@ -33,63 +35,31 @@ class TaskEditBody extends StatelessWidget {
 
     return Stack(
       children: [
-        Column(
+        const Column(
           children: [
             HTSpacers.height8,
-            const TaskEditClose(),
+            TaskEditClose(),
             Expanded(
               child: SingleChildScrollView(
                 padding: HTEdgeInsets.h24v16,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    InkWell(
-                      onTap: () {
-                        taskEditBloc.toggleOpenEmoji();
-                      },
-                      child: Container(
-                        width: 48,
-                        height: 48,
-                        decoration: BoxDecoration(
-                          color: HTColors.grey010,
-                          borderRadius: HTBorderRadius.circular10,
-                        ),
-                        child: StreamBuilder<String>(
-                            stream: taskEditBloc.emoji,
-                            builder: (context, snapshot) {
-                              String emoji = snapshot.data ?? '';
-
-                              if (emoji.isEmpty) {
-                                return const Icon(
-                                  Icons.emoji_emotions_rounded,
-                                  color: HTColors.grey030,
-                                  size: 32,
-                                );
-                              } else {
-                                return Center(
-                                    child: Text(
-                                  emoji,
-                                  style: const TextStyle(fontSize: 28),
-                                ));
-                              }
-                            }),
-                      ),
-                    ),
+                    TaskEditEmoji(),
                     HTSpacers.height8,
-                    const TaskEditTitle(),
+                    TaskEditTitle(),
                     HTSpacers.height10,
-                    const TaskEditGoal(),
+                    TaskEditGoal(),
                     HTSpacers.height24,
-                    const TaskEditRepeatAt(),
-                    const TaskEditFrom(),
-                    const TaskEditUntil(),
-                    HTSpacers.height48,
-                    const TaskEditSubmit(),
-                    HTSpacers.height48,
+                    TaskEditRepeatAt(),
+                    TaskEditFrom(),
+                    TaskEditUntil(),
+                    HTSpacers.height120,
                   ],
                 ),
               ),
             ),
+            TaskEditSubmit(),
           ],
         ),
         StreamBuilder<bool>(
@@ -104,6 +74,48 @@ class TaskEditBody extends StatelessWidget {
               }
             }),
       ],
+    );
+  }
+}
+
+class TaskEditEmoji extends StatelessWidget {
+  const TaskEditEmoji({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    TaskEditBloc taskEditBloc = context.read<TaskEditBloc>();
+
+    return InkWell(
+      onTap: () {
+        taskEditBloc.toggleOpenEmoji();
+      },
+      child: Container(
+        width: 48,
+        height: 48,
+        decoration: BoxDecoration(
+          color: HTColors.grey010,
+          borderRadius: HTBorderRadius.circular10,
+        ),
+        child: StreamBuilder<String>(
+            stream: taskEditBloc.emoji,
+            builder: (context, snapshot) {
+              String emoji = snapshot.data ?? '';
+
+              if (emoji.isEmpty) {
+                return const Icon(
+                  Icons.emoji_emotions_rounded,
+                  color: HTColors.grey030,
+                  size: 32,
+                );
+              } else {
+                return Center(
+                    child: Text(
+                  emoji,
+                  style: const TextStyle(fontSize: 28),
+                ));
+              }
+            }),
+      ),
     );
   }
 }
@@ -541,68 +553,89 @@ class TaskEditRepeatAt extends StatelessWidget {
   }
 }
 
-class TaskEditFrom extends StatelessWidget {
+class TaskEditFrom extends StatefulWidget {
   const TaskEditFrom({super.key});
+
+  @override
+  State<TaskEditFrom> createState() => _TaskEditFromState();
+}
+
+class _TaskEditFromState extends State<TaskEditFrom> {
+  bool _showCalendar = false;
 
   @override
   Widget build(BuildContext context) {
     TaskEditBloc taskEditBloc = context.read<TaskEditBloc>();
 
-    return SizedBox(
-      height: 56,
-      child: StreamBuilder<DateTime>(
-          stream: taskEditBloc.from,
-          builder: (context, snapshot) {
-            DateTime from = snapshot.data ?? DateTime.now().getDate();
+    return StreamBuilder<List>(
+        stream: Rx.combineLatestList([taskEditBloc.from, taskEditBloc.until]),
+        builder: (context, snapshot) {
+          DateTime from = snapshot.data?[0] ?? DateTime.now().getDate();
+          DateTime? until = snapshot.data?[1];
 
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const HTText(
-                  'Start Date',
-                  typoToken: HTTypoToken.headlineSmall,
-                  color: HTColors.black,
-                  height: 1,
-                ),
-                GestureDetector(
-                  onTap: () {
-                    showDatePicker(
-                            context: context,
-                            firstDate: DateTime(2020),
-                            lastDate: DateTime(2101))
-                        .then((value) {
-                      if (value != null) {
-                        taskEditBloc.setFrom(value);
-                      }
-                    });
-                  },
-                  child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: HTColors.grey010,
-                      borderRadius: HTBorderRadius.circular10,
-                    ),
-                    child: HTText(
-                      DateFormat('yyyy.MM.dd').format(from) +
-                          (htIsSameDay(from, DateTime.now())
-                              ? ' (Today)'
-                              : DateFormat(' (E)').format(from)),
-                      typoToken: HTTypoToken.bodyMedium,
+          return Column(
+            children: [
+              SizedBox(
+                height: 56,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const HTText(
+                      'Start Date',
+                      typoToken: HTTypoToken.headlineSmall,
                       color: HTColors.black,
-                      height: 1.2,
+                      height: 1,
                     ),
-                  ),
-                )
-              ],
-            );
-          }),
-    );
+                    GestureDetector(
+                      onTap: () {
+                        HapticFeedback.lightImpact();
+                        setState(() {
+                          _showCalendar = !_showCalendar;
+                        });
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: HTColors.grey010,
+                          borderRadius: HTBorderRadius.circular10,
+                        ),
+                        child: HTText(
+                          DateFormat('yyyy.MM.dd').format(from) +
+                              (htIsSameDay(from, DateTime.now())
+                                  ? ' (Today)'
+                                  : DateFormat(' (E)').format(from)),
+                          typoToken: HTTypoToken.bodyMedium,
+                          color: HTColors.black,
+                          height: 1.2,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              if (_showCalendar)
+                HTCalendar(
+                    selectedDate: from,
+                    lastDay: until,
+                    onSelected: (selectedDay) {
+                      taskEditBloc.setFrom(selectedDay.getDate());
+                    }),
+            ],
+          );
+        });
   }
 }
 
-class TaskEditUntil extends StatelessWidget {
+class TaskEditUntil extends StatefulWidget {
   const TaskEditUntil({super.key});
+
+  @override
+  State<TaskEditUntil> createState() => _TaskEditUntilState();
+}
+
+class _TaskEditUntilState extends State<TaskEditUntil> {
+  bool _showCalendar = true;
 
   @override
   Widget build(BuildContext context) {
@@ -610,58 +643,77 @@ class TaskEditUntil extends StatelessWidget {
 
     DateTime today = DateTime.now().getDate();
 
-    return SizedBox(
-      height: 56,
-      child: StreamBuilder<List>(
-          stream: Rx.combineLatestList([taskEditBloc.until, taskEditBloc.from]),
-          builder: (context, snapshot) {
-            DateTime? until = snapshot.data?[0];
-            DateTime from = snapshot.data?[1] ?? today;
+    return StreamBuilder<List>(
+        stream: Rx.combineLatestList([taskEditBloc.until, taskEditBloc.from]),
+        builder: (context, snapshot) {
+          DateTime? until = snapshot.data?[0];
+          DateTime from = snapshot.data?[1] ?? today;
 
-            if (until != null && until.isBefore(from)) {
-              taskEditBloc.setUntil(null);
-            }
+          if (until != null && until.isBefore(from)) {
+            taskEditBloc.setUntil(null);
+          }
 
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const HTText(
-                  'End Date',
-                  typoToken: HTTypoToken.headlineSmall,
-                  color: HTColors.black,
-                  height: 1,
+          return Column(
+            children: [
+              SizedBox(
+                height: 56,
+                child: Row(
+                  children: [
+                    const HTText(
+                      'End Date',
+                      typoToken: HTTypoToken.headlineSmall,
+                      color: HTColors.black,
+                      height: 1,
+                    ),
+                    const Spacer(),
+                    if (until != null)
+                      GestureDetector(
+                        onTap: () {
+                          HapticFeedback.lightImpact();
+                          setState(() {
+                            _showCalendar = !_showCalendar;
+                          });
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: HTColors.grey010,
+                            borderRadius: HTBorderRadius.circular10,
+                          ),
+                          child: HTText(
+                            DateFormat('yyyy.MM.dd').format(until),
+                            typoToken: HTTypoToken.bodyMedium,
+                            color: HTColors.black,
+                            height: 1.2,
+                          ),
+                        ),
+                      ),
+                    HTSpacers.width8,
+                    CupertinoSwitch(
+                        value: until != null,
+                        activeColor: HTColors.black,
+                        onChanged: (value) {
+                          if (value) {
+                            taskEditBloc.setUntil(
+                                today.getDate().add(const Duration(days: 7)));
+                          } else {
+                            taskEditBloc.setUntil(null);
+                          }
+                        }),
+                  ],
                 ),
-                CupertinoSwitch(
-                    value: until != null,
-                    activeColor: HTColors.black,
-                    onChanged: (value) {
-                      if (value) {
-                        taskEditBloc.setUntil(
-                            today.getDate().add(const Duration(days: 7)));
-                      } else {
-                        taskEditBloc.setUntil(null);
-                      }
+              ),
+              if (_showCalendar && until != null)
+                HTCalendar(
+                    selectedDate: until,
+                    firstDay: from,
+                    onSelected: (selectedDay) {
+                      taskEditBloc.setUntil(selectedDay.getDate());
                     }),
-                // GestureDetector(
-                //   onTap: () {
-                //     showDatePicker(
-                //             context: context,
-                //             firstDate: from,
-                //             lastDate: DateTime(2101))
-                //         .then((value) => taskEditBloc.setUntil(value));
-                //   },
-                //   child: HTText(
-                //     until != null
-                //         ? DateFormat('yyyy.MM.dd (E)').format(until)
-                //         : 'Forever',
-                //     typoToken: HTTypoToken.subtitleMedium,
-                //     color: HTColors.grey040,
-                //   ),
-                // )
-              ],
-            );
-          }),
-    );
+            ],
+          );
+        });
   }
 }
 
@@ -683,37 +735,40 @@ class TaskEditSubmit extends StatelessWidget {
           bool canSubmit =
               emoji.isNotEmpty && title.isNotEmpty && goal.isNotEmpty;
 
-          return SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    padding: HTEdgeInsets.vertical16,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: HTBorderRadius.circular10)),
-                onPressed: canSubmit
-                    ? () {
-                        taskEditBloc.updateTask();
+          return SafeArea(
+            child: Container(
+              width: double.infinity,
+              padding: HTEdgeInsets.h24v16,
+              child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      padding: HTEdgeInsets.vertical16,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: HTBorderRadius.circular10)),
+                  onPressed: canSubmit
+                      ? () {
+                          taskEditBloc.updateTask();
 
-                        Navigator.pop(context, taskEditBloc.getUpdatedTask());
-                      }
-                    : null,
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.check_rounded,
-                      color: HTColors.white,
-                      size: 24,
-                    ),
-                    HTSpacers.width4,
-                    HTText(
-                      'Done',
-                      typoToken: HTTypoToken.subtitleXLarge,
-                      color: HTColors.white,
-                      height: 1.25,
-                    ),
-                  ],
-                )),
+                          Navigator.pop(context, taskEditBloc.getUpdatedTask());
+                        }
+                      : null,
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.check_rounded,
+                        color: HTColors.white,
+                        size: 24,
+                      ),
+                      HTSpacers.width4,
+                      HTText(
+                        'Done',
+                        typoToken: HTTypoToken.subtitleXLarge,
+                        color: HTColors.white,
+                        height: 1.25,
+                      ),
+                    ],
+                  )),
+            ),
           );
         });
   }

@@ -44,7 +44,7 @@ String htUntilToText(DateTime? until, {bool long = false}) {
   if (until == null) {
     return 'Forever';
   } else {
-    return 'until ${DateFormat('${long ? 'yy' : ''}yy.MM.dd').format(until)}';
+    return 'Until ${DateFormat('${long ? 'yy' : ''}yy.MM.dd').format(until)}';
   }
 }
 
