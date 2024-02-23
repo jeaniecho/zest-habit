@@ -482,10 +482,11 @@ class TaskWeeklyCalendar extends StatelessWidget {
                   (maxWidth - (itemWidth * itemCount) - 48) / (itemCount - 1),
                   24);
 
+              // One time
               if (repeatAt.isEmpty) {
                 bool isDone = doneDates.contains(
                     firstDay.day + (dayNums.indexOf(task.from.weekday) % 7));
-                bool isLater = task.from.difference(now).inDays > 0;
+                bool isLater = task.from.difference(now).inDays >= 0;
 
                 return Column(
                   children: [
