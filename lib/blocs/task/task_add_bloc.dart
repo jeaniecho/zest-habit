@@ -23,6 +23,7 @@ class TaskAddBloc extends Disposable {
   final BehaviorSubject<bool> _isRepeat = BehaviorSubject.seeded(false);
   Stream<bool> get isRepeat => _isRepeat.stream;
   Function(bool) get setIsRepeat => _isRepeat.add;
+  bool get isRepeatValue => _isRepeat.value;
 
   final BehaviorSubject<RepeatType> _repeatType =
       BehaviorSubject.seeded(RepeatType.everyday);

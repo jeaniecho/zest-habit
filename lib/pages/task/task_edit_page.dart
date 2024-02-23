@@ -697,6 +697,10 @@ class _TaskEditUntilState extends State<TaskEditUntil> {
                           if (value) {
                             taskEditBloc.setUntil(
                                 today.getDate().add(const Duration(days: 7)));
+
+                            if (!taskEditBloc.isRepeatValue) {
+                              taskEditBloc.setIsRepeat(true);
+                            }
                           } else {
                             taskEditBloc.setUntil(null);
                           }

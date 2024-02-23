@@ -26,6 +26,7 @@ class TaskEditBloc extends Disposable {
   late final BehaviorSubject<bool> _isRepeat;
   Stream<bool> get isRepeat => _isRepeat.stream;
   Function(bool) get setIsRepeat => _isRepeat.add;
+  bool get isRepeatValue => _isRepeat.value;
 
   late final BehaviorSubject<RepeatType> _repeatType;
   Stream<RepeatType> get repeatType => _repeatType.stream;

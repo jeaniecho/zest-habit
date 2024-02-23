@@ -646,6 +646,10 @@ class _TaskAddUntilState extends State<TaskAddUntil> {
                           if (value) {
                             taskAddBloc.setUntil(
                                 today.getDate().add(const Duration(days: 7)));
+
+                            if (!taskAddBloc.isRepeatValue) {
+                              taskAddBloc.setIsRepeat(true);
+                            }
                           } else {
                             taskAddBloc.setUntil(null);
                           }
