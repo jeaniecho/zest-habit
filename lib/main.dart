@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
           create: (context) =>
               DailyBloc(appBloc: appBloc, deviceWidth: deviceWidth),
         ),
-        Provider(create: (context) => TimerBloc()),
+        Provider(create: (context) => TimerBloc(appBloc: appBloc)),
       ],
       child: MaterialApp.router(
         routerConfig: router,

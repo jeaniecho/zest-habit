@@ -69,6 +69,17 @@ class AppBloc {
     await getTasks();
   }
 
+  setTaskDone(Task task, DateTime date) async {
+    if (!task.doneAt.contains(date)) {
+      task.doneAt.add(date);
+
+      await isar.writeTxn(() async {
+        await isar.tasks.put(task);
+      });
+      await getTasks();
+    }
+  }
+
   bool isDone(Task task, DateTime date) {
     try {
       task.doneAt.firstWhere((element) => isSameDay(element, date));

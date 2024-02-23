@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:habit_app/blocs/app_bloc.dart';
 import 'package:habit_app/blocs/base/timer_bloc.dart';
 import 'package:habit_app/models/task_model.dart';
 import 'package:habit_app/router.dart';
@@ -104,7 +103,11 @@ class TimerTask extends StatelessWidget {
                   height: 1.2,
                 );
               } else {
-                return Container();
+                return HTText(
+                  '${selectedTask.emoji ?? ''} ${selectedTask.title}',
+                  typoToken: HTTypoToken.subtitleMedium,
+                  color: HTColors.black,
+                );
               }
             }),
       ),
@@ -506,8 +509,6 @@ class TimerTaskPicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AppBloc appBloc = context.read<AppBloc>();
-
     return const HTBottomModal(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -517,25 +518,103 @@ class TimerTaskPicker extends StatelessWidget {
           HTSpacers.height16,
           Padding(
             padding: HTEdgeInsets.horizontal20,
-            child: HTText(
-              'Select Task',
-              typoToken: HTTypoToken.headlineMedium,
-              color: HTColors.black,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                HTText(
+                  'Select Task',
+                  typoToken: HTTypoToken.headlineMedium,
+                  color: HTColors.black,
+                ),
+                HTSpacers.height8,
+                HTText(
+                  'Only today\'s tasks are displayed',
+                  typoToken: HTTypoToken.bodySmall,
+                  color: HTColors.grey050,
+                ),
+                HTSpacers.height8,
+              ],
             ),
           ),
-          Expanded(
-            child: SingleChildScrollView(
-              padding: HTEdgeInsets.h24v16,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  HTSpacers.height8,
-                ],
-              ),
-            ),
-          ),
+          TimerTaskList(),
         ],
       ),
+    );
+  }
+}
+
+class TimerTaskList extends StatelessWidget {
+  const TimerTaskList({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    TimerBloc timerBloc = context.read<TimerBloc>();
+
+    List<Task> tasks = timerBloc.getTodayTasks();
+
+    return Expanded(
+      child: ListView.separated(
+          padding: HTEdgeInsets.h24v16.copyWith(top: 8),
+          itemBuilder: (context, index) {
+            Task task = tasks[index];
+
+            return GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                timerBloc.setSelectedTask(task);
+                Navigator.pop(context);
+                ;
+              },
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                decoration: BoxDecoration(
+                  color: HTColors.white,
+                  border: Border.all(color: HTColors.grey010, width: 1),
+                  borderRadius: HTBorderRadius.circular10,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (task.emoji != null)
+                      HTText(
+                        task.emoji!,
+                        typoToken: HTTypoToken.headlineSmall,
+                        color: HTColors.black,
+                        height: 1.25,
+                      ),
+                    HTText(
+                      task.title,
+                      typoToken: HTTypoToken.headlineSmall,
+                      color: HTColors.black,
+                    ),
+                    Padding(
+                      padding: HTEdgeInsets.top4,
+                      child: Row(
+                        children: [
+                          if (task.until != null)
+                            HTText(
+                              '${untilToText(task.until)} ㆍ ',
+                              typoToken: HTTypoToken.captionSmall,
+                              color: HTColors.grey040,
+                            ),
+                          HTText(
+                            repeatAtToText(task.repeatAt),
+                            typoToken: HTTypoToken.captionSmall,
+                            color: HTColors.grey040,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+          separatorBuilder: (context, index) {
+            return HTSpacers.height8;
+          },
+          itemCount: tasks.length),
     );
   }
 }

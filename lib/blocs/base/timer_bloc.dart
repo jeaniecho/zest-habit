@@ -1,8 +1,11 @@
 import 'dart:async';
 
+import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
+import 'package:habit_app/blocs/app_bloc.dart';
 import 'package:habit_app/models/task_model.dart';
 import 'package:habit_app/utils/disposable.dart';
 import 'package:habit_app/utils/enums.dart';
+import 'package:habit_app/utils/functions.dart';
 import 'package:quiver/async.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -51,7 +54,9 @@ class TimerBloc extends Disposable {
 
   late CountdownTimer timer;
 
-  TimerBloc();
+  final AppBloc appBloc;
+
+  TimerBloc({required this.appBloc});
 
   @override
   void dispose() {
@@ -87,6 +92,8 @@ class TimerBloc extends Disposable {
       _curr.add(remainder);
     });
     sub.onDone(() {
+      onTimerDone();
+
       sub.cancel();
       timer.cancel();
     });
@@ -121,9 +128,19 @@ class TimerBloc extends Disposable {
       _curr.add((_pausedTime.value ?? _start.value) - data.elapsed);
     });
     sub.onDone(() {
+      onTimerDone();
+
       sub.cancel();
       timer.cancel();
     });
+  }
+
+  onTimerDone() {
+    FlutterRingtonePlayer().playAlarm(looping: false);
+
+    if (_selectedTask.value != null) {
+      appBloc.setTaskDone(_selectedTask.value!, DateTime.now().getDate());
+    }
   }
 
   String timeStringCheck(String string, TimeType timeType) {
@@ -144,5 +161,21 @@ class TimerBloc extends Disposable {
     } else {
       return string;
     }
+  }
+
+  List<Task> getTodayTasks() {
+    List<Task> tasks = appBloc.tasksValue;
+
+    DateTime date = DateTime.now().getDate();
+    List<Task> todayTasks = tasks.where((element) {
+      return (!element.from.getDate().isAfter(date)) &&
+          (element.until == null ||
+              (!element.until!.getDate().isBefore(date))) &&
+          (((element.repeatAt == null || element.repeatAt!.isEmpty) &&
+                  isSameDay(element.from, date)) ||
+              element.repeatAt!.contains(date.weekday));
+    }).toList();
+
+    return todayTasks;
   }
 }
