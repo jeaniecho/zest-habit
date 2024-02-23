@@ -563,7 +563,6 @@ class TimerTaskList extends StatelessWidget {
               onTap: () {
                 timerBloc.setSelectedTask(task);
                 Navigator.pop(context);
-                ;
               },
               child: Container(
                 padding:

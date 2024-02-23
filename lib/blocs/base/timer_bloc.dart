@@ -1,8 +1,11 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:habit_app/blocs/app_bloc.dart';
 import 'package:habit_app/models/task_model.dart';
+import 'package:habit_app/router.dart';
+import 'package:habit_app/styles/tokens.dart';
 import 'package:habit_app/utils/disposable.dart';
 import 'package:habit_app/utils/enums.dart';
 import 'package:habit_app/utils/functions.dart';
@@ -55,8 +58,14 @@ class TimerBloc extends Disposable {
   late CountdownTimer timer;
 
   final AppBloc appBloc;
+  final double deviceHeight;
 
-  TimerBloc({required this.appBloc});
+  bool timerEnded = false;
+
+  TimerBloc({
+    required this.appBloc,
+    required this.deviceHeight,
+  });
 
   @override
   void dispose() {
@@ -90,10 +99,12 @@ class TimerBloc extends Disposable {
       Duration remainder = _start.value - data.elapsed;
 
       _curr.add(remainder);
+
+      if (remainder.inMilliseconds == -200) {
+        onTimerDone();
+      }
     });
     sub.onDone(() {
-      onTimerDone();
-
       sub.cancel();
       timer.cancel();
     });
@@ -125,21 +136,44 @@ class TimerBloc extends Disposable {
 
     var sub = timer.listen(null);
     sub.onData((data) {
-      _curr.add((_pausedTime.value ?? _start.value) - data.elapsed);
+      Duration remainder = (_pausedTime.value ?? _start.value) - data.elapsed;
+      _curr.add(remainder);
+
+      if (remainder.inMilliseconds == -200) {
+        onTimerDone();
+      }
     });
     sub.onDone(() {
-      onTimerDone();
-
       sub.cancel();
       timer.cancel();
     });
   }
 
   onTimerDone() {
-    FlutterRingtonePlayer().playAlarm(looping: false);
+    if (!timerEnded) {
+      timerEnded = true;
 
-    if (_selectedTask.value != null) {
-      appBloc.setTaskDone(_selectedTask.value!, DateTime.now().getDate());
+      FlutterRingtonePlayer().playAlarm(looping: false);
+
+      SnackBar snackBar = SnackBar(
+        content: const Text("⏰ Timer Ended!"),
+        dismissDirection: DismissDirection.horizontal,
+        duration: const Duration(seconds: 3),
+        behavior: SnackBarBehavior.floating,
+        margin: HTEdgeInsets.horizontal20,
+        shape: RoundedRectangleBorder(
+          borderRadius: HTBorderRadius.circular12,
+        ),
+      );
+      snackbarKey.currentState?.showSnackBar(snackBar);
+
+      if (_selectedTask.value != null) {
+        appBloc.setTaskDone(_selectedTask.value!, DateTime.now().getDate());
+      }
+
+      Future.delayed(const Duration(seconds: 1), () {
+        timerEnded = false;
+      });
     }
   }
 

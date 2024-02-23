@@ -35,6 +35,7 @@ class MyApp extends StatelessWidget {
     AppBloc appBloc = AppBloc(isar: isar);
 
     double deviceWidth = MediaQuery.sizeOf(context).width;
+    double deviceHeight = MediaQuery.sizeOf(context).height;
 
     return MultiProvider(
       providers: [
@@ -43,7 +44,11 @@ class MyApp extends StatelessWidget {
           create: (context) =>
               DailyBloc(appBloc: appBloc, deviceWidth: deviceWidth),
         ),
-        Provider(create: (context) => TimerBloc(appBloc: appBloc)),
+        Provider(
+            create: (context) => TimerBloc(
+                  appBloc: appBloc,
+                  deviceHeight: deviceHeight,
+                )),
       ],
       child: MaterialApp.router(
         routerConfig: router,
@@ -51,6 +56,7 @@ class MyApp extends StatelessWidget {
         theme: HTThemes.lightTheme,
         darkTheme: HTThemes.darkTheme,
         themeMode: ThemeMode.light,
+        scaffoldMessengerKey: snackbarKey,
       ),
     );
   }

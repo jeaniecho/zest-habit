@@ -14,8 +14,9 @@ import 'package:provider/provider.dart';
 
 final GlobalKey<NavigatorState> rootNavKey = GlobalKey<NavigatorState>();
 final GlobalKey<NavigatorState> shellNavKey = GlobalKey<NavigatorState>();
-
 final GlobalKey<ScaffoldState> rootScaffoldKey = GlobalKey<ScaffoldState>();
+final GlobalKey<ScaffoldMessengerState> snackbarKey =
+    GlobalKey<ScaffoldMessengerState>();
 
 final router = GoRouter(
   navigatorKey: rootNavKey,
