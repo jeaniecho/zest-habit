@@ -61,6 +61,7 @@ class BasePage extends StatelessWidget {
                       },
                       child: SizedBox(
                         width: 88,
+                        height: 52,
                         child: Icon(
                           Icons.calendar_today_rounded,
                           size: 22,
@@ -113,6 +114,7 @@ class BasePage extends StatelessWidget {
                       },
                       child: SizedBox(
                         width: 88,
+                        height: 52,
                         child: Icon(
                           Icons.timer_outlined,
                           size: 24,
