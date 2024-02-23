@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:habit_app/blocs/task/task_add_bloc.dart';
 import 'package:habit_app/pages/task/task_detail_page.dart';
@@ -11,6 +12,7 @@ import 'package:habit_app/utils/emojis.dart';
 import 'package:habit_app/utils/enums.dart';
 import 'package:habit_app/utils/functions.dart';
 import 'package:habit_app/widgets/ht_bottom_modal.dart';
+import 'package:habit_app/widgets/ht_calendar.dart';
 import 'package:habit_app/widgets/ht_radio.dart';
 import 'package:habit_app/widgets/ht_text.dart';
 import 'package:intl/intl.dart';
@@ -35,63 +37,31 @@ class TaskAddBody extends StatelessWidget {
 
     return Stack(
       children: [
-        Column(
+        const Column(
           children: [
             HTSpacers.height8,
-            const TaskAddClose(),
+            TaskAddClose(),
             Expanded(
               child: SingleChildScrollView(
                 padding: HTEdgeInsets.h24v16,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    InkWell(
-                      onTap: () {
-                        taskAddBloc.toggleOpenEmoji();
-                      },
-                      child: Container(
-                        width: 48,
-                        height: 48,
-                        decoration: BoxDecoration(
-                          color: HTColors.grey010,
-                          borderRadius: HTBorderRadius.circular10,
-                        ),
-                        child: StreamBuilder<String>(
-                            stream: taskAddBloc.emoji,
-                            builder: (context, snapshot) {
-                              String emoji = snapshot.data ?? '';
-
-                              if (emoji.isEmpty) {
-                                return const Icon(
-                                  Icons.emoji_emotions_rounded,
-                                  color: HTColors.grey030,
-                                  size: 32,
-                                );
-                              } else {
-                                return Center(
-                                    child: Text(
-                                  emoji,
-                                  style: const TextStyle(fontSize: 28),
-                                ));
-                              }
-                            }),
-                      ),
-                    ),
+                    TaskAddEmoji(),
                     HTSpacers.height8,
-                    const TaskAddTitle(),
+                    TaskAddTitle(),
                     HTSpacers.height10,
-                    const TaskAddGoal(),
+                    TaskAddGoal(),
                     HTSpacers.height24,
-                    const TaskAddRepeatAt(),
-                    const TaskAddFrom(),
-                    const TaskAddUntil(),
-                    HTSpacers.height48,
-                    const TaskAddSubmit(),
-                    HTSpacers.height48,
+                    TaskAddRepeatAt(),
+                    TaskAddFrom(),
+                    TaskAddUntil(),
+                    HTSpacers.height120,
                   ],
                 ),
               ),
             ),
+            TaskAddSubmit(),
           ],
         ),
         StreamBuilder<bool>(
@@ -106,6 +76,48 @@ class TaskAddBody extends StatelessWidget {
               }
             }),
       ],
+    );
+  }
+}
+
+class TaskAddEmoji extends StatelessWidget {
+  const TaskAddEmoji({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    TaskAddBloc taskAddBloc = context.read<TaskAddBloc>();
+
+    return InkWell(
+      onTap: () {
+        taskAddBloc.toggleOpenEmoji();
+      },
+      child: Container(
+        width: 48,
+        height: 48,
+        decoration: BoxDecoration(
+          color: HTColors.grey010,
+          borderRadius: HTBorderRadius.circular10,
+        ),
+        child: StreamBuilder<String>(
+            stream: taskAddBloc.emoji,
+            builder: (context, snapshot) {
+              String emoji = snapshot.data ?? '';
+
+              if (emoji.isEmpty) {
+                return const Icon(
+                  Icons.emoji_emotions_rounded,
+                  color: HTColors.grey030,
+                  size: 32,
+                );
+              } else {
+                return Center(
+                    child: Text(
+                  emoji,
+                  style: const TextStyle(fontSize: 28),
+                ));
+              }
+            }),
+      ),
     );
   }
 }
@@ -490,68 +502,89 @@ class TaskAddRepeatAt extends StatelessWidget {
   }
 }
 
-class TaskAddFrom extends StatelessWidget {
+class TaskAddFrom extends StatefulWidget {
   const TaskAddFrom({super.key});
+
+  @override
+  State<TaskAddFrom> createState() => _TaskAddFromState();
+}
+
+class _TaskAddFromState extends State<TaskAddFrom> {
+  bool _showCalendar = false;
 
   @override
   Widget build(BuildContext context) {
     TaskAddBloc taskAddBloc = context.read<TaskAddBloc>();
 
-    return SizedBox(
-      height: 56,
-      child: StreamBuilder<DateTime>(
-          stream: taskAddBloc.from,
-          builder: (context, snapshot) {
-            DateTime from = snapshot.data ?? DateTime.now().getDate();
+    return StreamBuilder<List>(
+        stream: Rx.combineLatestList([taskAddBloc.from, taskAddBloc.until]),
+        builder: (context, snapshot) {
+          DateTime from = snapshot.data?[0] ?? DateTime.now().getDate();
+          DateTime? until = snapshot.data?[1];
 
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const HTText(
-                  'Start Date',
-                  typoToken: HTTypoToken.subtitleXLarge,
-                  color: HTColors.black,
-                  height: 1,
-                ),
-                GestureDetector(
-                  onTap: () {
-                    showDatePicker(
-                            context: context,
-                            firstDate: DateTime(2020),
-                            lastDate: DateTime(2101))
-                        .then((value) {
-                      if (value != null) {
-                        taskAddBloc.setFrom(value);
-                      }
-                    });
-                  },
-                  child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: HTColors.grey010,
-                      borderRadius: HTBorderRadius.circular10,
-                    ),
-                    child: HTText(
-                      DateFormat('yyyy.MM.dd').format(from) +
-                          (isSameDay(from, DateTime.now())
-                              ? ' (Today)'
-                              : DateFormat(' (E)').format(from)),
-                      typoToken: HTTypoToken.bodyMedium,
+          return Column(
+            children: [
+              SizedBox(
+                height: 56,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const HTText(
+                      'Start Date',
+                      typoToken: HTTypoToken.subtitleXLarge,
                       color: HTColors.black,
-                      height: 1.2,
+                      height: 1,
                     ),
-                  ),
-                )
-              ],
-            );
-          }),
-    );
+                    GestureDetector(
+                      onTap: () {
+                        HapticFeedback.lightImpact();
+                        setState(() {
+                          _showCalendar = !_showCalendar;
+                        });
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: HTColors.grey010,
+                          borderRadius: HTBorderRadius.circular10,
+                        ),
+                        child: HTText(
+                          DateFormat('yyyy.MM.dd').format(from) +
+                              (htIsSameDay(from, DateTime.now())
+                                  ? ' (Today)'
+                                  : DateFormat(' (E)').format(from)),
+                          typoToken: HTTypoToken.bodyMedium,
+                          color: HTColors.black,
+                          height: 1.2,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              if (_showCalendar)
+                HTCalendar(
+                    selectedDate: from,
+                    lastDay: until,
+                    onSelected: (selectedDay) {
+                      taskAddBloc.setFrom(selectedDay.getDate());
+                    }),
+            ],
+          );
+        });
   }
 }
 
-class TaskAddUntil extends StatelessWidget {
+class TaskAddUntil extends StatefulWidget {
   const TaskAddUntil({super.key});
+
+  @override
+  State<TaskAddUntil> createState() => _TaskAddUntilState();
+}
+
+class _TaskAddUntilState extends State<TaskAddUntil> {
+  bool _showCalendar = true;
 
   @override
   Widget build(BuildContext context) {
@@ -559,58 +592,77 @@ class TaskAddUntil extends StatelessWidget {
 
     DateTime today = DateTime.now().getDate();
 
-    return SizedBox(
-      height: 56,
-      child: StreamBuilder<List>(
-          stream: Rx.combineLatestList([taskAddBloc.until, taskAddBloc.from]),
-          builder: (context, snapshot) {
-            DateTime? until = snapshot.data?[0];
-            DateTime from = snapshot.data?[1] ?? today;
+    return StreamBuilder<List>(
+        stream: Rx.combineLatestList([taskAddBloc.until, taskAddBloc.from]),
+        builder: (context, snapshot) {
+          DateTime? until = snapshot.data?[0];
+          DateTime from = snapshot.data?[1] ?? today;
 
-            if (until != null && until.isBefore(from)) {
-              taskAddBloc.setUntil(null);
-            }
+          if (until != null && until.isBefore(from)) {
+            taskAddBloc.setUntil(null);
+          }
 
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const HTText(
-                  'End Date',
-                  typoToken: HTTypoToken.subtitleXLarge,
-                  color: HTColors.black,
-                  height: 1,
+          return Column(
+            children: [
+              SizedBox(
+                height: 56,
+                child: Row(
+                  children: [
+                    const HTText(
+                      'End Date',
+                      typoToken: HTTypoToken.subtitleXLarge,
+                      color: HTColors.black,
+                      height: 1,
+                    ),
+                    const Spacer(),
+                    if (until != null)
+                      GestureDetector(
+                        onTap: () {
+                          HapticFeedback.lightImpact();
+                          setState(() {
+                            _showCalendar = !_showCalendar;
+                          });
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: HTColors.grey010,
+                            borderRadius: HTBorderRadius.circular10,
+                          ),
+                          child: HTText(
+                            DateFormat('yyyy.MM.dd').format(until),
+                            typoToken: HTTypoToken.bodyMedium,
+                            color: HTColors.black,
+                            height: 1.2,
+                          ),
+                        ),
+                      ),
+                    HTSpacers.width8,
+                    CupertinoSwitch(
+                        value: until != null,
+                        activeColor: HTColors.black,
+                        onChanged: (value) {
+                          if (value) {
+                            taskAddBloc.setUntil(
+                                today.getDate().add(const Duration(days: 7)));
+                          } else {
+                            taskAddBloc.setUntil(null);
+                          }
+                        }),
+                  ],
                 ),
-                CupertinoSwitch(
-                    value: until != null,
-                    activeColor: HTColors.black,
-                    onChanged: (value) {
-                      if (value) {
-                        taskAddBloc.setUntil(
-                            today.getDate().add(const Duration(days: 7)));
-                      } else {
-                        taskAddBloc.setUntil(null);
-                      }
+              ),
+              if (_showCalendar && until != null)
+                HTCalendar(
+                    selectedDate: until,
+                    firstDay: from,
+                    onSelected: (selectedDay) {
+                      taskAddBloc.setUntil(selectedDay.getDate());
                     }),
-                // GestureDetector(
-                //   onTap: () {
-                //     showDatePicker(
-                //             context: context,
-                //             firstDate: from,
-                //             lastDate: DateTime(2101))
-                //         .then((value) => taskAddBloc.setUntil(value));
-                //   },
-                //   child: HTText(
-                //     until != null
-                //         ? DateFormat('yyyy.MM.dd (E)').format(until)
-                //         : 'Forever',
-                //     typoToken: HTTypoToken.subtitleMedium,
-                //     color: HTColors.grey040,
-                //   ),
-                // )
-              ],
-            );
-          }),
-    );
+            ],
+          );
+        });
   }
 }
 
@@ -632,39 +684,42 @@ class TaskAddSubmit extends StatelessWidget {
           bool canSubmit =
               emoji.isNotEmpty && title.isNotEmpty && goal.isNotEmpty;
 
-          return SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    padding: HTEdgeInsets.vertical16,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: HTBorderRadius.circular10)),
-                onPressed: canSubmit
-                    ? () {
-                        taskAddBloc.addTask();
+          return SafeArea(
+            child: Container(
+              width: double.infinity,
+              padding: HTEdgeInsets.h24v16,
+              child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      padding: HTEdgeInsets.vertical16,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: HTBorderRadius.circular10)),
+                  onPressed: canSubmit
+                      ? () {
+                          taskAddBloc.addTask();
 
-                        context.push(TaskDetailPage.routeName,
-                            extra: taskAddBloc.getNewTask());
-                        Navigator.pop(context);
-                      }
-                    : null,
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.check_rounded,
-                      color: HTColors.white,
-                      size: 24,
-                    ),
-                    HTSpacers.width4,
-                    HTText(
-                      'Done',
-                      typoToken: HTTypoToken.subtitleXLarge,
-                      color: HTColors.white,
-                      height: 1.25,
-                    ),
-                  ],
-                )),
+                          context.push(TaskDetailPage.routeName,
+                              extra: taskAddBloc.getNewTask());
+                          Navigator.pop(context);
+                        }
+                      : null,
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.check_rounded,
+                        color: HTColors.white,
+                        size: 24,
+                      ),
+                      HTSpacers.width4,
+                      HTText(
+                        'Done',
+                        typoToken: HTTypoToken.subtitleXLarge,
+                        color: HTColors.white,
+                        height: 1.25,
+                      ),
+                    ],
+                  )),
+            ),
           );
         });
   }

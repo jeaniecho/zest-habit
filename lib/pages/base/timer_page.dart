@@ -611,12 +611,12 @@ class TimerTaskItem extends StatelessWidget {
                 children: [
                   if (task.until != null)
                     HTText(
-                      '${untilToText(task.until)} ㆍ ',
+                      '${htUntilToText(task.until)} ㆍ ',
                       typoToken: HTTypoToken.captionSmall,
                       color: HTColors.grey040,
                     ),
                   HTText(
-                    repeatAtToText(task.repeatAt),
+                    htRepeatAtToText(task.repeatAt),
                     typoToken: HTTypoToken.captionSmall,
                     color: HTColors.grey040,
                   ),

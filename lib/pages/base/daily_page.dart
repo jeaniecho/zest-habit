@@ -140,7 +140,7 @@ class DailyDates extends StatelessWidget {
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 border:
-                                    isSameDay(DateTime.now().getDate(), date)
+                                    htIsSameDay(DateTime.now().getDate(), date)
                                         ? Border.all(
                                             color: isSelected
                                                 ? HTColors.black
@@ -154,7 +154,7 @@ class DailyDates extends StatelessWidget {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   HTText(
-                                    weekdayToText(date.weekday),
+                                    htWeekdayToText(date.weekday),
                                     typoToken: HTTypoToken.captionXSmall,
                                     color: HTColors.grey030,
                                   ),
@@ -291,7 +291,7 @@ class DailyTaskList extends StatelessWidget {
                   int dateIndex = snapshot.data?[1] ?? 0;
                   List<Task> doneTasks = currTasks
                       .where((element) =>
-                          isDone(dailyBloc.dates[dateIndex], element.doneAt))
+                          htIsDone(dailyBloc.dates[dateIndex], element.doneAt))
                       .toList();
 
                   return Column(
@@ -376,12 +376,12 @@ class TaskBox extends StatelessWidget {
                     children: [
                       if (task.until != null)
                         HTText(
-                          '${untilToText(task.until)} ㆍ ',
+                          '${htUntilToText(task.until)} ㆍ ',
                           typoToken: HTTypoToken.captionSmall,
                           color: HTColors.grey040,
                         ),
                       HTText(
-                        repeatAtToText(task.repeatAt),
+                        htRepeatAtToText(task.repeatAt),
                         typoToken: HTTypoToken.captionSmall,
                         color: HTColors.grey040,
                       ),

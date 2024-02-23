@@ -62,7 +62,7 @@ class TaskEditBloc extends Disposable {
     _isRepeat = BehaviorSubject.seeded(isRepeatValue);
     _repeatAt = BehaviorSubject.seeded(task.repeatAt ?? []);
     _repeatType = BehaviorSubject.seeded(isRepeatValue
-        ? getRepeatType(task.repeatAt ?? [])
+        ? htGetRepeatType(task.repeatAt ?? [])
         : RepeatType.everyday);
     _from = BehaviorSubject.seeded(task.from);
     _until = BehaviorSubject.seeded(task.until);

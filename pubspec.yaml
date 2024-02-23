@@ -27,6 +27,7 @@ dependencies:
   kr_pull_down_button: ^1.0.1
   flutter_ringtone_player: ^4.0.0+2
   flutter_animate: ^4.5.0
+  table_calendar: ^3.1.0
 
 dev_dependencies:
   flutter_test:

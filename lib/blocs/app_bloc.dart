@@ -57,7 +57,7 @@ class AppBloc {
   toggleTask(Task task, DateTime date) async {
     try {
       final toRemove =
-          task.doneAt.firstWhere((element) => isSameDay(element, date));
+          task.doneAt.firstWhere((element) => htIsSameDay(element, date));
       task.doneAt.remove(toRemove);
     } catch (e) {
       task.doneAt.add(date);
@@ -82,7 +82,7 @@ class AppBloc {
 
   bool isDone(Task task, DateTime date) {
     try {
-      task.doneAt.firstWhere((element) => isSameDay(element, date));
+      task.doneAt.firstWhere((element) => htIsSameDay(element, date));
       return true;
     } catch (e) {
       return false;

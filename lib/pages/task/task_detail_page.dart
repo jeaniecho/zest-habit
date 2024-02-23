@@ -290,11 +290,11 @@ class TaskWeeklyTitle extends StatelessWidget {
                   builder: (context, snapshot) {
                     DateTime today = DateTime.now().getDate();
                     DateTime currDate = snapshot.data ?? today;
-                    int weekNum = weekOfMonth(currDate);
+                    int weekNum = htWeekOfMonth(currDate);
 
                     bool isBefore = !currDate.isAfter(task.from);
-                    bool isLater = !mostRecentWeekday(currDate)
-                        .isBefore(mostRecentWeekday(today));
+                    bool isLater = !htMostRecentWeekday(currDate)
+                        .isBefore(htMostRecentWeekday(today));
 
                     return Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -377,8 +377,8 @@ class TaskMonthlyTitle extends StatelessWidget {
                     DateTime today = DateTime.now().getDate();
                     DateTime currMonth = snapshot.data ?? today;
 
-                    bool isBefore = isSameMonth(task.from, currMonth);
-                    bool isAfter = isSameMonth(today, currMonth);
+                    bool isBefore = htIsSameMonth(task.from, currMonth);
+                    bool isAfter = htIsSameMonth(today, currMonth);
 
                     return Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -462,8 +462,8 @@ class TaskWeeklyCalendar extends StatelessWidget {
             Task task = snapshot.data?[2] ?? taskDetailBloc.task;
 
             DateTime now = DateTime.now().getDate();
-            DateTime currDate = mostRecentWeekday(snapshot.data?[0] ?? now);
-            DateTime firstDay = mostRecentWeekday(currDate);
+            DateTime currDate = htMostRecentWeekday(snapshot.data?[0] ?? now);
+            DateTime firstDay = htMostRecentWeekday(currDate);
 
             int lastDate = DateTime(currDate.year, currDate.month, 1)
                 .subtract(const Duration(days: 1))
@@ -473,7 +473,7 @@ class TaskWeeklyCalendar extends StatelessWidget {
 
             return LayoutBuilder(builder: (context, constraints) {
               List<int> repeatAt = task.repeatAt ?? [];
-              repeatAt = sortRepeatAt(repeatAt);
+              repeatAt = htSortRepeatAt(repeatAt);
 
               double maxWidth = constraints.maxWidth;
               double itemWidth = 38;
@@ -491,7 +491,7 @@ class TaskWeeklyCalendar extends StatelessWidget {
                 return Column(
                   children: [
                     HTText(
-                      weekdayToText(task.from.weekday),
+                      htWeekdayToText(task.from.weekday),
                       typoToken: HTTypoToken.captionXSmall,
                       color: HTColors.grey050,
                     ),
@@ -529,7 +529,7 @@ class TaskWeeklyCalendar extends StatelessWidget {
                       width: 4,
                       height: 4,
                       decoration: BoxDecoration(
-                        color: isSameDay(task.from, now)
+                        color: htIsSameDay(task.from, now)
                             ? HTColors.red
                             : HTColors.white,
                         shape: BoxShape.circle,
@@ -563,7 +563,7 @@ class TaskWeeklyCalendar extends StatelessWidget {
                     return Column(
                       children: [
                         HTText(
-                          weekdayToText(repeatAt[index]),
+                          htWeekdayToText(repeatAt[index]),
                           typoToken: HTTypoToken.captionXSmall,
                           color: HTColors.grey050,
                         ),
@@ -679,7 +679,7 @@ class TaskMonthlyCalendar extends StatelessWidget {
 
                       bool isDone = doneDates.contains(index - fillDays + 1);
 
-                      bool inSameMonth = isSameMonth(currMonth, now);
+                      bool inSameMonth = htIsSameMonth(currMonth, now);
                       bool isLater = (inSameMonth && index >= todayDateInCal) ||
                           (!inSameMonth &&
                               DateTime(currMonth.year, currMonth.month)
@@ -784,7 +784,7 @@ class TaskDetailInfo extends StatelessWidget {
                     borderRadius: HTBorderRadius.circular10,
                   ),
                   child: HTText(
-                    '\u2022  ${repeatAtToText(task.repeatAt)}',
+                    '\u2022  ${htRepeatAtToText(task.repeatAt)}',
                     typoToken: HTTypoToken.captionMedium,
                     color: HTColors.black,
                   ),
@@ -810,7 +810,7 @@ class TaskDetailInfo extends StatelessWidget {
                     borderRadius: HTBorderRadius.circular10,
                   ),
                   child: HTText(
-                    '\u2022  ${untilToText(task.until, long: true)}',
+                    '\u2022  ${htUntilToText(task.until, long: true)}',
                     typoToken: HTTypoToken.captionMedium,
                     color: HTColors.black,
                   ),

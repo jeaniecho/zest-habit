@@ -585,7 +585,7 @@ class TaskEditFrom extends StatelessWidget {
                     ),
                     child: HTText(
                       DateFormat('yyyy.MM.dd').format(from) +
-                          (isSameDay(from, DateTime.now())
+                          (htIsSameDay(from, DateTime.now())
                               ? ' (Today)'
                               : DateFormat(' (E)').format(from)),
                       typoToken: HTTypoToken.bodyMedium,

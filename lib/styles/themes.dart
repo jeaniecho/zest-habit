@@ -13,7 +13,7 @@ class HTThemes {
     splashColor: HTColors.clear,
     primaryColor: HTColors.black,
     focusColor: HTColors.grey030,
-    highlightColor: HTColors.clear,
+    highlightColor: HTColors.grey040,
     cardColor: HTColors.white,
     disabledColor: HTColors.grey020,
     colorScheme: HTColors.lightColorScheme,

@@ -72,20 +72,20 @@ class TaskDetailBloc extends Disposable {
 
   getDoneDatesForMonth(DateTime date) {
     List<int> dates = task.doneAt
-        .where((element) => isSameMonth(element, date))
+        .where((element) => htIsSameMonth(element, date))
         .map((e) => e.day)
         .toList();
     _doneDates.add(dates);
   }
 
   getDoneDatesForWeek(DateTime date) {
-    DateTime fd = mostRecentWeekday(date);
+    DateTime fd = htMostRecentWeekday(date);
 
     List<int> dates = task.doneAt
         .where((element) =>
             element.isAfter(date.subtract(const Duration(days: 7))) &&
             element.isBefore(date.add(const Duration(days: 7))))
-        .where((element) => isSameDay(fd, mostRecentWeekday(element)))
+        .where((element) => htIsSameDay(fd, htMostRecentWeekday(element)))
         .map((e) => e.day)
         .toList();
     _doneDates.add(dates);

@@ -16,16 +16,16 @@ const List dayNumsList = [
 List<String> days = daysList[firstDayOfWeek];
 List<int> dayNums = dayNumsList[firstDayOfWeek];
 
-String weekdayToText(int weekday) {
+String htWeekdayToText(int weekday) {
   return days[dayNums.indexOf(weekday)];
 }
 
-String repeatAtToText(List<int>? repeatAt) {
+String htRepeatAtToText(List<int>? repeatAt) {
   if (repeatAt == null || repeatAt.isEmpty) {
     return 'One time';
   }
 
-  repeatAt = sortRepeatAt(repeatAt);
+  repeatAt = htSortRepeatAt(repeatAt);
   if (repeatAt.length == 7) {
     return 'Everyday';
   } else if (repeatAt.length == 5 &&
@@ -40,7 +40,7 @@ String repeatAtToText(List<int>? repeatAt) {
   return repeatAt.map((e) => days[dayNums.indexOf(e)]).join(', ');
 }
 
-String untilToText(DateTime? until, {bool long = false}) {
+String htUntilToText(DateTime? until, {bool long = false}) {
   if (until == null) {
     return 'Forever';
   } else {
@@ -48,23 +48,23 @@ String untilToText(DateTime? until, {bool long = false}) {
   }
 }
 
-bool isSameDay(DateTime one, DateTime two) {
+bool htIsSameDay(DateTime one, DateTime two) {
   return one.day == two.day && one.month == two.month && one.year == two.year;
 }
 
-bool isSameWeek(DateTime one, DateTime two) {
+bool htIsSameWeek(DateTime one, DateTime two) {
   return one.month == two.month &&
       one.year == two.year &&
-      weekOfMonth(one) == weekOfMonth(two);
+      htWeekOfMonth(one) == htWeekOfMonth(two);
 }
 
-bool isSameMonth(DateTime one, DateTime two) {
+bool htIsSameMonth(DateTime one, DateTime two) {
   return one.month == two.month && one.year == two.year;
 }
 
-bool isDone(DateTime currDate, List<DateTime> doneAt) {
+bool htIsDone(DateTime currDate, List<DateTime> doneAt) {
   try {
-    doneAt.firstWhere((element) => isSameDay(element, currDate));
+    doneAt.firstWhere((element) => htIsSameDay(element, currDate));
     return true;
   } catch (e) {
     return false;
@@ -72,10 +72,10 @@ bool isDone(DateTime currDate, List<DateTime> doneAt) {
 }
 
 /// The [weekday] may be 0 for Sunday, 1 for Monday, etc. up to 7 for Sunday.
-DateTime mostRecentWeekday(DateTime date, {int weekday = firstDayOfWeek}) =>
+DateTime htMostRecentWeekday(DateTime date, {int weekday = firstDayOfWeek}) =>
     DateTime(date.year, date.month, date.day - ((date.weekday - weekday) % 7));
 
-int weekOfMonth(DateTime date) {
+int htWeekOfMonth(DateTime date) {
   DateTime firstDayOfTheMonth = DateTime(date.year, date.month, 1);
   int sum = date.day + firstDayOfTheMonth.weekday - firstDayOfWeek;
   if (sum % 7 == 0) {
@@ -85,7 +85,7 @@ int weekOfMonth(DateTime date) {
   }
 }
 
-List<int> sortRepeatAt(List<int> repeatAt) {
+List<int> htSortRepeatAt(List<int> repeatAt) {
   List<int> copy = repeatAt.toList();
   copy.sort();
 
@@ -97,7 +97,7 @@ List<int> sortRepeatAt(List<int> repeatAt) {
   return copy;
 }
 
-RepeatType getRepeatType(List<int> repeatAt) {
+RepeatType htGetRepeatType(List<int> repeatAt) {
   if (repeatAt.length == 7) {
     return RepeatType.everyday;
   } else if (repeatAt.length == 5 &&
