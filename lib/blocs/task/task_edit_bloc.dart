@@ -54,7 +54,7 @@ class TaskEditBloc extends Disposable {
     required this.appBloc,
     required this.task,
   }) {
-    bool isRepeatValue = task.repeatAt != null || task.repeatAt!.isNotEmpty;
+    bool isRepeatValue = task.repeatAt != null && task.repeatAt!.isNotEmpty;
 
     _emoji = BehaviorSubject.seeded(task.emoji ?? '');
     _title = BehaviorSubject.seeded(task.title);
