@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:habit_app/models/task_model.dart';
 import 'package:habit_app/utils/disposable.dart';
 import 'package:habit_app/utils/enums.dart';
 import 'package:quiver/async.dart';
@@ -44,6 +45,10 @@ class TimerBloc extends Disposable {
   Function(String) get setSecond => _second.add;
   String get secondValue => _second.value;
 
+  final BehaviorSubject<Task?> _selectedTask = BehaviorSubject.seeded(null);
+  Stream<Task?> get selectedTask => _selectedTask.stream;
+  Function(Task?) get setSelectedTask => _selectedTask.add;
+
   late CountdownTimer timer;
 
   TimerBloc();
@@ -58,6 +63,7 @@ class TimerBloc extends Disposable {
     _hour.close();
     _minute.close();
     _second.close();
+    _selectedTask.close();
     timer.cancel();
   }
 

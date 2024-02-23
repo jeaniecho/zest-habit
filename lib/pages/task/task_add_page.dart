@@ -10,6 +10,7 @@ import 'package:habit_app/styles/typos.dart';
 import 'package:habit_app/utils/emojis.dart';
 import 'package:habit_app/utils/enums.dart';
 import 'package:habit_app/utils/functions.dart';
+import 'package:habit_app/widgets/ht_bottom_modal.dart';
 import 'package:habit_app/widgets/ht_radio.dart';
 import 'package:habit_app/widgets/ht_text.dart';
 import 'package:intl/intl.dart';
@@ -21,31 +22,7 @@ class TaskAddWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double mainHeight = MediaQuery.sizeOf(context).height * 0.92;
-
-    return SizedBox(
-      height: mainHeight + 12,
-      child: Column(
-        children: [
-          Container(
-            height: 12,
-            width: MediaQuery.sizeOf(context).width - 48,
-            decoration: const BoxDecoration(
-              color: HTColors.white50,
-              borderRadius: HTBorderRadius.top40,
-            ),
-          ),
-          Container(
-            height: mainHeight,
-            decoration: const BoxDecoration(
-              color: HTColors.white,
-              borderRadius: HTBorderRadius.top24,
-            ),
-            child: const TaskAddBody(),
-          ),
-        ],
-      ),
-    );
+    return const HTBottomModal(child: TaskAddBody());
   }
 }
 

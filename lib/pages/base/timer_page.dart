@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:habit_app/blocs/app_bloc.dart';
 import 'package:habit_app/blocs/base/timer_bloc.dart';
+import 'package:habit_app/models/task_model.dart';
 import 'package:habit_app/router.dart';
 import 'package:habit_app/styles/colors.dart';
 import 'package:habit_app/styles/tokens.dart';
 import 'package:habit_app/styles/typos.dart';
 import 'package:habit_app/utils/enums.dart';
 import 'package:habit_app/utils/functions.dart';
+import 'package:habit_app/widgets/ht_bottom_modal.dart';
 import 'package:habit_app/widgets/ht_text.dart';
 import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
@@ -68,19 +71,42 @@ class TimerTask extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    TimerBloc timerBloc = context.read<TimerBloc>();
+
     return GestureDetector(
+      onTap: () {
+        showModalBottomSheet(
+            context: context,
+            useRootNavigator: true,
+            isScrollControlled: true,
+            backgroundColor: HTColors.clear,
+            useSafeArea: true,
+            builder: (context) {
+              return const TimerTaskPicker();
+            });
+      },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
           color: HTColors.grey010,
           borderRadius: HTBorderRadius.circular10,
         ),
-        child: const HTText(
-          'Select Task...',
-          typoToken: HTTypoToken.bodyMedium,
-          color: HTColors.grey040,
-          height: 1.2,
-        ),
+        child: StreamBuilder<Task?>(
+            stream: timerBloc.selectedTask,
+            builder: (context, snapshot) {
+              Task? selectedTask = snapshot.data;
+
+              if (selectedTask == null) {
+                return const HTText(
+                  'Select Task...',
+                  typoToken: HTTypoToken.bodyMedium,
+                  color: HTColors.grey040,
+                  height: 1.2,
+                );
+              } else {
+                return Container();
+              }
+            }),
       ),
     );
   }
@@ -455,6 +481,77 @@ class EditableTimerText extends StatelessWidget {
               ),
             );
           }),
+    );
+  }
+}
+
+class TimerTaskPicker extends StatelessWidget {
+  const TimerTaskPicker({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    AppBloc appBloc = context.read<AppBloc>();
+
+    return const HTBottomModal(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          HTSpacers.height8,
+          TimeTaskPickerClose(),
+          HTSpacers.height16,
+          Padding(
+            padding: HTEdgeInsets.horizontal20,
+            child: HTText(
+              'Select Task',
+              typoToken: HTTypoToken.headlineMedium,
+              color: HTColors.black,
+            ),
+          ),
+          Expanded(
+            child: SingleChildScrollView(
+              padding: HTEdgeInsets.h24v16,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  HTSpacers.height8,
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class TimeTaskPickerClose extends StatelessWidget {
+  const TimeTaskPickerClose({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.centerRight,
+      child: SizedBox(
+        height: 56,
+        child: GestureDetector(
+          onTap: () {
+            Navigator.pop(context);
+          },
+          child: Container(
+            width: 28,
+            height: 28,
+            margin: HTEdgeInsets.horizontal16,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: HTColors.grey040,
+            ),
+            child: const Icon(
+              Icons.close_rounded,
+              color: HTColors.white,
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
