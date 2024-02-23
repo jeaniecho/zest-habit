@@ -14,11 +14,16 @@ class TimerBloc extends Disposable {
   Function(Duration) get setStart => _start.add;
 
   final BehaviorSubject<Duration> _curr =
-      BehaviorSubject.seeded(const Duration(minutes: 25));
+      BehaviorSubject.seeded(const Duration(seconds: -1));
   Stream<Duration> get curr => _curr.stream;
 
-  final BehaviorSubject<bool> _isTimerOn = BehaviorSubject.seeded(false);
-  Stream<bool> get isTimerOn => _isTimerOn.stream;
+  final BehaviorSubject<bool> _isTimerPaused = BehaviorSubject.seeded(false);
+  Stream<bool> get isTimerPaused => _isTimerPaused.stream;
+  Function(bool) get setIsTimerPaused => _isTimerPaused.add;
+
+  final BehaviorSubject<Duration?> _pausedTime = BehaviorSubject.seeded(null);
+  Stream<Duration?> get pausedTime => _pausedTime.stream;
+  Function(Duration?) get setPausedTime => _pausedTime.add;
 
   final BehaviorSubject<bool> _isFocused = BehaviorSubject.seeded(false);
   Stream<bool> get isFocused => _isFocused.stream;
@@ -47,11 +52,13 @@ class TimerBloc extends Disposable {
   void dispose() {
     _start.close();
     _curr.close();
-    _isTimerOn.close();
+    _isTimerPaused.close();
+    _pausedTime.close();
     _isFocused.close();
     _hour.close();
     _minute.close();
     _second.close();
+    timer.cancel();
   }
 
   startTimer() {
@@ -61,29 +68,52 @@ class TimerBloc extends Disposable {
       seconds: int.tryParse(secondValue) ?? 0,
     ));
 
-    timer = CountdownTimer(_start.value, const Duration(seconds: 1));
+    timer = CountdownTimer(_start.value, const Duration(seconds: 0));
 
     _curr.add(_start.value);
-    _isTimerOn.add(true);
 
     var sub = timer.listen(null);
+
     sub.onData((data) {
-      _curr.add(_start.value - data.elapsed + const Duration(seconds: 1));
+      _curr.add(_start.value - data.elapsed);
     });
     sub.onDone(() {
       sub.cancel();
-      _isTimerOn.add(false);
     });
   }
 
   stopTimer() {
     _curr.add(_start.value);
-    _isTimerOn.add(false);
+    _isTimerPaused.add(false);
+    _pausedTime.add(null);
 
     if (timer.isRunning) {
       timer.listen(null).cancel();
       timer.cancel();
     }
+  }
+
+  pauseTimer() {
+    _pausedTime.add(_curr.value);
+    _isTimerPaused.add(true);
+
+    timer.listen(null).cancel;
+    timer.cancel();
+  }
+
+  resumeTimer() {
+    timer = CountdownTimer(_start.value, const Duration(seconds: 0));
+
+    _isTimerPaused.add(false);
+
+    var sub = timer.listen(null);
+    sub.onData((data) {
+      _curr.add(_pausedTime.value! - data.elapsed);
+    });
+    sub.onDone(() {
+      sub.cancel();
+      // _isTimerOn.add(false);
+    });
   }
 
   String timeStringCheck(String string, TimeType timeType) {

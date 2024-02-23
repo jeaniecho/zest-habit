@@ -106,6 +106,9 @@ class TimerWidget extends StatelessWidget {
                 Duration? start = snapshot.data?[0];
                 Duration? curr = snapshot.data?[1];
 
+                bool isTimerOn =
+                    (curr != null && !curr.isNegative) && start != curr;
+
                 return Column(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -136,7 +139,9 @@ class TimerWidget extends StatelessWidget {
                                   child: CircularProgressIndicator(
                                     value: curr.inSeconds / start.inSeconds,
                                     strokeWidth: 5,
-                                    backgroundColor: HTColors.black,
+                                    backgroundColor: curr.isNegative
+                                        ? HTColors.white
+                                        : HTColors.black,
                                     color: HTColors.white,
                                   ),
                                 ),
@@ -158,44 +163,81 @@ class TimerWidget extends StatelessWidget {
                               width: timerSize,
                               height: timerSize,
                               child: Center(
-                                child: StreamBuilder<bool>(
-                                    stream: timerBloc.isTimerOn,
-                                    builder: (context, snapshot) {
-                                      bool isTimerOn = snapshot.data ?? false;
-
-                                      if (isTimerOn) {
-                                        return const FixedTimerText();
-                                      } else {
-                                        return EditableTimerText(
-                                            timerSize: timerSize);
-                                      }
-                                    }),
+                                child: isTimerOn
+                                    ? const FixedTimerText()
+                                    : EditableTimerText(timerSize: timerSize),
                               ),
                             )
                           ],
                         ),
                       ),
                     HTSpacers.height48,
-                    StreamBuilder<bool>(
-                        stream: timerBloc.isTimerOn,
-                        builder: (context, snapshot) {
-                          bool isTimerOn = snapshot.data ?? false;
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: 80,
+                          height: 80,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: isTimerOn ? HTColors.white : HTColors.black,
+                            border: isTimerOn
+                                ? Border.all(color: HTColors.grey020, width: 1)
+                                : null,
+                          ),
+                          child: IconButton(
+                            onPressed: () {
+                              if (isTimerOn) {
+                                timerBloc.stopTimer();
+                              } else {
+                                timerBloc.startTimer();
+                              }
+                            },
+                            icon: Icon(
+                              isTimerOn
+                                  ? Icons.stop_rounded
+                                  : Icons.play_arrow_rounded,
+                              size: isTimerOn ? 40 : 48,
+                              color:
+                                  isTimerOn ? HTColors.black : HTColors.white,
+                            ),
+                          ),
+                        ),
+                        if (isTimerOn)
+                          StreamBuilder<bool>(
+                              stream: timerBloc.isTimerPaused,
+                              builder: (context, snapshot) {
+                                bool isTimerPaused = snapshot.data ?? false;
 
-                          return ElevatedButton(
-                              onPressed: () {
-                                if (isTimerOn) {
-                                  timerBloc.stopTimer();
-                                } else {
-                                  timerBloc.startTimer();
-                                }
-                              },
-                              child: HTText(
-                                isTimerOn ? 'Stop' : 'Start',
-                                typoToken: HTTypoToken.buttonTextMedium,
-                                color: HTColors.white,
-                                height: 1.25,
-                              ));
-                        }),
+                                return Container(
+                                  width: 80,
+                                  height: 80,
+                                  margin: HTEdgeInsets.left32,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: HTColors.white,
+                                    border: Border.all(
+                                        color: HTColors.grey020, width: 1),
+                                  ),
+                                  child: IconButton(
+                                    onPressed: () {
+                                      if (isTimerPaused) {
+                                        timerBloc.resumeTimer();
+                                      } else {
+                                        timerBloc.pauseTimer();
+                                      }
+                                    },
+                                    icon: Icon(
+                                        isTimerPaused
+                                            ? Icons.play_arrow_rounded
+                                            : Icons.pause_rounded,
+                                        size: isTimerPaused ? 48 : 40,
+                                        color: HTColors.black),
+                                  ),
+                                );
+                              }),
+                      ],
+                    ),
                     HTSpacers.height40,
                   ],
                 );
@@ -213,12 +255,24 @@ class FixedTimerText extends StatelessWidget {
   Widget build(BuildContext context) {
     TimerBloc timerBloc = context.read<TimerBloc>();
 
-    return StreamBuilder<Duration>(
-        stream: timerBloc.curr,
+    return StreamBuilder<List>(
+        stream: Rx.combineLatestList([
+          timerBloc.curr,
+          timerBloc.pausedTime,
+          timerBloc.isTimerPaused,
+        ]),
         builder: (context, snapshot) {
-          Duration curr = snapshot.data ?? const Duration(minutes: defaultMin);
-          String currString = curr.toShortString();
-          List<String> currList = currString.split(':');
+          Duration curr =
+              snapshot.data?[0] ?? const Duration(minutes: defaultMin);
+          Duration? pausedTime = snapshot.data?[1];
+          bool isTimerPaused = snapshot.data?[2] ?? false;
+
+          if (isTimerPaused && pausedTime != null) {
+            curr = pausedTime;
+          }
+
+          String timeString = curr.toShortString();
+          List<String> timeList = timeString.split(':');
 
           return SizedBox(
             height: timerStringHeight,
@@ -228,7 +282,7 @@ class FixedTimerText extends StatelessWidget {
                 SizedBox(
                     width: timeStringWidth,
                     child: HTText(
-                      currList[0],
+                      timeList[0],
                       typoToken: HTTypoToken.bodyHuge,
                       color: HTColors.black,
                       height: 1.25,
@@ -243,7 +297,7 @@ class FixedTimerText extends StatelessWidget {
                 SizedBox(
                     width: timeStringWidth,
                     child: HTText(
-                      currList[1],
+                      timeList[1],
                       typoToken: HTTypoToken.bodyHuge,
                       color: HTColors.black,
                       height: 1.25,
@@ -258,7 +312,7 @@ class FixedTimerText extends StatelessWidget {
                 SizedBox(
                     width: timeStringWidth,
                     child: HTText(
-                      currList[2],
+                      timeList[2],
                       typoToken: HTTypoToken.bodyHuge,
                       color: HTColors.black,
                       height: 1.25,
