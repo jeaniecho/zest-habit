@@ -1,14 +1,16 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:habit_app/widgets/ht_snackbar.dart';
 import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:habit_app/blocs/app_bloc.dart';
 import 'package:habit_app/models/task_model.dart';
 import 'package:habit_app/router.dart';
-import 'package:habit_app/styles/tokens.dart';
+import 'package:habit_app/styles/colors.dart';
+import 'package:habit_app/styles/typos.dart';
 import 'package:habit_app/utils/disposable.dart';
 import 'package:habit_app/utils/enums.dart';
 import 'package:habit_app/utils/functions.dart';
+import 'package:habit_app/widgets/ht_text.dart';
 import 'package:quiver/async.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -155,17 +157,19 @@ class TimerBloc extends Disposable {
 
       FlutterRingtonePlayer().playAlarm(looping: false);
 
-      SnackBar snackBar = SnackBar(
-        content: const Text("⏰ Timer Ended!"),
-        dismissDirection: DismissDirection.horizontal,
-        duration: const Duration(seconds: 3),
-        behavior: SnackBarBehavior.floating,
-        margin: HTEdgeInsets.horizontal20,
-        shape: RoundedRectangleBorder(
-          borderRadius: HTBorderRadius.circular12,
+      HTToastBar(
+        autoDismiss: true,
+        snackbarDuration: const Duration(seconds: 3),
+        position: HTSnackbarPosition.top,
+        builder: (context) => const HTToastCard(
+          title: HTText(
+            '⏰ Timer Ended!',
+            typoToken: HTTypoToken.bodyMedium,
+            color: HTColors.white,
+          ),
+          color: HTColors.grey080,
         ),
-      );
-      snackbarKey.currentState?.showSnackBar(snackBar);
+      ).show(shellNavKey.currentContext!);
 
       if (_selectedTask.value != null) {
         appBloc.setTaskDone(_selectedTask.value!, DateTime.now().getDate());
