@@ -8,6 +8,7 @@ import 'package:habit_app/styles/typos.dart';
 import 'package:habit_app/utils/enums.dart';
 import 'package:habit_app/utils/functions.dart';
 import 'package:habit_app/widgets/ht_bottom_modal.dart';
+import 'package:habit_app/widgets/ht_scale.dart';
 import 'package:habit_app/widgets/ht_text.dart';
 import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
@@ -136,7 +137,7 @@ class TimerWidget extends StatelessWidget {
                 Duration? curr = snapshot.data?[1];
 
                 bool isTimerOn =
-                    (curr != null && !curr.isNegative) && start != curr;
+                    curr != null && !curr.isNegative && start != curr;
 
                 return Column(
                   mainAxisSize: MainAxisSize.min,
@@ -144,22 +145,22 @@ class TimerWidget extends StatelessWidget {
                   children: [
                     const TimerTask(),
                     HTSpacers.height32,
-                    if (start != null && curr != null)
-                      Center(
-                        child: Stack(
-                          children: [
-                            Container(
-                              width: timerSize,
-                              height: timerSize,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: HTColors.grey020,
-                                  width: 1,
-                                  strokeAlign: BorderSide.strokeAlignOutside,
-                                ),
+                    Center(
+                      child: Stack(
+                        children: [
+                          Container(
+                            width: timerSize,
+                            height: timerSize,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: HTColors.grey020,
+                                width: 1,
+                                strokeAlign: BorderSide.strokeAlignOutside,
                               ),
                             ),
+                          ),
+                          if (start != null && curr != null)
                             Positioned.fill(
                               child: Center(
                                 child: SizedBox(
@@ -177,30 +178,30 @@ class TimerWidget extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            Positioned.fill(
-                              child: Center(
-                                child: Container(
-                                  width: timerSize - 6.5,
-                                  height: timerSize - 6.5,
-                                  decoration: const BoxDecoration(
-                                    color: HTColors.white,
-                                    shape: BoxShape.circle,
-                                  ),
+                          Positioned.fill(
+                            child: Center(
+                              child: Container(
+                                width: timerSize - 6.5,
+                                height: timerSize - 6.5,
+                                decoration: const BoxDecoration(
+                                  color: HTColors.white,
+                                  shape: BoxShape.circle,
                                 ),
                               ),
                             ),
-                            Positioned(
-                              width: timerSize,
-                              height: timerSize,
-                              child: Center(
-                                child: isTimerOn
-                                    ? const FixedTimerText()
-                                    : EditableTimerText(timerSize: timerSize),
-                              ),
-                            )
-                          ],
-                        ),
+                          ),
+                          Positioned(
+                            width: timerSize,
+                            height: timerSize,
+                            child: Center(
+                              child: isTimerOn
+                                  ? const FixedTimerText()
+                                  : EditableTimerText(timerSize: timerSize),
+                            ),
+                          )
+                        ],
                       ),
+                    ),
                     HTSpacers.height48,
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -559,62 +560,72 @@ class TimerTaskList extends StatelessWidget {
           itemBuilder: (context, index) {
             Task task = tasks[index];
 
-            return GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () {
-                timerBloc.setSelectedTask(task);
-                Navigator.pop(context);
-              },
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                decoration: BoxDecoration(
-                  color: HTColors.white,
-                  border: Border.all(color: HTColors.grey010, width: 1),
-                  borderRadius: HTBorderRadius.circular10,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (task.emoji != null)
-                      HTText(
-                        task.emoji!,
-                        typoToken: HTTypoToken.headlineSmall,
-                        color: HTColors.black,
-                        height: 1.25,
-                      ),
-                    HTText(
-                      task.title,
-                      typoToken: HTTypoToken.headlineSmall,
-                      color: HTColors.black,
-                    ),
-                    Padding(
-                      padding: HTEdgeInsets.top4,
-                      child: Row(
-                        children: [
-                          if (task.until != null)
-                            HTText(
-                              '${untilToText(task.until)} ㆍ ',
-                              typoToken: HTTypoToken.captionSmall,
-                              color: HTColors.grey040,
-                            ),
-                          HTText(
-                            repeatAtToText(task.repeatAt),
-                            typoToken: HTTypoToken.captionSmall,
-                            color: HTColors.grey040,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            );
+            return TimerTaskItem(task: task);
           },
           separatorBuilder: (context, index) {
             return HTSpacers.height8;
           },
           itemCount: tasks.length),
+    );
+  }
+}
+
+class TimerTaskItem extends StatelessWidget {
+  final Task task;
+  const TimerTaskItem({super.key, required this.task});
+
+  @override
+  Widget build(BuildContext context) {
+    TimerBloc timerBloc = context.read<TimerBloc>();
+
+    return HTScale(
+      onTap: () {
+        timerBloc.setSelectedTask(task);
+        Navigator.pop(context);
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        decoration: BoxDecoration(
+          color: HTColors.white,
+          border: Border.all(color: HTColors.grey010, width: 1),
+          borderRadius: HTBorderRadius.circular10,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (task.emoji != null)
+              HTText(
+                task.emoji!,
+                typoToken: HTTypoToken.headlineSmall,
+                color: HTColors.black,
+                height: 1.25,
+              ),
+            HTText(
+              task.title,
+              typoToken: HTTypoToken.headlineSmall,
+              color: HTColors.black,
+            ),
+            Padding(
+              padding: HTEdgeInsets.top4,
+              child: Row(
+                children: [
+                  if (task.until != null)
+                    HTText(
+                      '${untilToText(task.until)} ㆍ ',
+                      typoToken: HTTypoToken.captionSmall,
+                      color: HTColors.grey040,
+                    ),
+                  HTText(
+                    repeatAtToText(task.repeatAt),
+                    typoToken: HTTypoToken.captionSmall,
+                    color: HTColors.grey040,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

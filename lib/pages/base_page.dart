@@ -237,7 +237,7 @@ class BaseEndDrawerItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        rootScaffoldKey.currentState!.closeEndDrawer();
+        // rootScaffoldKey.currentState!.closeEndDrawer();
         onTap();
       },
       child: Padding(
