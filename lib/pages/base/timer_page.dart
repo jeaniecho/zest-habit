@@ -163,7 +163,8 @@ class TimerWidget extends StatelessWidget {
                                   width: timerSize - 5,
                                   height: timerSize - 5,
                                   child: CircularProgressIndicator(
-                                    value: curr.inSeconds / start.inSeconds,
+                                    value: curr.inMilliseconds /
+                                        start.inMilliseconds,
                                     strokeWidth: 5,
                                     backgroundColor: curr.isNegative
                                         ? HTColors.white
@@ -408,6 +409,11 @@ class EditableTimerText extends StatelessWidget {
                         width: timeStringWidth,
                         child: TextField(
                           controller: hourController,
+                          onTap: () {
+                            hourController.selection = TextSelection(
+                                baseOffset: 0,
+                                extentOffset: hourController.text.length);
+                          },
                           onTapOutside: (event) {
                             hourController.text = timerBloc.hourValue;
                             FocusScope.of(context).unfocus();
@@ -434,6 +440,11 @@ class EditableTimerText extends StatelessWidget {
                         width: timeStringWidth,
                         child: TextField(
                           controller: minuteController,
+                          onTap: () {
+                            minuteController.selection = TextSelection(
+                                baseOffset: 0,
+                                extentOffset: minuteController.text.length);
+                          },
                           onTapOutside: (event) {
                             minuteController.text = timerBloc.minuteValue;
                             FocusScope.of(context).unfocus();
@@ -460,6 +471,11 @@ class EditableTimerText extends StatelessWidget {
                         width: timeStringWidth,
                         child: TextField(
                           controller: secondController,
+                          onTap: () {
+                            secondController.selection = TextSelection(
+                                baseOffset: 0,
+                                extentOffset: secondController.text.length);
+                          },
                           onTapOutside: (event) {
                             secondController.text = timerBloc.secondValue;
                             FocusScope.of(context).unfocus();

@@ -17,8 +17,10 @@ class HTThemes {
     cardColor: HTColors.white,
     disabledColor: HTColors.grey020,
     colorScheme: HTColors.lightColorScheme,
-    textSelectionTheme:
-        const TextSelectionThemeData(cursorColor: HTColors.grey060),
+    textSelectionTheme: const TextSelectionThemeData(
+        cursorColor: HTColors.grey060,
+        selectionColor: HTColors.grey030,
+        selectionHandleColor: HTColors.grey040),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         elevation: 0,

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:habit_app/models/task_model.dart';
 import 'package:habit_app/utils/disposable.dart';
 import 'package:habit_app/utils/enums.dart';
+import 'package:habit_app/utils/functions.dart';
 import 'package:quiver/async.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -85,11 +86,12 @@ class TimerBloc extends Disposable {
     });
     sub.onDone(() {
       sub.cancel();
+      timer.cancel();
     });
   }
 
   stopTimer() {
-    _curr.add(_start.value);
+    _curr.add(const Duration(seconds: -1));
     _isTimerPaused.add(false);
     _pausedTime.add(null);
 
@@ -114,11 +116,11 @@ class TimerBloc extends Disposable {
 
     var sub = timer.listen(null);
     sub.onData((data) {
-      _curr.add(_pausedTime.value! - data.elapsed);
+      _curr.add((_pausedTime.value ?? _start.value) - data.elapsed);
     });
     sub.onDone(() {
       sub.cancel();
-      // _isTimerOn.add(false);
+      timer.cancel();
     });
   }
 
