@@ -99,6 +99,7 @@ class DailyBloc extends Disposable {
 
   scrollToToday() {
     dateScrollController.animateTo(dateScrollOffset,
-        duration: const Duration(milliseconds: 300), curve: Curves.ease);
+        duration: const Duration(milliseconds: 350), curve: Curves.ease);
+    setDateIndex(prevDates);
   }
 }
