@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:habit_app/models/task_model.dart';
 import 'package:habit_app/utils/disposable.dart';
 import 'package:habit_app/utils/enums.dart';
-import 'package:habit_app/utils/functions.dart';
 import 'package:quiver/async.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -75,14 +74,17 @@ class TimerBloc extends Disposable {
       seconds: int.tryParse(secondValue) ?? 0,
     ));
 
-    timer = CountdownTimer(_start.value, const Duration(seconds: 0));
+    timer = CountdownTimer(
+        _start.value + const Duration(seconds: 1), const Duration(seconds: 0));
 
     _curr.add(_start.value);
 
     var sub = timer.listen(null);
 
     sub.onData((data) {
-      _curr.add(_start.value - data.elapsed);
+      Duration remainder = _start.value - data.elapsed;
+
+      _curr.add(remainder);
     });
     sub.onDone(() {
       sub.cancel();
