@@ -147,7 +147,7 @@ class TaskAddEmojiPicker extends StatelessWidget {
                 height: MediaQuery.sizeOf(context).height * 0.7,
                 child: LayoutBuilder(builder: (context, constraints) {
                   int crossAxisCount = 7;
-                  double spacing = 12;
+                  double spacing = 6;
                   double emojiSize = (constraints.maxWidth -
                           (spacing * (crossAxisCount - 1))) /
                       crossAxisCount;
@@ -164,14 +164,39 @@ class TaskAddEmojiPicker extends StatelessWidget {
                       controller: emojiScrollController,
                       padding: HTEdgeInsets.all16,
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: crossAxisCount,
-                          mainAxisSpacing: spacing,
-                          crossAxisSpacing: spacing,
-                          childAspectRatio: 1),
+                        crossAxisCount: crossAxisCount,
+                        mainAxisSpacing: spacing,
+                        crossAxisSpacing: spacing,
+                        childAspectRatio: 1,
+                      ),
                       itemBuilder: (context, index) {
+                        if (index == 0) {
+                          return GestureDetector(
+                            onTap: () {
+                              taskAddBloc.setEmoji('');
+                              taskAddBloc.setOpenEmoji(false);
+                            },
+                            child: SizedBox(
+                              width: emojiSize,
+                              height: emojiSize,
+                              child: Center(
+                                  child: Icon(
+                                Icons.emoji_emotions_rounded,
+                                color: HTColors.grey030,
+                                size: emojiSize * 0.75,
+                              )),
+                            ),
+                          );
+                        }
+                        // else if (index >= 1 && index <= crossAxisCount - 1) {
+                        //   return const SizedBox();
+                        // }
+
+                        int newIndex = index - 1;
+
                         return GestureDetector(
                           onTap: () {
-                            taskAddBloc.setEmoji(allEmojis[index]);
+                            taskAddBloc.setEmoji(allEmojis[newIndex]);
                             taskAddBloc.setOpenEmoji(false);
                           },
                           child: SizedBox(
@@ -179,7 +204,7 @@ class TaskAddEmojiPicker extends StatelessWidget {
                             height: emojiSize,
                             child: Center(
                               child: Text(
-                                allEmojis[index],
+                                allEmojis[newIndex],
                                 style: TextStyle(
                                     fontSize: emojiSize * 0.8, height: 1),
                               ),
@@ -187,7 +212,7 @@ class TaskAddEmojiPicker extends StatelessWidget {
                           ),
                         );
                       },
-                      itemCount: allEmojis.length,
+                      itemCount: allEmojis.length + crossAxisCount,
                     ),
                   );
                 }),
