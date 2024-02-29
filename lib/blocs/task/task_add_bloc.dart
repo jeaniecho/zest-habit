@@ -22,7 +22,7 @@ class TaskAddBloc extends Disposable {
   Stream<String> get goal => _goal.stream;
   Function(String) get setGoal => _goal.add;
 
-  final BehaviorSubject<bool> _isRepeat = BehaviorSubject.seeded(false);
+  final BehaviorSubject<bool> _isRepeat = BehaviorSubject.seeded(true);
   Stream<bool> get isRepeat => _isRepeat.stream;
   Function(bool) get setIsRepeat => _isRepeat.add;
   bool get isRepeatValue => _isRepeat.value;
@@ -32,7 +32,8 @@ class TaskAddBloc extends Disposable {
   Stream<RepeatType> get repeatType => _repeatType.stream;
   Function(RepeatType) get setRepeatType => _repeatType.add;
 
-  final BehaviorSubject<List<int>> _repeatAt = BehaviorSubject.seeded([]);
+  final BehaviorSubject<List<int>> _repeatAt =
+      BehaviorSubject.seeded([1, 2, 3, 4, 5, 6, 7]);
   Stream<List<int>> get repeatAt => _repeatAt.stream;
   Function(List<int>) get setRepeatAt => _repeatAt.add;
 
