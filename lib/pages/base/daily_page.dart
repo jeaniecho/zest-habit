@@ -284,6 +284,10 @@ class DailyTaskList extends StatelessWidget {
             stream: Rx.combineLatestList(
                 [dailyBloc.currTasks, dailyBloc.dateIndex]),
             builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
               List<Task> currTasks = snapshot.data?[0] ?? [];
               int dateIndex = snapshot.data?[1] ?? 0;
               List<Task> doneTasks = currTasks
