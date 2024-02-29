@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:habit_app/blocs/base/timer_bloc.dart';
 import 'package:habit_app/models/task_model.dart';
 import 'package:habit_app/router.dart';
@@ -13,7 +14,7 @@ import 'package:habit_app/widgets/ht_text.dart';
 import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
 
-double timeStringWidth = 60;
+double timeStringWidth = 64;
 double timerStringHeight = 72;
 
 class TimerPage extends StatelessWidget {
@@ -96,6 +97,9 @@ class TimerTask extends StatelessWidget {
             builder: (context, snapshot) {
               Task? selectedTask = snapshot.data;
 
+              bool hasEmoji = selectedTask?.emoji != null &&
+                  selectedTask!.emoji!.isNotEmpty;
+
               if (selectedTask == null) {
                 return const HTText(
                   'Select Task...',
@@ -104,10 +108,44 @@ class TimerTask extends StatelessWidget {
                   height: 1.2,
                 );
               } else {
-                return HTText(
-                  '${selectedTask.emoji ?? ''} ${selectedTask.title}',
-                  typoToken: HTTypoToken.subtitleMedium,
-                  color: HTColors.black,
+                return Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (!hasEmoji)
+                      const Padding(
+                        padding: HTEdgeInsets.right4,
+                        child: Icon(
+                          Icons.emoji_emotions_rounded,
+                          color: HTColors.grey030,
+                          size: 18,
+                        ),
+                      ),
+                    HTText(
+                      '${hasEmoji ? '${selectedTask.emoji} ' : ''}${selectedTask.title}',
+                      typoToken: HTTypoToken.subtitleMedium,
+                      color: HTColors.black,
+                    ),
+                    HTSpacers.width8,
+                    GestureDetector(
+                      onTap: () {
+                        HapticFeedback.lightImpact();
+                        timerBloc.setSelectedTask(null);
+                      },
+                      child: Container(
+                        width: 18,
+                        height: 18,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: HTColors.grey040,
+                        ),
+                        child: const Icon(
+                          Icons.close_rounded,
+                          color: HTColors.grey010,
+                          size: 14,
+                        ),
+                      ),
+                    )
+                  ],
                 );
               }
             }),
@@ -593,13 +631,21 @@ class TimerTaskItem extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (task.emoji != null)
-              HTText(
-                task.emoji!,
-                typoToken: HTTypoToken.headlineSmall,
-                color: HTColors.black,
-                height: 1.25,
-              ),
+            task.emoji == null || task.emoji!.isEmpty
+                ? const Padding(
+                    padding: HTEdgeInsets.right4,
+                    child: Icon(
+                      Icons.emoji_emotions_rounded,
+                      color: HTColors.grey030,
+                      size: 24,
+                    ),
+                  )
+                : HTText(
+                    task.emoji!,
+                    typoToken: HTTypoToken.headlineSmall,
+                    color: HTColors.black,
+                    height: 1.25,
+                  ),
             HTText(
               task.title,
               typoToken: HTTypoToken.headlineSmall,
