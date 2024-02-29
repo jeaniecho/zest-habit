@@ -119,13 +119,13 @@ class DailyDates extends StatelessWidget {
                                 children: [
                                   HTText(
                                     date.year.toString(),
-                                    typoToken: HTTypoToken.captionXSmall,
+                                    typoToken: HTTypoToken.captionXXSmall,
                                     color: HTColors.grey040,
                                   ),
                                   HTText(
                                     DateFormat.MMM().format(date),
                                     typoToken: HTTypoToken.captionSmall,
-                                    color: HTColors.grey060,
+                                    color: HTColors.grey050,
                                   ),
                                 ],
                               ),
@@ -155,17 +155,16 @@ class DailyDates extends StatelessWidget {
                                 children: [
                                   HTText(
                                     htWeekdayToText(date.weekday),
-                                    typoToken: HTTypoToken.captionXSmall,
+                                    typoToken: HTTypoToken.captionXXSmall,
                                     color: HTColors.grey030,
                                   ),
                                   HTSpacers.height1,
                                   HTText(
                                     date.day.toString(),
-                                    typoToken: HTTypoToken.subtitleLarge,
+                                    typoToken: HTTypoToken.subtitleMedium,
                                     color: isSelected
                                         ? HTColors.white
                                         : HTColors.black,
-                                    height: 1,
                                   ),
                                 ],
                               ),
