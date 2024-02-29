@@ -18,7 +18,7 @@ class TaskDetailBloc extends Disposable {
   Task get taskObjValue => _taskObj.value;
 
   final BehaviorSubject<bool> _isMonthly = BehaviorSubject<bool>.seeded(true);
-  Stream<bool> get isWeekly => _isMonthly.stream;
+  Stream<bool> get isMonthly => _isMonthly.stream;
 
   final BehaviorSubject<DateTime> _currDate =
       BehaviorSubject.seeded(DateTime.now().getDate());

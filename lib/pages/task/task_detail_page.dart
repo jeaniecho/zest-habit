@@ -227,11 +227,11 @@ class TaskCalendar extends StatelessWidget {
       children: [
         HTSpacers.height32,
         StreamBuilder<bool>(
-            stream: taskDetailBloc.isWeekly,
+            stream: taskDetailBloc.isMonthly,
             builder: (context, snapshot) {
               bool isMonthly = snapshot.data ?? true;
 
-              return isMonthly ? const TaskWeekly() : const TaskMonthly();
+              return isMonthly ? const TaskMonthly() : const TaskWeekly();
             }),
         HTSpacers.height24,
         HTAnimatedToggle(
@@ -676,7 +676,7 @@ class TaskMonthlyCalendar extends StatelessWidget {
                     ),
                     itemBuilder: (context, index) {
                       int currWeekday = index % 7;
-                      if (currWeekday == 0) {
+                      if (currWeekday == 0 && firstDayOfWeek == 0) {
                         currWeekday = 7;
                       }
                       bool repeatToday =

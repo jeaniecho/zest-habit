@@ -28,7 +28,7 @@ class HTAnimatedToggle extends StatefulWidget {
 }
 
 class _HTAnimatedToggleState extends State<HTAnimatedToggle> {
-  bool initialPosition = true;
+  bool initialPosition = false;
   @override
   Widget build(BuildContext context) {
     return SizedBox(
