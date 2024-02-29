@@ -14,6 +14,11 @@ class AppBloc {
   Stream<List<Task>> get tasks => _tasks.stream;
   List<Task> get tasksValue => _tasks.value;
 
+  final BehaviorSubject<Task?> _timerTask = BehaviorSubject.seeded(null);
+  Stream<Task?> get timerTask => _timerTask.stream;
+  Function(Task?) get setTimerTask => _timerTask.add;
+  Task? get timerTaskValue => _timerTask.value;
+
   AppBloc({required this.isar}) {
     getTasks();
   }
@@ -47,6 +52,10 @@ class AppBloc {
       await isar.tasks.delete(task.id);
     });
     await getTasks();
+
+    if (timerTaskValue?.id == task.id) {
+      setTimerTask(null);
+    }
   }
 
   Future<Task> updateTask(Task task) async {
@@ -54,6 +63,10 @@ class AppBloc {
       await isar.tasks.put(task);
     });
     await getTasks();
+
+    if (timerTaskValue?.id == task.id) {
+      setTimerTask(task);
+    }
 
     return task;
   }

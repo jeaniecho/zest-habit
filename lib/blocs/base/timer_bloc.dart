@@ -53,9 +53,9 @@ class TimerBloc extends Disposable {
   Function(String) get setSecond => _second.add;
   String get secondValue => _second.value;
 
-  final BehaviorSubject<Task?> _selectedTask = BehaviorSubject.seeded(null);
-  Stream<Task?> get selectedTask => _selectedTask.stream;
-  Function(Task?) get setSelectedTask => _selectedTask.add;
+  Stream<Task?> get selectedTask => appBloc.timerTask;
+  Function(Task?) get setSelectedTask => appBloc.setTimerTask;
+  Task? get selectedTaskValue => appBloc.timerTaskValue;
 
   late CountdownTimer timer;
 
@@ -79,7 +79,6 @@ class TimerBloc extends Disposable {
     _hour.close();
     _minute.close();
     _second.close();
-    _selectedTask.close();
     timer.cancel();
   }
 
@@ -171,8 +170,8 @@ class TimerBloc extends Disposable {
         ),
       ).show(shellNavKey.currentContext!);
 
-      if (_selectedTask.value != null) {
-        appBloc.setTaskDone(_selectedTask.value!, DateTime.now().getDate());
+      if (selectedTaskValue != null) {
+        appBloc.setTaskDone(selectedTaskValue!, DateTime.now().getDate());
       }
 
       Future.delayed(const Duration(seconds: 1), () {
