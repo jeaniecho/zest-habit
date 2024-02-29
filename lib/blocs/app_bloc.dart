@@ -33,28 +33,28 @@ class AppBloc {
     return await isar.tasks.get(id);
   }
 
-  addTask(Task task) async {
+  Future addTask(Task task) async {
     await isar.writeTxn(() async {
       await isar.tasks.put(task);
     });
     await getTasks();
   }
 
-  deleteTask(Task task) async {
+  Future deleteTask(Task task) async {
     await isar.writeTxn(() async {
       await isar.tasks.delete(task.id);
     });
     await getTasks();
   }
 
-  updateTask(Task task) async {
+  Future updateTask(Task task) async {
     await isar.writeTxn(() async {
       await isar.tasks.put(task);
     });
     await getTasks();
   }
 
-  toggleTask(Task task, DateTime date) async {
+  Future toggleTask(Task task, DateTime date) async {
     try {
       final toRemove =
           task.doneAt.firstWhere((element) => htIsSameDay(element, date));
@@ -69,7 +69,7 @@ class AppBloc {
     await getTasks();
   }
 
-  setTaskDone(Task task, DateTime date) async {
+  Future setTaskDone(Task task, DateTime date) async {
     if (!task.doneAt.contains(date)) {
       task.doneAt.add(date);
 

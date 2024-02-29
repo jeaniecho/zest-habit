@@ -250,6 +250,7 @@ class _TaskAddTitleState extends State<TaskAddTitle> {
       child: Stack(
         children: [
           TextField(
+            controller: taskAddBloc.titleController,
             onChanged: (value) => taskAddBloc.setTitle(value),
             onTapOutside: (event) => FocusScope.of(context).unfocus(),
             style: HTTypoToken.subtitleXLarge.textStyle,
@@ -275,6 +276,7 @@ class _TaskAddTitleState extends State<TaskAddTitle> {
                         '${title.length}/30',
                         typoToken: HTTypoToken.captionMedium,
                         color: HTColors.grey040,
+                        height: 1.25,
                       );
                     }),
               ),
@@ -308,6 +310,7 @@ class _TaskAddGoalState extends State<TaskAddGoal> {
       child: Stack(
         children: [
           TextField(
+            controller: taskAddBloc.goalController,
             onChanged: (value) => taskAddBloc.setGoal(value),
             onTapOutside: (event) => FocusScope.of(context).unfocus(),
             style: HTTypoToken.bodyMedium.textStyle
@@ -699,11 +702,20 @@ class TaskAddSubmit extends StatelessWidget {
                           borderRadius: HTBorderRadius.circular10)),
                   onPressed: canSubmit
                       ? () {
-                          taskAddBloc.addTask();
-
-                          context.push(TaskDetailPage.routeName,
-                              extra: taskAddBloc.getNewTask());
-                          Navigator.pop(context);
+                          if (taskAddBloc.task != null) {
+                            taskAddBloc.updateTask().then((value) {
+                              Navigator.pop(
+                                  context,
+                                  taskAddBloc
+                                      .getUpdatedTask(taskAddBloc.task!));
+                            });
+                          } else {
+                            taskAddBloc.addTask().then((value) {
+                              context.push(TaskDetailPage.routeName,
+                                  extra: taskAddBloc.getNewTask());
+                              Navigator.pop(context);
+                            });
+                          }
                         }
                       : null,
                   child: const Row(

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:habit_app/blocs/app_bloc.dart';
 import 'package:habit_app/models/task_model.dart';
 import 'package:habit_app/utils/disposable.dart';
@@ -7,6 +8,7 @@ import 'package:rxdart/rxdart.dart';
 
 class TaskAddBloc extends Disposable {
   final AppBloc appBloc;
+  final Task? task;
 
   final BehaviorSubject<String> _title = BehaviorSubject.seeded('');
   Stream<String> get title => _title.stream;
@@ -47,7 +49,31 @@ class TaskAddBloc extends Disposable {
   Stream<bool> get openEmoji => _openEmoji.stream;
   Function(bool) get setOpenEmoji => _openEmoji.add;
 
-  TaskAddBloc({required this.appBloc});
+  late final TextEditingController titleController;
+  late final TextEditingController goalController;
+
+  TaskAddBloc({
+    required this.appBloc,
+    this.task,
+  }) {
+    if (task != null) {
+      bool isRepeatValue = task!.repeatAt != null && task!.repeatAt!.isNotEmpty;
+
+      _emoji.add(task!.emoji ?? '');
+      _title.add(task!.title);
+      _goal.add(task!.goal ?? '');
+      _isRepeat.add(isRepeatValue);
+      _repeatAt.add(task!.repeatAt ?? []);
+      _repeatType.add(isRepeatValue
+          ? htGetRepeatType(task!.repeatAt ?? [])
+          : RepeatType.everyday);
+      _from.add(task!.from);
+      _until.add(task!.until);
+    }
+
+    titleController = TextEditingController(text: task?.title);
+    goalController = TextEditingController(text: task?.goal);
+  }
 
   @override
   void dispose() {
@@ -85,8 +111,28 @@ class TaskAddBloc extends Disposable {
     );
   }
 
-  addTask() {
-    appBloc.addTask(getNewTask());
+  Future addTask() async {
+    await appBloc.addTask(getNewTask());
+  }
+
+  Task getUpdatedTask(Task task) {
+    return Task(
+      id: task.id,
+      from: _from.value,
+      emoji: _emoji.value,
+      title: _title.value,
+      repeatAt: _repeatAt.value,
+      goal: _goal.value,
+      desc: '',
+      until: _until.value,
+      doneAt: task.doneAt,
+    );
+  }
+
+  Future updateTask() async {
+    if (task != null) {
+      await appBloc.updateTask(getUpdatedTask(task!));
+    }
   }
 
   toggleOpenEmoji() {

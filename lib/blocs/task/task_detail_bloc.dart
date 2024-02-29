@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:habit_app/blocs/app_bloc.dart';
-import 'package:habit_app/blocs/task/task_edit_bloc.dart';
+import 'package:habit_app/blocs/task/task_add_bloc.dart';
 import 'package:habit_app/models/task_model.dart';
-import 'package:habit_app/pages/task/task_edit_page.dart';
+import 'package:habit_app/pages/task/task_add_page.dart';
 import 'package:habit_app/styles/colors.dart';
 import 'package:habit_app/utils/disposable.dart';
 import 'package:habit_app/utils/functions.dart';
@@ -100,16 +100,10 @@ class TaskDetailBloc extends Disposable {
         useSafeArea: true,
         builder: (context) {
           return Provider(
-              create: (context) => TaskEditBloc(
+              create: (context) => TaskAddBloc(
                   appBloc: context.read<AppBloc>(), task: taskObjValue),
               dispose: (context, value) => value.dispose(),
-              child: Provider(
-                  create: (context) => TaskEditBloc(
-                        appBloc: context.read<AppBloc>(),
-                        task: taskObjValue,
-                      ),
-                  dispose: (context, value) => value.dispose(),
-                  child: const TaskEditWidget()));
+              child: const TaskAddWidget());
         }).then((task) {
       if (task != null && task.runtimeType == Task) {
         setTaskObj(task as Task);
