@@ -615,10 +615,16 @@ class _TaskAddUntilState extends State<TaskAddUntil> {
     DateTime today = DateTime.now().getDate();
 
     return StreamBuilder<List>(
-        stream: Rx.combineLatestList([taskAddBloc.until, taskAddBloc.from]),
+        stream: Rx.combineLatestList(
+            [taskAddBloc.until, taskAddBloc.from, taskAddBloc.isRepeat]),
         builder: (context, snapshot) {
           DateTime? until = snapshot.data?[0];
           DateTime from = snapshot.data?[1] ?? today;
+          bool isRepeat = snapshot.data?[2] ?? true;
+
+          if (!isRepeat) {
+            return const SizedBox.shrink();
+          }
 
           if (until != null && until.isBefore(from)) {
             taskAddBloc.setUntil(null);
@@ -682,7 +688,7 @@ class _TaskAddUntilState extends State<TaskAddUntil> {
               if (_showCalendar && until != null)
                 HTCalendar(
                     selectedDate: until,
-                    firstDay: from,
+                    firstDay: from.add(const Duration(days: 1)),
                     onSelected: (selectedDay) {
                       taskAddBloc.setUntil(selectedDay.getDate());
                     }),
