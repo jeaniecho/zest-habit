@@ -9,6 +9,8 @@ enum HTTypoToken {
 
   headlineLarge(36, 1.4, 0, FontWeight.w700),
 
+  headlineML(32, 1.4, 0, FontWeight.w700),
+
   headlineMedium(28, 1.5, 0, FontWeight.w700),
 
   headlineSmall(24, 1.5, 0, FontWeight.w700),

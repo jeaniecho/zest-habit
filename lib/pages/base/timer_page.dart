@@ -45,7 +45,7 @@ class TimerAppbar extends StatelessWidget {
             children: [
               const HTText(
                 'Timer',
-                typoToken: HTTypoToken.headlineLarge,
+                typoToken: HTTypoToken.headlineML,
                 color: HTColors.black,
               ),
               const Spacer(),

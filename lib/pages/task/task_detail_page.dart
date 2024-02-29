@@ -165,12 +165,17 @@ class TaskDesc extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    if (task.emoji != null)
-                      HTText(
-                        task.emoji!,
-                        typoToken: HTTypoToken.headlineLarge,
-                        color: HTColors.black,
-                      ),
+                    task.emoji != null && task.emoji!.isNotEmpty
+                        ? HTText(
+                            task.emoji!,
+                            typoToken: HTTypoToken.headlineLarge,
+                            color: HTColors.black,
+                          )
+                        : const Icon(
+                            Icons.emoji_emotions_rounded,
+                            color: HTColors.grey030,
+                            size: 36,
+                          ),
                     const Spacer(),
                     const TaskEditButton(),
                   ],
@@ -180,7 +185,7 @@ class TaskDesc extends StatelessWidget {
                   typoToken: HTTypoToken.headlineMedium,
                   color: HTColors.black,
                 ),
-                if (task.goal != null)
+                if (task.goal != null && task.goal!.isNotEmpty)
                   Padding(
                     padding: HTEdgeInsets.top8,
                     child: HTText(
