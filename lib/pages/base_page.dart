@@ -56,7 +56,12 @@ class BasePage extends StatelessWidget {
                     GestureDetector(
                       behavior: HitTestBehavior.opaque,
                       onTap: () {
-                        context.go(DailyPage.routeName);
+                        if (context.canPop()) {
+                          context.go(DailyPage.routeName);
+                        } else {
+                          context.replace(DailyPage.routeName);
+                        }
+
                         appBloc.setBottomIndex(0);
                       },
                       child: SizedBox(
@@ -109,7 +114,12 @@ class BasePage extends StatelessWidget {
                     GestureDetector(
                       behavior: HitTestBehavior.opaque,
                       onTap: () {
-                        context.go(TimerPage.routeName);
+                        if (context.canPop()) {
+                          context.go(TimerPage.routeName);
+                        } else {
+                          context.replace(TimerPage.routeName);
+                        }
+
                         appBloc.setBottomIndex(1);
                       },
                       child: SizedBox(
