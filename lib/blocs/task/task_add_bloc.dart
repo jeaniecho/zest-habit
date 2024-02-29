@@ -112,8 +112,8 @@ class TaskAddBloc extends Disposable {
     );
   }
 
-  Future addTask() async {
-    await appBloc.addTask(getNewTask());
+  Future<Task> addTask() async {
+    return await appBloc.addTask(getNewTask());
   }
 
   Task getUpdatedTask(Task task) {
@@ -130,10 +130,12 @@ class TaskAddBloc extends Disposable {
     );
   }
 
-  Future updateTask() async {
+  Future<Task?> updateTask() async {
     if (task != null) {
-      await appBloc.updateTask(getUpdatedTask(task!));
+      return await appBloc.updateTask(getUpdatedTask(task!));
     }
+
+    return null;
   }
 
   toggleOpenEmoji() {

@@ -727,15 +727,15 @@ class TaskAddSubmit extends StatelessWidget {
                       ? () {
                           if (taskAddBloc.task != null) {
                             taskAddBloc.updateTask().then((value) {
-                              Navigator.pop(
-                                  context,
-                                  taskAddBloc
-                                      .getUpdatedTask(taskAddBloc.task!));
+                              if (value != null) {
+                                Navigator.pop(
+                                    context, taskAddBloc.getUpdatedTask(value));
+                              }
                             });
                           } else {
                             taskAddBloc.addTask().then((value) {
                               context.push(TaskDetailPage.routeName,
-                                  extra: taskAddBloc.getNewTask());
+                                  extra: value);
                               Navigator.pop(context);
                             });
                           }
