@@ -588,7 +588,7 @@ class _TaskAddFromState extends State<TaskAddFrom> {
               if (_showCalendar)
                 HTCalendar(
                     selectedDate: from,
-                    lastDay: until,
+                    lastDay: until?.subtract(const Duration(days: 1)),
                     onSelected: (selectedDay) {
                       taskAddBloc.setFrom(selectedDay.getDate());
                     }),
