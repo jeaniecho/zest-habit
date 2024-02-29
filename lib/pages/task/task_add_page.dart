@@ -433,44 +433,8 @@ class TaskAddRepeatAt extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            HTRadio(
-                                value: RepeatType.everyday,
-                                groupValue: repeatType,
-                                text: 'Everyday',
-                                padding: HTEdgeInsets.vertical8,
-                                onTap: () {
-                                  taskAddBloc
-                                      .setRepeatType(RepeatType.everyday);
-                                  taskAddBloc
-                                      .setRepeatAt([1, 2, 3, 4, 5, 6, 7]);
-                                }),
-                            HTRadio(
-                                value: RepeatType.weekday,
-                                groupValue: repeatType,
-                                text: 'Weekday',
-                                padding: HTEdgeInsets.vertical8,
-                                onTap: () {
-                                  taskAddBloc.setRepeatType(RepeatType.weekday);
-                                  taskAddBloc.setRepeatAt([1, 2, 3, 4, 5]);
-                                }),
-                            HTRadio(
-                                value: RepeatType.weekend,
-                                groupValue: repeatType,
-                                text: 'Weekend',
-                                padding: HTEdgeInsets.vertical8,
-                                onTap: () {
-                                  taskAddBloc.setRepeatType(RepeatType.weekend);
-                                  taskAddBloc.setRepeatAt([6, 7]);
-                                }),
-                            HTRadio(
-                                value: RepeatType.custom,
-                                groupValue: repeatType,
-                                text: 'Custom',
-                                padding: HTEdgeInsets.vertical8,
-                                onTap: () {
-                                  taskAddBloc.setRepeatType(RepeatType.custom);
-                                  taskAddBloc.setRepeatAt([1, 3, 5]);
-                                }),
+                            ...RepeatType.values.map((e) => TaskAddRepeatRadio(
+                                groupValue: repeatType, repeatType: e)),
                             if (repeatType == RepeatType.custom)
                               LayoutBuilder(builder: (context, constraints) {
                                 double size =
@@ -534,6 +498,28 @@ class TaskAddRepeatAt extends StatelessWidget {
                     }),
             ],
           );
+        });
+  }
+}
+
+class TaskAddRepeatRadio extends StatelessWidget {
+  final RepeatType groupValue;
+  final RepeatType repeatType;
+  const TaskAddRepeatRadio(
+      {super.key, required this.groupValue, required this.repeatType});
+
+  @override
+  Widget build(BuildContext context) {
+    TaskAddBloc taskAddBloc = context.read<TaskAddBloc>();
+
+    return HTRadio(
+        value: repeatType,
+        groupValue: groupValue,
+        text: repeatType.text,
+        padding: HTEdgeInsets.vertical8,
+        onTap: () {
+          taskAddBloc.setRepeatType(repeatType);
+          taskAddBloc.setRepeatAt(repeatType.days);
         });
   }
 }
