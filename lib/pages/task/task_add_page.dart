@@ -187,12 +187,11 @@ class TaskAddEmojiPicker extends StatelessWidget {
                               )),
                             ),
                           );
+                        } else if (index >= 1 && index <= crossAxisCount - 1) {
+                          return const SizedBox();
                         }
-                        // else if (index >= 1 && index <= crossAxisCount - 1) {
-                        //   return const SizedBox();
-                        // }
 
-                        int newIndex = index - 1;
+                        int newIndex = index - crossAxisCount;
 
                         return GestureDetector(
                           onTap: () {
