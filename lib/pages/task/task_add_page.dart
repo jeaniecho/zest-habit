@@ -107,7 +107,7 @@ class TaskAddEmoji extends StatelessWidget {
                 return const Icon(
                   Icons.emoji_emotions_rounded,
                   color: HTColors.grey030,
-                  size: 32,
+                  size: 28,
                 );
               } else {
                 return Center(
@@ -255,10 +255,12 @@ class _TaskAddTitleState extends State<TaskAddTitle> {
             onTapOutside: (event) => FocusScope.of(context).unfocus(),
             style: HTTypoToken.subtitleXLarge.textStyle,
             maxLength: 30,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               counterText: '',
-              suffix: SizedBox(
-                width: 48,
+              suffix: const SizedBox(width: 48),
+              hintText: 'Add your task here...',
+              hintStyle: HTTypoToken.bodyXLarge.textStyle.copyWith(
+                color: HTColors.grey030,
               ),
             ),
           ),
@@ -318,7 +320,13 @@ class _TaskAddGoalState extends State<TaskAddGoal> {
             maxLength: 100,
             maxLines: 7,
             minLines: 7,
-            decoration: const InputDecoration(counterText: ''),
+            decoration: InputDecoration(
+                counterText: '',
+                hintText:
+                    '(Optional) Describe the habit you want to build and set your goals here.',
+                hintStyle: HTTypoToken.bodyMedium.textStyle.copyWith(
+                  color: HTColors.grey030,
+                )),
           ),
           if (_hasFocus)
             Positioned(
@@ -681,15 +689,13 @@ class TaskAddSubmit extends StatelessWidget {
     TaskAddBloc taskAddBloc = context.read<TaskAddBloc>();
 
     return StreamBuilder<List>(
-        stream: Rx.combineLatestList(
-            [taskAddBloc.emoji, taskAddBloc.title, taskAddBloc.goal]),
+        stream: Rx.combineLatestList([
+          taskAddBloc.title,
+        ]),
         builder: (context, snapshot) {
-          String emoji = snapshot.data?[0] ?? '';
-          String title = snapshot.data?[1] ?? '';
-          String goal = snapshot.data?[2] ?? '';
+          String title = snapshot.data?[0] ?? '';
 
-          bool canSubmit =
-              emoji.isNotEmpty && title.isNotEmpty && goal.isNotEmpty;
+          bool canSubmit = title.isNotEmpty;
 
           return SafeArea(
             child: Container(
