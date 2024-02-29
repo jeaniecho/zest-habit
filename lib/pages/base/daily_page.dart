@@ -279,21 +279,23 @@ class DailyTaskList extends StatelessWidget {
 
     return Expanded(
       child: Container(
-          color: HTColors.grey010,
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-            child: StreamBuilder<List>(
-                stream: Rx.combineLatestList(
-                    [dailyBloc.currTasks, dailyBloc.dateIndex]),
-                builder: (context, snapshot) {
-                  List<Task> currTasks = snapshot.data?[0] ?? [];
-                  int dateIndex = snapshot.data?[1] ?? 0;
-                  List<Task> doneTasks = currTasks
-                      .where((element) =>
-                          htIsDone(dailyBloc.dates[dateIndex], element.doneAt))
-                      .toList();
+        color: HTColors.grey010,
+        child: StreamBuilder<List>(
+            stream: Rx.combineLatestList(
+                [dailyBloc.currTasks, dailyBloc.dateIndex]),
+            builder: (context, snapshot) {
+              List<Task> currTasks = snapshot.data?[0] ?? [];
+              int dateIndex = snapshot.data?[1] ?? 0;
+              List<Task> doneTasks = currTasks
+                  .where((element) =>
+                      htIsDone(dailyBloc.dates[dateIndex], element.doneAt))
+                  .toList();
 
-                  return Column(
+              if (currTasks.isEmpty) {
+                return Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+                  child: Column(
                     children: [
                       Padding(
                         padding: HTEdgeInsets.horizontal8,
@@ -313,23 +315,80 @@ class DailyTaskList extends StatelessWidget {
                           ],
                         ),
                       ),
-                      HTSpacers.height8,
-                      ListView.separated(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemBuilder: (context, index) {
-                            Task task = currTasks[index];
-
-                            return TaskBox(task: task);
-                          },
-                          separatorBuilder: (context, index) {
-                            return HTSpacers.height8;
-                          },
-                          itemCount: currTasks.length)
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              width: 120,
+                              height: 120,
+                              decoration: BoxDecoration(
+                                color: HTColors.grey020,
+                                borderRadius: HTBorderRadius.circular12,
+                              ),
+                            ),
+                            HTSpacers.height24,
+                            const HTText(
+                              'Let\'s kickstart with a new task!',
+                              typoToken: HTTypoToken.subtitleLarge,
+                              color: HTColors.black,
+                            ),
+                            HTSpacers.height8,
+                            const HTText(
+                              'Start your habit journey now! Add a task to get going.',
+                              typoToken: HTTypoToken.bodyXSmall,
+                              color: HTColors.grey050,
+                            ),
+                            HTSpacers.height40,
+                          ],
+                        ),
+                      ),
                     ],
-                  );
-                }),
-          )),
+                  ),
+                );
+              }
+
+              return SingleChildScrollView(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: HTEdgeInsets.horizontal8,
+                      child: Row(
+                        children: [
+                          HTText(
+                            '${currTasks.length} Task${currTasks.length > 1 ? 's' : ''}',
+                            typoToken: HTTypoToken.captionSmall,
+                            color: HTColors.grey040,
+                          ),
+                          const Spacer(),
+                          HTText(
+                            '${doneTasks.length} Done',
+                            typoToken: HTTypoToken.captionSmall,
+                            color: HTColors.grey040,
+                          ),
+                        ],
+                      ),
+                    ),
+                    HTSpacers.height8,
+                    ListView.separated(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          Task task = currTasks[index];
+
+                          return TaskBox(task: task);
+                        },
+                        separatorBuilder: (context, index) {
+                          return HTSpacers.height8;
+                        },
+                        itemCount: currTasks.length)
+                  ],
+                ),
+              );
+            }),
+      ),
     );
   }
 }

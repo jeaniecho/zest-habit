@@ -591,6 +591,39 @@ class TimerTaskList extends StatelessWidget {
 
     List<Task> tasks = timerBloc.getTodayTasks();
 
+    if (tasks.isEmpty) {
+      return Expanded(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width: 120,
+                height: 120,
+                decoration: BoxDecoration(
+                  color: HTColors.grey020,
+                  borderRadius: HTBorderRadius.circular12,
+                ),
+              ),
+              HTSpacers.height24,
+              const HTText(
+                'There is no task',
+                typoToken: HTTypoToken.subtitleLarge,
+                color: HTColors.black,
+              ),
+              HTSpacers.height8,
+              const HTText(
+                'Start your habit journey now! Add a task to get going.',
+                typoToken: HTTypoToken.bodyXSmall,
+                color: HTColors.grey050,
+              ),
+              HTSpacers.height160,
+            ],
+          ),
+        ),
+      );
+    }
+
     return Expanded(
       child: ListView.separated(
           padding:
