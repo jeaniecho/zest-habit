@@ -8,30 +8,15 @@ class HTBottomModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double mainHeight = MediaQuery.sizeOf(context).height * 0.92;
+    double mainHeight = MediaQuery.sizeOf(context).height;
 
-    return SizedBox(
-      height: mainHeight + 12,
-      child: Column(
-        children: [
-          Container(
-            height: 12,
-            width: MediaQuery.sizeOf(context).width - 48,
-            decoration: const BoxDecoration(
-              color: HTColors.white50,
-              borderRadius: HTBorderRadius.top40,
-            ),
-          ),
-          Container(
-            height: mainHeight,
-            decoration: const BoxDecoration(
-              color: HTColors.white,
-              borderRadius: HTBorderRadius.top24,
-            ),
-            child: child,
-          ),
-        ],
+    return Container(
+      height: mainHeight,
+      decoration: const BoxDecoration(
+        color: HTColors.white,
+        borderRadius: HTBorderRadius.top24,
       ),
+      child: child,
     );
   }
 }
