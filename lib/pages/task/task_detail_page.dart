@@ -47,6 +47,40 @@ class TaskDetailAction extends StatelessWidget {
     AppBloc appBloc = context.read<AppBloc>();
     TaskDetailBloc taskDetailBloc = context.read<TaskDetailBloc>();
 
+    showDeleteDialog() {
+      showCupertinoModalPopup(
+          context: context,
+          builder: (context) => CupertinoAlertDialog(
+                title: const Text('Delete your task?'),
+                content: const Text(
+                    'Removing this task clears all habit tracking data.'),
+                actions: <CupertinoDialogAction>[
+                  CupertinoDialogAction(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text(
+                      'Cancel',
+                      style: TextStyle(color: CupertinoColors.activeBlue),
+                    ),
+                  ),
+                  CupertinoDialogAction(
+                      isDefaultAction: true,
+                      isDestructiveAction: true,
+                      onPressed: () {
+                        Navigator.pop(context);
+
+                        appBloc
+                            .deleteTask(taskDetailBloc.taskObjValue)
+                            .then((value) {
+                          context.pop();
+                        });
+                      },
+                      child: const Text('Delete')),
+                ],
+              ));
+    }
+
     return PullDownButton(
         offset: const Offset(4, 4),
         routeTheme: const PullDownMenuRouteTheme().copyWith(
@@ -67,8 +101,7 @@ class TaskDetailAction extends StatelessWidget {
                 icon: CupertinoIcons.trash,
                 isDestructive: true,
                 onTap: () {
-                  context.pop();
-                  appBloc.deleteTask(taskDetailBloc.taskObjValue);
+                  showDeleteDialog();
                 },
               ),
             ],
