@@ -112,6 +112,13 @@ RepeatType htGetRepeatType(List<int> repeatAt) {
   }
 }
 
+int getLastDateOfMonth(DateTime dateTime) {
+  return (dateTime.month < 12
+          ? DateTime(dateTime.year, dateTime.month + 1, 0)
+          : DateTime(dateTime.year + 1, 1, 0))
+      .day;
+}
+
 String stndrd(int num) {
   if (num % 10 == 1) {
     return 'st';

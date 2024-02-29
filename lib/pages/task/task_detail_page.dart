@@ -502,10 +502,7 @@ class TaskWeeklyCalendar extends StatelessWidget {
             DateTime now = DateTime.now().getDate();
             DateTime currDate = htMostRecentWeekday(snapshot.data?[0] ?? now);
             DateTime firstDay = htMostRecentWeekday(currDate);
-
-            int lastDate = DateTime(currDate.year, currDate.month, 1)
-                .subtract(const Duration(days: 1))
-                .day;
+            int lastDate = getLastDateOfMonth(currDate);
 
             List<int> doneDates = snapshot.data?[1] ?? [];
 
