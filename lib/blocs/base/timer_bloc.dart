@@ -200,6 +200,7 @@ class TimerBloc extends Disposable {
         DateTime now = DateTime.now().getDate();
 
         appBloc.setTimerTaskDone(selectedTaskValue!, now);
+        appBloc.setTimerTask(null);
       }
 
       Future.delayed(const Duration(seconds: 1), () {

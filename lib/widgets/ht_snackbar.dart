@@ -51,23 +51,24 @@ class HTToastBar {
 
   /// Push the snackbar in current context
   void show(BuildContext context) {
-    if (checkSame(name) > 0) {
-      gapBetweenCard = 0;
-    } else {
-      gapBetweenCard = 16;
-    }
-
     OverlayState overlayState = Navigator.of(context).overlay!;
     info = SnackBarInfo(
       key: GlobalKey<RawHTToastState>(),
       createdAt: DateTime.now(),
     );
+
+    bool hasSame = checkSame(name, info.key) > 0;
+    if (hasSame) {
+      gapBetweenCard = 0;
+    } else {
+      gapBetweenCard = 16;
+    }
+
     info.entry = OverlayEntry(
       builder: (_) => RawHTToast(
         key: info.key,
-        animationDuration: checkSame(name) > 0
-            ? const Duration(seconds: 0)
-            : animationDuration,
+        animationDuration:
+            hasSame ? const Duration(seconds: 0) : animationDuration,
         snackbarPosition: position,
         animationCurve: animationCurve,
         autoDismiss: autoDismiss,
@@ -82,13 +83,13 @@ class HTToastBar {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _toastBars.add(this);
       overlayState.insert(info.entry);
-    });
 
-    if (checkSame(name) > 1) {
-      Future.delayed(const Duration(milliseconds: 60), () {
-        removeSame(name, info.key);
-      });
-    }
+      if (checkSame(name, info.key) > 0) {
+        Future.delayed(const Duration(milliseconds: 100), () {
+          removeSame(name, info.key);
+        });
+      }
+    });
   }
 
   /// Remove all the snackbar in the context
@@ -100,8 +101,10 @@ class HTToastBar {
   }
 
   // Check if same snackbar exists
-  static int checkSame(String name) {
-    return _toastBars.where((element) => element.name == name).length;
+  static int checkSame(String name, GlobalKey except) {
+    return _toastBars
+        .where((element) => element.name == name && element.info.key != except)
+        .length;
   }
 
   // Remove same contents

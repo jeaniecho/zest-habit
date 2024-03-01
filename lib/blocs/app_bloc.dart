@@ -88,6 +88,9 @@ class AppBloc {
 
   Future setTimerTaskDone(Task task, DateTime date) async {
     if (!task.doneWithTimer.contains(date)) {
+      if (task.doneWithTimer.isEmpty) {
+        task.doneWithTimer = [date];
+      }
       task.doneWithTimer.add(date);
     }
 
