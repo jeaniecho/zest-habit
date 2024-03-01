@@ -98,8 +98,12 @@ class DailyBloc extends Disposable {
   }
 
   scrollToToday() {
-    dateScrollController.animateTo(dateScrollOffset,
-        duration: const Duration(milliseconds: 350), curve: Curves.ease);
+    DateTime now = DateTime.now().getDate();
+
+    dateScrollController.animateTo(
+        dateScrollOffset + (now.day == 1 ? dateWidth : 0),
+        duration: const Duration(milliseconds: 350),
+        curve: Curves.ease);
     setDateIndex(prevDates);
   }
 }
