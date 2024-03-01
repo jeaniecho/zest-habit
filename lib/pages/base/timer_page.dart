@@ -220,13 +220,14 @@ class TimerWidget extends StatelessWidget {
                                   width: timerSize - 5,
                                   height: timerSize - 5,
                                   child: CircularProgressIndicator(
-                                    value: curr.inMilliseconds /
-                                        start.inMilliseconds,
+                                    value: 1 -
+                                        curr.inMilliseconds /
+                                            start.inMilliseconds,
                                     strokeWidth: 5,
-                                    backgroundColor: curr.isNegative
+                                    backgroundColor: HTColors.white,
+                                    color: curr.isNegative
                                         ? HTColors.white
                                         : HTColors.black,
-                                    color: HTColors.white,
                                   ),
                                 ),
                               ),
