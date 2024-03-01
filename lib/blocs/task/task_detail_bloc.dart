@@ -30,7 +30,7 @@ class TaskDetailBloc extends Disposable {
   TaskDetailBloc({required this.task}) {
     _taskObj = BehaviorSubject.seeded(task);
 
-    getDoneDatesForWeek(DateTime.now().getDate());
+    getDoneDatesForMonth(_currDate.value);
   }
 
   @override
@@ -45,9 +45,9 @@ class TaskDetailBloc extends Disposable {
     DateTime now = DateTime.now().getDate();
 
     if (_isMonthly.value) {
-      getDoneDatesForMonth(now);
-    } else {
       getDoneDatesForWeek(now);
+    } else {
+      getDoneDatesForMonth(now);
     }
 
     _currDate.add(now);
