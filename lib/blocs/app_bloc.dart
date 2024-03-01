@@ -86,7 +86,11 @@ class AppBloc {
     await getTasks();
   }
 
-  Future setTaskDone(Task task, DateTime date) async {
+  Future setTimerTaskDone(Task task, DateTime date) async {
+    if (!task.doneWithTimer.contains(date)) {
+      task.doneWithTimer.add(date);
+    }
+
     if (!task.doneAt.contains(date)) {
       task.doneAt.add(date);
 

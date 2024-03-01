@@ -74,83 +74,97 @@ class TimerTask extends StatelessWidget {
   Widget build(BuildContext context) {
     TimerBloc timerBloc = context.read<TimerBloc>();
 
-    return GestureDetector(
-      onTap: () {
-        showModalBottomSheet(
-            context: context,
-            useRootNavigator: true,
-            isScrollControlled: true,
-            backgroundColor: HTColors.clear,
-            useSafeArea: true,
-            builder: (context) {
-              return const TimerTaskPicker();
-            });
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        decoration: BoxDecoration(
-          color: HTColors.grey010,
-          borderRadius: HTBorderRadius.circular10,
-        ),
-        child: StreamBuilder<Task?>(
-            stream: timerBloc.selectedTask,
-            builder: (context, snapshot) {
-              Task? selectedTask = snapshot.data;
+    return StreamBuilder<List>(
+        stream: Rx.combineLatestList([timerBloc.start, timerBloc.curr]),
+        builder: (context, snapshot) {
+          Duration? start = snapshot.data?[0];
+          Duration? curr = snapshot.data?[1];
 
-              bool hasEmoji = selectedTask?.emoji != null &&
-                  selectedTask!.emoji!.isNotEmpty;
+          bool isTimerOn = curr != null && !curr.isNegative && start != curr;
 
-              if (selectedTask == null) {
-                return const HTText(
-                  'Select Task...',
-                  typoToken: HTTypoToken.bodyMedium,
-                  color: HTColors.grey040,
-                  height: 1.2,
-                );
-              } else {
-                return Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (!hasEmoji)
-                      const Padding(
-                        padding: HTEdgeInsets.right4,
-                        child: Icon(
-                          Icons.emoji_emotions_rounded,
-                          color: HTColors.grey030,
-                          size: 18,
-                        ),
-                      ),
-                    HTText(
-                      '${hasEmoji ? '${selectedTask.emoji} ' : ''}${selectedTask.title}',
-                      typoToken: HTTypoToken.subtitleMedium,
-                      color: HTColors.black,
-                    ),
-                    HTSpacers.width8,
-                    GestureDetector(
-                      onTap: () {
-                        HapticFeedback.lightImpact();
-                        timerBloc.setSelectedTask(null);
-                      },
-                      child: Container(
-                        width: 18,
-                        height: 18,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: HTColors.grey040,
-                        ),
-                        child: const Icon(
-                          Icons.close_rounded,
-                          color: HTColors.grey010,
-                          size: 14,
-                        ),
-                      ),
-                    )
-                  ],
-                );
-              }
-            }),
-      ),
-    );
+          return GestureDetector(
+            onTap: isTimerOn
+                ? null
+                : () {
+                    showModalBottomSheet(
+                        context: context,
+                        useRootNavigator: true,
+                        isScrollControlled: true,
+                        backgroundColor: HTColors.clear,
+                        useSafeArea: true,
+                        builder: (context) {
+                          return const TimerTaskPicker();
+                        });
+                  },
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                color: HTColors.grey010,
+                borderRadius: HTBorderRadius.circular10,
+              ),
+              child: StreamBuilder<Task?>(
+                  stream: timerBloc.selectedTask,
+                  builder: (context, snapshot) {
+                    Task? selectedTask = snapshot.data;
+
+                    bool hasEmoji = selectedTask?.emoji != null &&
+                        selectedTask!.emoji!.isNotEmpty;
+
+                    if (selectedTask == null) {
+                      return const HTText(
+                        'Select Task...',
+                        typoToken: HTTypoToken.bodyMedium,
+                        color: HTColors.grey040,
+                        height: 1.2,
+                      );
+                    } else {
+                      return Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (!hasEmoji)
+                            const Padding(
+                              padding: HTEdgeInsets.right4,
+                              child: Icon(
+                                Icons.emoji_emotions_rounded,
+                                color: HTColors.grey030,
+                                size: 18,
+                              ),
+                            ),
+                          HTText(
+                            '${hasEmoji ? '${selectedTask.emoji} ' : ''}${selectedTask.title}',
+                            typoToken: HTTypoToken.subtitleMedium,
+                            color: HTColors.black,
+                          ),
+                          if (!isTimerOn)
+                            Padding(
+                              padding: HTEdgeInsets.left8,
+                              child: GestureDetector(
+                                onTap: () {
+                                  HapticFeedback.lightImpact();
+                                  timerBloc.setSelectedTask(null);
+                                },
+                                child: Container(
+                                  width: 18,
+                                  height: 18,
+                                  decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: HTColors.grey040,
+                                  ),
+                                  child: const Icon(
+                                    Icons.close_rounded,
+                                    color: HTColors.grey010,
+                                    size: 14,
+                                  ),
+                                ),
+                              ),
+                            )
+                        ],
+                      );
+                    }
+                  }),
+            ),
+          );
+        });
   }
 }
 

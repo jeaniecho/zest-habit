@@ -24,7 +24,6 @@ class TaskAddBloc extends Disposable {
 
   final BehaviorSubject<bool> _isRepeat = BehaviorSubject.seeded(true);
   Stream<bool> get isRepeat => _isRepeat.stream;
-  Function(bool) get setIsRepeat => _isRepeat.add;
   bool get isRepeatValue => _isRepeat.value;
 
   final BehaviorSubject<RepeatType> _repeatType =
@@ -94,6 +93,17 @@ class TaskAddBloc extends Disposable {
     _until.close();
     _openEmoji.close();
     _selectedColor.close();
+  }
+
+  setIsRepeat(bool repeat) {
+    _isRepeat.add(repeat);
+
+    if (repeat) {
+      _repeatType.add(RepeatType.everyday);
+      _repeatAt.add([1, 2, 3, 4, 5, 6, 7]);
+    } else {
+      _repeatAt.add([]);
+    }
   }
 
   toggleRepeatAt(int day) {

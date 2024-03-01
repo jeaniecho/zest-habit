@@ -27,6 +27,9 @@ class TaskDetailBloc extends Disposable {
   final BehaviorSubject<List<int>> _doneDates = BehaviorSubject.seeded([]);
   Stream<List<int>> get doneDates => _doneDates.stream;
 
+  final BehaviorSubject<List<int>> _timerDates = BehaviorSubject.seeded([]);
+  Stream<List<int>> get timerDates => _timerDates.stream;
+
   TaskDetailBloc({required this.task}) {
     _taskObj = BehaviorSubject.seeded(task);
 
@@ -39,6 +42,7 @@ class TaskDetailBloc extends Disposable {
     _isMonthly.close();
     _currDate.close();
     _doneDates.close();
+    _timerDates.close();
   }
 
   toggleCalendarType() {
@@ -76,6 +80,12 @@ class TaskDetailBloc extends Disposable {
         .map((e) => e.day)
         .toList();
     _doneDates.add(dates);
+
+    dates = task.doneWithTimer
+        .where((element) => htIsSameMonth(element, date))
+        .map((e) => e.day)
+        .toList();
+    _timerDates.add(dates);
   }
 
   getDoneDatesForWeek(DateTime date) {
@@ -89,6 +99,15 @@ class TaskDetailBloc extends Disposable {
         .map((e) => e.day)
         .toList();
     _doneDates.add(dates);
+
+    dates = task.doneWithTimer
+        .where((element) =>
+            element.isAfter(date.subtract(const Duration(days: 7))) &&
+            element.isBefore(date.add(const Duration(days: 7))))
+        .where((element) => htIsSameDay(fd, htMostRecentWeekday(element)))
+        .map((e) => e.day)
+        .toList();
+    _timerDates.add(dates);
   }
 
   showEditModal(BuildContext context) {

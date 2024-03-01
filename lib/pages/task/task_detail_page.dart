@@ -19,6 +19,7 @@ import 'package:kr_pull_down_button/pull_down_button.dart';
 import 'package:provider/provider.dart';
 import 'package:quiver/time.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 class TaskDetailPage extends StatelessWidget {
   const TaskDetailPage({super.key});
@@ -494,7 +495,8 @@ class TaskWeeklyCalendar extends StatelessWidget {
           stream: Rx.combineLatestList([
             taskDetailBloc.currDate,
             taskDetailBloc.doneDates,
-            taskDetailBloc.taskObj
+            taskDetailBloc.taskObj,
+            taskDetailBloc.timerDates,
           ]),
           builder: (context, snapshot) {
             Task task = snapshot.data?[2] ?? taskDetailBloc.task;
@@ -505,6 +507,7 @@ class TaskWeeklyCalendar extends StatelessWidget {
             int lastDate = getLastDateOfMonth(currDate);
 
             List<int> doneDates = snapshot.data?[1] ?? [];
+            List<int> timerDates = snapshot.data?[3] ?? [];
 
             return LayoutBuilder(builder: (context, constraints) {
               List<int> repeatAt = task.repeatAt ?? [];
@@ -519,8 +522,13 @@ class TaskWeeklyCalendar extends StatelessWidget {
 
               // One time
               if (repeatAt.isEmpty) {
-                bool isDone = doneDates.contains(
-                    firstDay.day + (dayNums.indexOf(task.from.weekday) % 7));
+                bool isDone = task.doneAt
+                    .where((element) => isSameDay(element, task.from))
+                    .isNotEmpty;
+                bool isDoneWithTimer = task.doneWithTimer
+                    .where((element) => isSameDay(element, task.from))
+                    .isNotEmpty;
+
                 bool isLater = task.from.difference(now).inDays >= 0;
 
                 return Column(
@@ -537,18 +545,21 @@ class TaskWeeklyCalendar extends StatelessWidget {
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         border: Border.all(
-                            color: isDone ? HTColors.black : HTColors.grey010,
+                            color:
+                                isDone ? Color(task.color) : HTColors.grey010,
                             width: 1),
                         color: isDone
-                            ? HTColors.black
+                            ? Color(task.color)
                             : isLater
                                 ? HTColors.white
                                 : HTColors.grey010,
                       ),
                       child: Center(
                           child: isDone
-                              ? const Icon(
-                                  Icons.check_rounded,
+                              ? Icon(
+                                  isDoneWithTimer
+                                      ? Icons.timer_rounded
+                                      : Icons.check_rounded,
                                   color: HTColors.white,
                                   size: 20,
                                 )
@@ -588,6 +599,8 @@ class TaskWeeklyCalendar extends StatelessWidget {
                     }
 
                     bool isDone = doneDates.contains(day);
+                    bool isDoneWithTimer = timerDates.contains(day);
+
                     int diff = now.difference(firstDay).inDays;
                     bool inSameWeek = diff >= 0 && diff < 7;
                     bool isLater = (inSameWeek &&
@@ -621,8 +634,10 @@ class TaskWeeklyCalendar extends StatelessWidget {
                           ),
                           child: Center(
                               child: isDone
-                                  ? const Icon(
-                                      Icons.check_rounded,
+                                  ? Icon(
+                                      isDoneWithTimer
+                                          ? Icons.timer_rounded
+                                          : Icons.check_rounded,
                                       color: HTColors.white,
                                       size: 20,
                                     )
@@ -687,10 +702,12 @@ class TaskMonthlyCalendar extends StatelessWidget {
               color: HTColors.grey010,
               borderRadius: HTBorderRadius.circular8,
             ),
-            child: StreamBuilder<List<int>>(
-                stream: taskDetailBloc.doneDates,
+            child: StreamBuilder<List>(
+                stream: Rx.combineLatestList(
+                    [taskDetailBloc.doneDates, taskDetailBloc.timerDates]),
                 builder: (context, snapshot) {
-                  List<int> doneDates = snapshot.data ?? [];
+                  List<int> doneDates = snapshot.data?[0] ?? [];
+                  List<int> timerDates = snapshot.data?[1] ?? [];
 
                   DateTime now = DateTime.now().getDate();
                   int todayDateInCal = now.day - 1 + fillDays;
@@ -716,6 +733,8 @@ class TaskMonthlyCalendar extends StatelessWidget {
                       bool inSameMonth = htIsSameMonth(currMonth, now);
 
                       bool isDone = doneDates.contains(index - fillDays + 1);
+                      bool isDoneWithTimer =
+                          timerDates.contains(index - fillDays + 1);
 
                       bool isLater = (inSameMonth && index > todayDateInCal) ||
                           (!inSameMonth &&
@@ -734,9 +753,18 @@ class TaskMonthlyCalendar extends StatelessWidget {
                                 ? Color(task.color)
                                 : isLater
                                     ? HTColors.white
-                                    : HTColors.grey030,
+                                    : Color(task.color).withOpacity(0.2),
                             borderRadius: HTBorderRadius.circular8,
                           ),
+                          child: isDone && isDoneWithTimer
+                              ? const Center(
+                                  child: Icon(
+                                    Icons.timer_rounded,
+                                    color: HTColors.white,
+                                    size: 18,
+                                  ),
+                                )
+                              : const SizedBox.shrink(),
                         );
                       }
 
@@ -781,6 +809,15 @@ class TaskMonthlyCalendar extends StatelessWidget {
                                   : Color(task.color).withOpacity(0.2),
                           borderRadius: HTBorderRadius.circular8,
                         ),
+                        child: isDone && isDoneWithTimer
+                            ? const Center(
+                                child: Icon(
+                                  Icons.timer_rounded,
+                                  color: HTColors.white,
+                                  size: 18,
+                                ),
+                              )
+                            : const SizedBox.shrink(),
                       );
                     },
                     itemCount: daysCount,

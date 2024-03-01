@@ -171,7 +171,9 @@ class TimerBloc extends Disposable {
       ).show(shellNavKey.currentContext!);
 
       if (selectedTaskValue != null) {
-        appBloc.setTaskDone(selectedTaskValue!, DateTime.now().getDate());
+        DateTime now = DateTime.now().getDate();
+
+        appBloc.setTimerTaskDone(selectedTaskValue!, now);
       }
 
       Future.delayed(const Duration(seconds: 1), () {
