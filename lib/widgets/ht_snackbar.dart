@@ -23,20 +23,24 @@ class HTToastBar {
   final Duration animationDuration;
 
   /// Animation Curve
-  final Curve? animationCurve;
+  final Curve animationCurve;
 
   /// Info on each snackbar
   late final SnackBarInfo info;
 
+  // Name
+  final String name;
+
   /// Initialise HT Toastbar with required parameters
-  HTToastBar(
-      {this.snackbarDuration = const Duration(milliseconds: 5000),
-      this.position = HTSnackbarPosition.bottom,
-      required this.builder,
-      this.animationDuration = const Duration(milliseconds: 700),
-      this.autoDismiss = false,
-      this.animationCurve})
-      : assert(
+  HTToastBar({
+    this.snackbarDuration = const Duration(seconds: 3),
+    this.position = HTSnackbarPosition.bottom,
+    required this.builder,
+    this.animationDuration = const Duration(milliseconds: 200),
+    this.autoDismiss = false,
+    this.animationCurve = Curves.ease,
+    required this.name,
+  }) : assert(
             snackbarDuration.inMilliseconds > animationDuration.inMilliseconds);
 
   /// Remove individual toasbars on dismiss
@@ -47,6 +51,14 @@ class HTToastBar {
 
   /// Push the snackbar in current context
   void show(BuildContext context) {
+    bool hasSame = checkSame(name);
+
+    if (hasSame) {
+      gapBetweenCard = 0;
+    } else {
+      gapBetweenCard = 16;
+    }
+
     OverlayState overlayState = Navigator.of(context).overlay!;
     info = SnackBarInfo(
       key: GlobalKey<RawHTToastState>(),
@@ -55,7 +67,8 @@ class HTToastBar {
     info.entry = OverlayEntry(
       builder: (_) => RawHTToast(
         key: info.key,
-        animationDuration: animationDuration,
+        animationDuration:
+            hasSame ? const Duration(seconds: 0) : animationDuration,
         snackbarPosition: position,
         animationCurve: animationCurve,
         autoDismiss: autoDismiss,
@@ -71,6 +84,12 @@ class HTToastBar {
       _toastBars.add(this);
       overlayState.insert(info.entry);
     });
+
+    if (hasSame) {
+      Future.delayed(const Duration(milliseconds: 200), () {
+        removeSame(name, info.key);
+      });
+    }
   }
 
   /// Remove all the snackbar in the context
@@ -79,6 +98,24 @@ class HTToastBar {
       _toastBars[i].info.entry.remove();
     }
     _toastBars.removeWhere((element) => true);
+  }
+
+  // Check if same snackbar exists
+  static bool checkSame(
+    String name,
+  ) {
+    return _toastBars.where((element) => element.name == name).isNotEmpty;
+  }
+
+  // Remove same contents
+  static void removeSame(String name, GlobalKey except) {
+    for (int i = 0; i < _toastBars.length; i++) {
+      if (_toastBars[i].name == name && _toastBars[i].info.key != except) {
+        _toastBars[i].info.entry.remove();
+      }
+    }
+    _toastBars.removeWhere(
+        (element) => element.name == name && element.info.key != except);
   }
 }
 
@@ -252,7 +289,7 @@ class RawHTToastState extends State<RawHTToast> {
 enum HTSnackbarPosition { top, bottom }
 
 /// The gap between stack of cards
-int gapBetweenCard = 15;
+int gapBetweenCard = 16;
 
 /// calculate position of old cards based on current position
 double calculatePosition(List<HTToastBar> toastBars, HTToastBar self) {

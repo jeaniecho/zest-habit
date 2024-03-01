@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/services.dart';
 import 'package:habit_app/widgets/ht_snackbar.dart';
 import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:habit_app/blocs/app_bloc.dart';
@@ -150,6 +151,24 @@ class TimerBloc extends Disposable {
     });
   }
 
+  showTimerExceed() {
+    HapticFeedback.lightImpact();
+    HTToastBar(
+      name: 'within',
+      autoDismiss: true,
+      snackbarDuration: const Duration(seconds: 3),
+      position: HTSnackbarPosition.top,
+      builder: (context) => const HTToastCard(
+        title: HTText(
+          '⛔️ Please set within 99:59:59',
+          typoToken: HTTypoToken.bodyMedium,
+          color: HTColors.white,
+        ),
+        color: HTColors.grey080,
+      ),
+    ).show(shellNavKey.currentContext!);
+  }
+
   onTimerDone() {
     if (!timerEnded) {
       timerEnded = true;
@@ -157,6 +176,7 @@ class TimerBloc extends Disposable {
       FlutterRingtonePlayer().playAlarm(looping: false);
 
       HTToastBar(
+        name: 'end',
         autoDismiss: true,
         snackbarDuration: const Duration(seconds: 3),
         position: HTSnackbarPosition.top,

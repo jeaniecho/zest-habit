@@ -10,6 +10,7 @@ import 'package:habit_app/utils/enums.dart';
 import 'package:habit_app/utils/functions.dart';
 import 'package:habit_app/widgets/ht_bottom_modal.dart';
 import 'package:habit_app/widgets/ht_scale.dart';
+import 'package:habit_app/widgets/ht_snackbar.dart';
 import 'package:habit_app/widgets/ht_text.dart';
 import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
@@ -357,51 +358,69 @@ class FixedTimerText extends StatelessWidget {
           String timeString = curr.toShortString();
           List<String> timeList = timeString.split(':');
 
-          return SizedBox(
-            height: timerStringHeight,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(
-                    width: timeStringWidth,
-                    child: HTText(
-                      timeList[0],
-                      typoToken: HTTypoToken.bodyHuge,
-                      color: HTColors.black,
-                      height: 1.25,
-                      textAlign: TextAlign.center,
-                    )),
-                const HTText(
-                  ':',
-                  typoToken: HTTypoToken.bodyHuge,
-                  color: HTColors.black,
-                  height: 1,
+          return GestureDetector(
+            onTap: () {
+              HTToastBar(
+                name: 'adjust',
+                autoDismiss: true,
+                snackbarDuration: const Duration(seconds: 3),
+                position: HTSnackbarPosition.top,
+                builder: (context) => const HTToastCard(
+                  title: HTText(
+                    '⛔️ Adjust time after timer ends.',
+                    typoToken: HTTypoToken.bodyMedium,
+                    color: HTColors.white,
+                  ),
+                  color: HTColors.grey080,
                 ),
-                SizedBox(
-                    width: timeStringWidth,
-                    child: HTText(
-                      timeList[1],
-                      typoToken: HTTypoToken.bodyHuge,
-                      color: HTColors.black,
-                      height: 1.25,
-                      textAlign: TextAlign.center,
-                    )),
-                const HTText(
-                  ':',
-                  typoToken: HTTypoToken.bodyHuge,
-                  color: HTColors.black,
-                  height: 1,
-                ),
-                SizedBox(
-                    width: timeStringWidth,
-                    child: HTText(
-                      timeList[2],
-                      typoToken: HTTypoToken.bodyHuge,
-                      color: HTColors.black,
-                      height: 1.25,
-                      textAlign: TextAlign.center,
-                    )),
-              ],
+              ).show(shellNavKey.currentContext!);
+            },
+            child: SizedBox(
+              height: timerStringHeight,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(
+                      width: timeStringWidth,
+                      child: HTText(
+                        timeList[0],
+                        typoToken: HTTypoToken.bodyHuge,
+                        color: HTColors.black,
+                        height: 1.25,
+                        textAlign: TextAlign.center,
+                      )),
+                  const HTText(
+                    ':',
+                    typoToken: HTTypoToken.bodyHuge,
+                    color: HTColors.black,
+                    height: 1,
+                  ),
+                  SizedBox(
+                      width: timeStringWidth,
+                      child: HTText(
+                        timeList[1],
+                        typoToken: HTTypoToken.bodyHuge,
+                        color: HTColors.black,
+                        height: 1.25,
+                        textAlign: TextAlign.center,
+                      )),
+                  const HTText(
+                    ':',
+                    typoToken: HTTypoToken.bodyHuge,
+                    color: HTColors.black,
+                    height: 1,
+                  ),
+                  SizedBox(
+                      width: timeStringWidth,
+                      child: HTText(
+                        timeList[2],
+                        typoToken: HTTypoToken.bodyHuge,
+                        color: HTColors.black,
+                        height: 1.25,
+                        textAlign: TextAlign.center,
+                      )),
+                ],
+              ),
             ),
           );
         });
@@ -475,12 +494,21 @@ class EditableTimerText extends StatelessWidget {
                             FocusScope.of(context).unfocus();
                           },
                           onChanged: (value) {
-                            String checked =
-                                timerBloc.timeStringCheck(value, TimeType.hour);
+                            String hourString = value;
+
+                            if (value.length > 2) {
+                              timerBloc.showTimerExceed();
+
+                              hourString = value.substring(0, 2);
+                              hourController.text = hourString;
+                            }
+
+                            String checked = timerBloc.timeStringCheck(
+                                hourString, TimeType.hour);
                             timerBloc.setHour(checked);
                           },
                           keyboardType: TextInputType.number,
-                          maxLength: 2,
+                          maxLength: 3,
                           style: timerStyle,
                           textAlign: TextAlign.center,
                           decoration: timerDecoration,
@@ -506,12 +534,21 @@ class EditableTimerText extends StatelessWidget {
                             FocusScope.of(context).unfocus();
                           },
                           onChanged: (value) {
+                            String minuteString = value;
+
+                            if (value.length > 2) {
+                              timerBloc.showTimerExceed();
+
+                              minuteString = value.substring(0, 2);
+                              minuteController.text = minuteString;
+                            }
+
                             String checked = timerBloc.timeStringCheck(
-                                value, TimeType.minute);
+                                minuteString, TimeType.minute);
                             timerBloc.setMinute(checked);
                           },
                           keyboardType: TextInputType.number,
-                          maxLength: 2,
+                          maxLength: 3,
                           textAlign: TextAlign.center,
                           style: timerStyle,
                           decoration: timerDecoration,
@@ -537,12 +574,21 @@ class EditableTimerText extends StatelessWidget {
                             FocusScope.of(context).unfocus();
                           },
                           onChanged: (value) {
+                            String secondString = value;
+
+                            if (value.length > 2) {
+                              timerBloc.showTimerExceed();
+
+                              secondString = value.substring(0, 2);
+                              secondController.text = secondString;
+                            }
+
                             String checked = timerBloc.timeStringCheck(
-                                value, TimeType.second);
+                                secondString, TimeType.second);
                             timerBloc.setSecond(checked);
                           },
                           keyboardType: TextInputType.number,
-                          maxLength: 2,
+                          maxLength: 3,
                           style: timerStyle,
                           textAlign: TextAlign.center,
                           decoration: timerDecoration,
