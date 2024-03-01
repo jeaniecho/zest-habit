@@ -704,6 +704,8 @@ class _TaskAddUntilState extends State<TaskAddUntil> {
             DateTime from = snapshot.data?[1] ?? today;
             bool isRepeat = snapshot.data?[2] ?? true;
 
+            DateTime firstDate = from.add(const Duration(days: 1));
+
             if (!isRepeat) {
               return const SizedBox.shrink();
             }
@@ -755,7 +757,7 @@ class _TaskAddUntilState extends State<TaskAddUntil> {
                           onChanged: (value) {
                             if (value) {
                               taskAddBloc.setUntil(
-                                  today.getDate().add(const Duration(days: 7)));
+                                  firstDate.add(const Duration(days: 7)));
 
                               if (!taskAddBloc.isRepeatValue) {
                                 taskAddBloc.setIsRepeat(true);
@@ -769,8 +771,9 @@ class _TaskAddUntilState extends State<TaskAddUntil> {
                 ),
                 if (_showCalendar && until != null)
                   HTCalendar(
-                      selectedDate: until,
-                      firstDay: from.add(const Duration(days: 1)),
+                      selectedDate:
+                          until.isAfter(firstDate) ? until : firstDate,
+                      firstDay: firstDate,
                       onSelected: (selectedDay) {
                         taskAddBloc.setUntil(selectedDay.getDate());
                       }),
