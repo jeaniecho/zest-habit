@@ -609,11 +609,12 @@ class TaskWeeklyCalendar extends StatelessWidget {
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             border: Border.all(
-                                color:
-                                    isDone ? HTColors.black : HTColors.grey010,
+                                color: isDone
+                                    ? Color(task.color)
+                                    : HTColors.grey010,
                                 width: 1),
                             color: isDone
-                                ? HTColors.black
+                                ? Color(task.color)
                                 : isLater
                                     ? HTColors.white
                                     : HTColors.grey010,
@@ -716,7 +717,7 @@ class TaskMonthlyCalendar extends StatelessWidget {
 
                       bool isDone = doneDates.contains(index - fillDays + 1);
 
-                      bool isLater = (inSameMonth && index >= todayDateInCal) ||
+                      bool isLater = (inSameMonth && index > todayDateInCal) ||
                           (!inSameMonth &&
                               DateTime(currMonth.year, currMonth.month)
                                   .isAfter(DateTime(now.year, now.month)));
@@ -727,9 +728,10 @@ class TaskMonthlyCalendar extends StatelessWidget {
                           width: 28,
                           height: 28,
                           decoration: BoxDecoration(
-                            border: Border.all(color: HTColors.black, width: 2),
+                            border:
+                                Border.all(color: Color(task.color), width: 2),
                             color: isDone
-                                ? HTColors.black
+                                ? Color(task.color)
                                 : isLater
                                     ? HTColors.white
                                     : HTColors.grey030,
@@ -770,13 +772,13 @@ class TaskMonthlyCalendar extends StatelessWidget {
                         height: 28,
                         decoration: BoxDecoration(
                           border: inSameMonth && index == todayDateInCal
-                              ? Border.all(color: HTColors.black, width: 2)
+                              ? Border.all(color: Color(task.color), width: 2)
                               : null,
                           color: isDone
-                              ? HTColors.black
+                              ? Color(task.color)
                               : isLater
                                   ? HTColors.white
-                                  : HTColors.grey030,
+                                  : Color(task.color).withOpacity(0.2),
                           borderRadius: HTBorderRadius.circular8,
                         ),
                       );
