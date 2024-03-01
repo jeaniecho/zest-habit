@@ -43,7 +43,7 @@ class TaskAddBody extends StatelessWidget {
             TaskAddClose(),
             Expanded(
               child: SingleChildScrollView(
-                padding: HTEdgeInsets.h24v16,
+                padding: HTEdgeInsets.vertical16,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -53,6 +53,8 @@ class TaskAddBody extends StatelessWidget {
                     HTSpacers.height10,
                     TaskAddGoal(),
                     HTSpacers.height24,
+                    TaskAddColor(),
+                    HTSpacers.height12,
                     TaskAddRepeatAt(),
                     TaskAddFrom(),
                     TaskAddUntil(),
@@ -87,36 +89,39 @@ class TaskAddEmoji extends StatelessWidget {
   Widget build(BuildContext context) {
     TaskAddBloc taskAddBloc = context.read<TaskAddBloc>();
 
-    return InkWell(
-      onTap: () {
-        taskAddBloc.toggleOpenEmoji();
-      },
-      child: Container(
-        width: 48,
-        height: 48,
-        decoration: BoxDecoration(
-          color: HTColors.grey010,
-          borderRadius: HTBorderRadius.circular10,
-        ),
-        child: StreamBuilder<String>(
-            stream: taskAddBloc.emoji,
-            builder: (context, snapshot) {
-              String emoji = snapshot.data ?? '';
+    return Padding(
+      padding: HTEdgeInsets.horizontal24,
+      child: InkWell(
+        onTap: () {
+          taskAddBloc.toggleOpenEmoji();
+        },
+        child: Container(
+          width: 48,
+          height: 48,
+          decoration: BoxDecoration(
+            color: HTColors.grey010,
+            borderRadius: HTBorderRadius.circular10,
+          ),
+          child: StreamBuilder<String>(
+              stream: taskAddBloc.emoji,
+              builder: (context, snapshot) {
+                String emoji = snapshot.data ?? '';
 
-              if (emoji.isEmpty) {
-                return const Icon(
-                  Icons.emoji_emotions_rounded,
-                  color: HTColors.grey030,
-                  size: 28,
-                );
-              } else {
-                return Center(
-                    child: Text(
-                  emoji,
-                  style: const TextStyle(fontSize: 28),
-                ));
-              }
-            }),
+                if (emoji.isEmpty) {
+                  return const Icon(
+                    Icons.emoji_emotions_rounded,
+                    color: HTColors.grey030,
+                    size: 28,
+                  );
+                } else {
+                  return Center(
+                      child: Text(
+                    emoji,
+                    style: const TextStyle(fontSize: 28),
+                  ));
+                }
+              }),
+        ),
       ),
     );
   }
@@ -270,50 +275,54 @@ class _TaskAddTitleState extends State<TaskAddTitle> {
   Widget build(BuildContext context) {
     TaskAddBloc taskAddBloc = context.read<TaskAddBloc>();
 
-    return Focus(
-      child: Stack(
-        children: [
-          TextField(
-            controller: taskAddBloc.titleController,
-            onChanged: (value) => taskAddBloc.setTitle(value),
-            onTapOutside: (event) => FocusScope.of(context).unfocus(),
-            style: HTTypoToken.subtitleXLarge.textStyle,
-            maxLength: 30,
-            decoration: InputDecoration(
-              counterText: '',
-              suffix: const SizedBox(width: 48),
-              hintText: 'Add your task here...',
-              hintStyle: HTTypoToken.bodyXLarge.textStyle.copyWith(
-                color: HTColors.grey030,
+    return Padding(
+      padding: HTEdgeInsets.horizontal24,
+      child: Focus(
+        child: Stack(
+          children: [
+            TextField(
+              controller: taskAddBloc.titleController,
+              onChanged: (value) => taskAddBloc.setTitle(value),
+              onTapOutside: (event) => FocusScope.of(context).unfocus(),
+              style: HTTypoToken.subtitleXLarge.textStyle,
+              maxLength: 30,
+              textCapitalization: TextCapitalization.words,
+              decoration: InputDecoration(
+                counterText: '',
+                suffix: const SizedBox(width: 48),
+                hintText: 'Add your task here...',
+                hintStyle: HTTypoToken.bodyXLarge.textStyle.copyWith(
+                  color: HTColors.grey030,
+                ),
               ),
             ),
-          ),
-          if (_hasFocus)
-            Positioned.fill(
-              right: 16,
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: StreamBuilder<String>(
-                    stream: taskAddBloc.title,
-                    builder: (context, snapshot) {
-                      String title = snapshot.data ?? '';
+            if (_hasFocus)
+              Positioned.fill(
+                right: 16,
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: StreamBuilder<String>(
+                      stream: taskAddBloc.title,
+                      builder: (context, snapshot) {
+                        String title = snapshot.data ?? '';
 
-                      return HTText(
-                        '${title.length}/30',
-                        typoToken: HTTypoToken.captionMedium,
-                        color: HTColors.grey040,
-                        height: 1.25,
-                      );
-                    }),
+                        return HTText(
+                          '${title.length}/30',
+                          typoToken: HTTypoToken.captionMedium,
+                          color: HTColors.grey040,
+                          height: 1.25,
+                        );
+                      }),
+                ),
               ),
-            ),
-        ],
+          ],
+        ),
+        onFocusChange: (value) {
+          setState(() {
+            _hasFocus = value;
+          });
+        },
       ),
-      onFocusChange: (value) {
-        setState(() {
-          _hasFocus = value;
-        });
-      },
     );
   }
 }
@@ -332,50 +341,115 @@ class _TaskAddGoalState extends State<TaskAddGoal> {
   Widget build(BuildContext context) {
     TaskAddBloc taskAddBloc = context.read<TaskAddBloc>();
 
-    return Focus(
-      child: Stack(
-        children: [
-          TextField(
-            controller: taskAddBloc.goalController,
-            onChanged: (value) => taskAddBloc.setGoal(value),
-            onTapOutside: (event) => FocusScope.of(context).unfocus(),
-            style: HTTypoToken.bodyMedium.textStyle
-                .copyWith(color: HTColors.black),
-            maxLength: 100,
-            maxLines: 7,
-            minLines: 7,
-            decoration: InputDecoration(
-                counterText: '',
-                hintText:
-                    '(Optional) Describe the habit you want to build and set your goals here.',
-                hintStyle: HTTypoToken.bodyMedium.textStyle.copyWith(
-                  color: HTColors.grey030,
-                )),
-          ),
-          if (_hasFocus)
-            Positioned(
-              bottom: 12,
-              right: 12,
-              child: StreamBuilder<String>(
-                  stream: taskAddBloc.goal,
-                  builder: (context, snapshot) {
-                    String goal = snapshot.data ?? '';
+    return Padding(
+      padding: HTEdgeInsets.horizontal24,
+      child: Focus(
+        child: Stack(
+          children: [
+            TextField(
+              controller: taskAddBloc.goalController,
+              onChanged: (value) => taskAddBloc.setGoal(value),
+              onTapOutside: (event) => FocusScope.of(context).unfocus(),
+              style: HTTypoToken.bodyMedium.textStyle
+                  .copyWith(color: HTColors.black),
+              maxLength: 100,
+              maxLines: 7,
+              minLines: 7,
+              textCapitalization: TextCapitalization.sentences,
+              decoration: InputDecoration(
+                  counterText: '',
+                  hintText:
+                      '(Optional) Describe the habit you want to build and set your goals here.',
+                  hintStyle: HTTypoToken.bodyMedium.textStyle.copyWith(
+                    color: HTColors.grey030,
+                  )),
+            ),
+            if (_hasFocus)
+              Positioned(
+                bottom: 12,
+                right: 12,
+                child: StreamBuilder<String>(
+                    stream: taskAddBloc.goal,
+                    builder: (context, snapshot) {
+                      String goal = snapshot.data ?? '';
 
-                    return HTText(
-                      '${goal.length}/100',
-                      typoToken: HTTypoToken.captionMedium,
-                      color: HTColors.grey040,
-                    );
-                  }),
-            )
-        ],
+                      return HTText(
+                        '${goal.length}/100',
+                        typoToken: HTTypoToken.captionMedium,
+                        color: HTColors.grey040,
+                      );
+                    }),
+              )
+          ],
+        ),
+        onFocusChange: (value) {
+          setState(() {
+            _hasFocus = value;
+          });
+        },
       ),
-      onFocusChange: (value) {
-        setState(() {
-          _hasFocus = value;
-        });
-      },
     );
+  }
+}
+
+class TaskAddColor extends StatelessWidget {
+  const TaskAddColor({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    TaskAddBloc taskAddBloc = context.read<TaskAddBloc>();
+
+    return StreamBuilder<int>(
+        stream: taskAddBloc.selectedColor,
+        builder: (context, snapshot) {
+          int selectedColor = snapshot.data ?? 0xFF000000;
+
+          return SizedBox(
+            height: 44,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              padding: HTEdgeInsets.horizontal24,
+              itemBuilder: (context, index) {
+                int currColor = taskColors[index];
+
+                return GestureDetector(
+                  onTap: () {
+                    taskAddBloc.setSelectedColor(currColor);
+                  },
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 150),
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: currColor == selectedColor
+                          ? HTColors.black
+                          : HTColors.white,
+                    ),
+                    child: Center(
+                      child: Container(
+                        width: 32,
+                        height: 32,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                              color: HTColors.white,
+                              width: 4,
+                              strokeAlign: BorderSide.strokeAlignOutside),
+                          shape: BoxShape.circle,
+                          color: Color(currColor),
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+              separatorBuilder: (cotext, index) {
+                return HTSpacers.width8;
+              },
+              itemCount: taskColors.length,
+            ),
+          );
+        });
   }
 }
 
@@ -386,118 +460,122 @@ class TaskAddRepeatAt extends StatelessWidget {
   Widget build(BuildContext context) {
     TaskAddBloc taskAddBloc = context.read<TaskAddBloc>();
 
-    return StreamBuilder<bool>(
-        stream: taskAddBloc.isRepeat,
-        builder: (context, snapshot) {
-          bool isRepeat = snapshot.data ?? false;
+    return Padding(
+      padding: HTEdgeInsets.horizontal24,
+      child: StreamBuilder<bool>(
+          stream: taskAddBloc.isRepeat,
+          builder: (context, snapshot) {
+            bool isRepeat = snapshot.data ?? false;
 
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              SizedBox(
-                height: 56,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const HTText(
-                      'Repeat',
-                      typoToken: HTTypoToken.subtitleXLarge,
-                      color: HTColors.black,
-                      height: 1,
-                    ),
-                    CupertinoSwitch(
-                        value: isRepeat,
-                        activeColor: HTColors.black,
-                        onChanged: (value) => taskAddBloc.setIsRepeat(value)),
-                  ],
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                SizedBox(
+                  height: 56,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const HTText(
+                        'Repeat',
+                        typoToken: HTTypoToken.subtitleXLarge,
+                        color: HTColors.black,
+                        height: 1,
+                      ),
+                      CupertinoSwitch(
+                          value: isRepeat,
+                          activeColor: HTColors.black,
+                          onChanged: (value) => taskAddBloc.setIsRepeat(value)),
+                    ],
+                  ),
                 ),
-              ),
-              if (isRepeat)
-                StreamBuilder<List>(
-                    stream: Rx.combineLatestList(
-                        [taskAddBloc.repeatAt, taskAddBloc.repeatType]),
-                    builder: (context, snapshot) {
-                      List<int> repeatAt = snapshot.data?[0] ?? [];
-                      RepeatType repeatType =
-                          snapshot.data?[1] ?? RepeatType.everyday;
+                if (isRepeat)
+                  StreamBuilder<List>(
+                      stream: Rx.combineLatestList(
+                          [taskAddBloc.repeatAt, taskAddBloc.repeatType]),
+                      builder: (context, snapshot) {
+                        List<int> repeatAt = snapshot.data?[0] ?? [];
+                        RepeatType repeatType =
+                            snapshot.data?[1] ?? RepeatType.everyday;
 
-                      return Container(
-                        margin: HTEdgeInsets.bottom16,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 8),
-                        decoration: BoxDecoration(
-                          color: HTColors.grey010,
-                          borderRadius: HTBorderRadius.circular10,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            ...RepeatType.values.map((e) => TaskAddRepeatRadio(
-                                groupValue: repeatType, repeatType: e)),
-                            if (repeatType == RepeatType.custom)
-                              LayoutBuilder(builder: (context, constraints) {
-                                double size =
-                                    (constraints.maxWidth - (8 * 6)) / 7;
+                        return Container(
+                          margin: HTEdgeInsets.bottom16,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: HTColors.grey010,
+                            borderRadius: HTBorderRadius.circular10,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ...RepeatType.values.map((e) =>
+                                  TaskAddRepeatRadio(
+                                      groupValue: repeatType, repeatType: e)),
+                              if (repeatType == RepeatType.custom)
+                                LayoutBuilder(builder: (context, constraints) {
+                                  double size =
+                                      (constraints.maxWidth - (8 * 6)) / 7;
 
-                                return Container(
-                                  height: size,
-                                  margin: HTEdgeInsets.vertical8,
-                                  child: ListView.separated(
-                                      shrinkWrap: true,
-                                      physics:
-                                          const NeverScrollableScrollPhysics(),
-                                      scrollDirection: Axis.horizontal,
-                                      padding: HTEdgeInsets.zero,
-                                      itemBuilder: (context, index) {
-                                        bool isSelected =
-                                            repeatAt.contains(dayNums[index]);
+                                  return Container(
+                                    height: size,
+                                    margin: HTEdgeInsets.vertical8,
+                                    child: ListView.separated(
+                                        shrinkWrap: true,
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
+                                        scrollDirection: Axis.horizontal,
+                                        padding: HTEdgeInsets.zero,
+                                        itemBuilder: (context, index) {
+                                          bool isSelected =
+                                              repeatAt.contains(dayNums[index]);
 
-                                        return GestureDetector(
-                                          onTap: () {
-                                            taskAddBloc
-                                                .toggleRepeatAt(dayNums[index]);
-                                          },
-                                          child: Container(
-                                            width: size,
-                                            height: size,
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              border: Border.all(
-                                                  color: isSelected
-                                                      ? HTColors.black
-                                                      : HTColors.grey020,
-                                                  width: 1),
-                                              color: isSelected
-                                                  ? HTColors.black
-                                                  : HTColors.clear,
+                                          return GestureDetector(
+                                            onTap: () {
+                                              taskAddBloc.toggleRepeatAt(
+                                                  dayNums[index]);
+                                            },
+                                            child: Container(
+                                              width: size,
+                                              height: size,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                border: Border.all(
+                                                    color: isSelected
+                                                        ? HTColors.black
+                                                        : HTColors.grey020,
+                                                    width: 1),
+                                                color: isSelected
+                                                    ? HTColors.black
+                                                    : HTColors.clear,
+                                              ),
+                                              child: Center(
+                                                  child: HTText(
+                                                days[index],
+                                                typoToken: isSelected
+                                                    ? HTTypoToken.subtitleXSmall
+                                                    : HTTypoToken.bodyXSmall,
+                                                color: isSelected
+                                                    ? HTColors.white
+                                                    : HTColors.grey060,
+                                                height: 1.25,
+                                              )),
                                             ),
-                                            child: Center(
-                                                child: HTText(
-                                              days[index],
-                                              typoToken: isSelected
-                                                  ? HTTypoToken.subtitleXSmall
-                                                  : HTTypoToken.bodyXSmall,
-                                              color: isSelected
-                                                  ? HTColors.white
-                                                  : HTColors.grey060,
-                                              height: 1.25,
-                                            )),
-                                          ),
-                                        );
-                                      },
-                                      separatorBuilder: (context, index) {
-                                        return HTSpacers.width8;
-                                      },
-                                      itemCount: 7),
-                                );
-                              }),
-                          ],
-                        ),
-                      );
-                    }),
-            ],
-          );
-        });
+                                          );
+                                        },
+                                        separatorBuilder: (context, index) {
+                                          return HTSpacers.width8;
+                                        },
+                                        itemCount: 7),
+                                  );
+                                }),
+                            ],
+                          ),
+                        );
+                      }),
+              ],
+            );
+          }),
+    );
   }
 }
 
@@ -537,63 +615,66 @@ class _TaskAddFromState extends State<TaskAddFrom> {
   Widget build(BuildContext context) {
     TaskAddBloc taskAddBloc = context.read<TaskAddBloc>();
 
-    return StreamBuilder<List>(
-        stream: Rx.combineLatestList([taskAddBloc.from, taskAddBloc.until]),
-        builder: (context, snapshot) {
-          DateTime from = snapshot.data?[0] ?? DateTime.now().getDate();
-          DateTime? until = snapshot.data?[1];
+    return Padding(
+      padding: HTEdgeInsets.horizontal24,
+      child: StreamBuilder<List>(
+          stream: Rx.combineLatestList([taskAddBloc.from, taskAddBloc.until]),
+          builder: (context, snapshot) {
+            DateTime from = snapshot.data?[0] ?? DateTime.now().getDate();
+            DateTime? until = snapshot.data?[1];
 
-          return Column(
-            children: [
-              SizedBox(
-                height: 56,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const HTText(
-                      'Start Date',
-                      typoToken: HTTypoToken.subtitleXLarge,
-                      color: HTColors.black,
-                      height: 1,
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        HapticFeedback.lightImpact();
-                        setState(() {
-                          _showCalendar = !_showCalendar;
-                        });
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 8),
-                        decoration: BoxDecoration(
-                          color: HTColors.grey010,
-                          borderRadius: HTBorderRadius.circular10,
-                        ),
-                        child: HTText(
-                          DateFormat('yyyy.MM.dd').format(from) +
-                              (htIsSameDay(from, DateTime.now())
-                                  ? ' (Today)'
-                                  : DateFormat(' (E)').format(from)),
-                          typoToken: HTTypoToken.bodyMedium,
-                          color: HTColors.black,
-                          height: 1.2,
-                        ),
+            return Column(
+              children: [
+                SizedBox(
+                  height: 56,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const HTText(
+                        'Start Date',
+                        typoToken: HTTypoToken.subtitleXLarge,
+                        color: HTColors.black,
+                        height: 1,
                       ),
-                    )
-                  ],
+                      GestureDetector(
+                        onTap: () {
+                          HapticFeedback.lightImpact();
+                          setState(() {
+                            _showCalendar = !_showCalendar;
+                          });
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: HTColors.grey010,
+                            borderRadius: HTBorderRadius.circular10,
+                          ),
+                          child: HTText(
+                            DateFormat('yyyy.MM.dd').format(from) +
+                                (htIsSameDay(from, DateTime.now())
+                                    ? ' (Today)'
+                                    : DateFormat(' (E)').format(from)),
+                            typoToken: HTTypoToken.bodyMedium,
+                            color: HTColors.black,
+                            height: 1.2,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
                 ),
-              ),
-              if (_showCalendar)
-                HTCalendar(
-                    selectedDate: from,
-                    lastDay: until?.subtract(const Duration(days: 1)),
-                    onSelected: (selectedDay) {
-                      taskAddBloc.setFrom(selectedDay.getDate());
-                    }),
-            ],
-          );
-        });
+                if (_showCalendar)
+                  HTCalendar(
+                      selectedDate: from,
+                      lastDay: until?.subtract(const Duration(days: 1)),
+                      onSelected: (selectedDay) {
+                        taskAddBloc.setFrom(selectedDay.getDate());
+                      }),
+              ],
+            );
+          }),
+    );
   }
 }
 
@@ -613,87 +694,90 @@ class _TaskAddUntilState extends State<TaskAddUntil> {
 
     DateTime today = DateTime.now().getDate();
 
-    return StreamBuilder<List>(
-        stream: Rx.combineLatestList(
-            [taskAddBloc.until, taskAddBloc.from, taskAddBloc.isRepeat]),
-        builder: (context, snapshot) {
-          DateTime? until = snapshot.data?[0];
-          DateTime from = snapshot.data?[1] ?? today;
-          bool isRepeat = snapshot.data?[2] ?? true;
+    return Padding(
+      padding: HTEdgeInsets.horizontal24,
+      child: StreamBuilder<List>(
+          stream: Rx.combineLatestList(
+              [taskAddBloc.until, taskAddBloc.from, taskAddBloc.isRepeat]),
+          builder: (context, snapshot) {
+            DateTime? until = snapshot.data?[0];
+            DateTime from = snapshot.data?[1] ?? today;
+            bool isRepeat = snapshot.data?[2] ?? true;
 
-          if (!isRepeat) {
-            return const SizedBox.shrink();
-          }
+            if (!isRepeat) {
+              return const SizedBox.shrink();
+            }
 
-          if (until != null && until.isBefore(from)) {
-            taskAddBloc.setUntil(null);
-          }
+            if (until != null && until.isBefore(from)) {
+              taskAddBloc.setUntil(null);
+            }
 
-          return Column(
-            children: [
-              SizedBox(
-                height: 56,
-                child: Row(
-                  children: [
-                    const HTText(
-                      'End Date',
-                      typoToken: HTTypoToken.subtitleXLarge,
-                      color: HTColors.black,
-                      height: 1,
-                    ),
-                    const Spacer(),
-                    if (until != null)
-                      GestureDetector(
-                        onTap: () {
-                          HapticFeedback.lightImpact();
-                          setState(() {
-                            _showCalendar = !_showCalendar;
-                          });
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 8),
-                          decoration: BoxDecoration(
-                            color: HTColors.grey010,
-                            borderRadius: HTBorderRadius.circular10,
-                          ),
-                          child: HTText(
-                            DateFormat('yyyy.MM.dd').format(until),
-                            typoToken: HTTypoToken.bodyMedium,
-                            color: HTColors.black,
-                            height: 1.2,
+            return Column(
+              children: [
+                SizedBox(
+                  height: 56,
+                  child: Row(
+                    children: [
+                      const HTText(
+                        'End Date',
+                        typoToken: HTTypoToken.subtitleXLarge,
+                        color: HTColors.black,
+                        height: 1,
+                      ),
+                      const Spacer(),
+                      if (until != null)
+                        GestureDetector(
+                          onTap: () {
+                            HapticFeedback.lightImpact();
+                            setState(() {
+                              _showCalendar = !_showCalendar;
+                            });
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 8),
+                            decoration: BoxDecoration(
+                              color: HTColors.grey010,
+                              borderRadius: HTBorderRadius.circular10,
+                            ),
+                            child: HTText(
+                              DateFormat('yyyy.MM.dd').format(until),
+                              typoToken: HTTypoToken.bodyMedium,
+                              color: HTColors.black,
+                              height: 1.2,
+                            ),
                           ),
                         ),
-                      ),
-                    HTSpacers.width8,
-                    CupertinoSwitch(
-                        value: until != null,
-                        activeColor: HTColors.black,
-                        onChanged: (value) {
-                          if (value) {
-                            taskAddBloc.setUntil(
-                                today.getDate().add(const Duration(days: 7)));
+                      HTSpacers.width8,
+                      CupertinoSwitch(
+                          value: until != null,
+                          activeColor: HTColors.black,
+                          onChanged: (value) {
+                            if (value) {
+                              taskAddBloc.setUntil(
+                                  today.getDate().add(const Duration(days: 7)));
 
-                            if (!taskAddBloc.isRepeatValue) {
-                              taskAddBloc.setIsRepeat(true);
+                              if (!taskAddBloc.isRepeatValue) {
+                                taskAddBloc.setIsRepeat(true);
+                              }
+                            } else {
+                              taskAddBloc.setUntil(null);
                             }
-                          } else {
-                            taskAddBloc.setUntil(null);
-                          }
-                        }),
-                  ],
+                          }),
+                    ],
+                  ),
                 ),
-              ),
-              if (_showCalendar && until != null)
-                HTCalendar(
-                    selectedDate: until,
-                    firstDay: from.add(const Duration(days: 1)),
-                    onSelected: (selectedDay) {
-                      taskAddBloc.setUntil(selectedDay.getDate());
-                    }),
-            ],
-          );
-        });
+                if (_showCalendar && until != null)
+                  HTCalendar(
+                      selectedDate: until,
+                      firstDay: from.add(const Duration(days: 1)),
+                      onSelected: (selectedDay) {
+                        taskAddBloc.setUntil(selectedDay.getDate());
+                      }),
+              ],
+            );
+          }),
+    );
   }
 }
 

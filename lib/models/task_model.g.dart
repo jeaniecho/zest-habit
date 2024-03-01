@@ -17,43 +17,53 @@ const TaskSchema = CollectionSchema(
   name: r'Task',
   id: 2998003626758701373,
   properties: {
-    r'desc': PropertySchema(
+    r'color': PropertySchema(
       id: 0,
+      name: r'color',
+      type: IsarType.long,
+    ),
+    r'desc': PropertySchema(
+      id: 1,
       name: r'desc',
       type: IsarType.string,
     ),
     r'doneAt': PropertySchema(
-      id: 1,
+      id: 2,
       name: r'doneAt',
       type: IsarType.dateTimeList,
     ),
+    r'doneWithTimer': PropertySchema(
+      id: 3,
+      name: r'doneWithTimer',
+      type: IsarType.dateTimeList,
+    ),
     r'emoji': PropertySchema(
-      id: 2,
+      id: 4,
       name: r'emoji',
       type: IsarType.string,
     ),
     r'from': PropertySchema(
-      id: 3,
+      id: 5,
       name: r'from',
       type: IsarType.dateTime,
     ),
     r'goal': PropertySchema(
-      id: 4,
+      id: 6,
       name: r'goal',
       type: IsarType.string,
     ),
     r'repeatAt': PropertySchema(
-      id: 5,
+      id: 7,
       name: r'repeatAt',
       type: IsarType.longList,
     ),
     r'title': PropertySchema(
-      id: 6,
+      id: 8,
       name: r'title',
       type: IsarType.string,
     ),
     r'until': PropertySchema(
-      id: 7,
+      id: 9,
       name: r'until',
       type: IsarType.dateTime,
     )
@@ -85,6 +95,7 @@ int _taskEstimateSize(
     }
   }
   bytesCount += 3 + object.doneAt.length * 8;
+  bytesCount += 3 + object.doneWithTimer.length * 8;
   {
     final value = object.emoji;
     if (value != null) {
@@ -113,14 +124,16 @@ void _taskSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeString(offsets[0], object.desc);
-  writer.writeDateTimeList(offsets[1], object.doneAt);
-  writer.writeString(offsets[2], object.emoji);
-  writer.writeDateTime(offsets[3], object.from);
-  writer.writeString(offsets[4], object.goal);
-  writer.writeLongList(offsets[5], object.repeatAt);
-  writer.writeString(offsets[6], object.title);
-  writer.writeDateTime(offsets[7], object.until);
+  writer.writeLong(offsets[0], object.color);
+  writer.writeString(offsets[1], object.desc);
+  writer.writeDateTimeList(offsets[2], object.doneAt);
+  writer.writeDateTimeList(offsets[3], object.doneWithTimer);
+  writer.writeString(offsets[4], object.emoji);
+  writer.writeDateTime(offsets[5], object.from);
+  writer.writeString(offsets[6], object.goal);
+  writer.writeLongList(offsets[7], object.repeatAt);
+  writer.writeString(offsets[8], object.title);
+  writer.writeDateTime(offsets[9], object.until);
 }
 
 Task _taskDeserialize(
@@ -130,16 +143,18 @@ Task _taskDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = Task(
-    desc: reader.readStringOrNull(offsets[0]),
-    emoji: reader.readStringOrNull(offsets[2]),
-    from: reader.readDateTime(offsets[3]),
-    goal: reader.readStringOrNull(offsets[4]),
-    repeatAt: reader.readLongList(offsets[5]),
-    title: reader.readString(offsets[6]),
-    until: reader.readDateTimeOrNull(offsets[7]),
+    color: reader.readLongOrNull(offsets[0]) ?? 0xFF000000,
+    desc: reader.readStringOrNull(offsets[1]),
+    doneAt: reader.readDateTimeList(offsets[2]) ?? const [],
+    doneWithTimer: reader.readDateTimeList(offsets[3]) ?? const [],
+    emoji: reader.readStringOrNull(offsets[4]),
+    from: reader.readDateTime(offsets[5]),
+    goal: reader.readStringOrNull(offsets[6]),
+    id: id,
+    repeatAt: reader.readLongList(offsets[7]),
+    title: reader.readString(offsets[8]),
+    until: reader.readDateTimeOrNull(offsets[9]),
   );
-  object.doneAt = reader.readDateTimeList(offsets[1]) ?? [];
-  object.id = id;
   return object;
 }
 
@@ -151,20 +166,24 @@ P _taskDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset) ?? 0xFF000000) as P;
     case 1:
-      return (reader.readDateTimeList(offset) ?? []) as P;
-    case 2:
       return (reader.readStringOrNull(offset)) as P;
+    case 2:
+      return (reader.readDateTimeList(offset) ?? const []) as P;
     case 3:
-      return (reader.readDateTime(offset)) as P;
+      return (reader.readDateTimeList(offset) ?? const []) as P;
     case 4:
       return (reader.readStringOrNull(offset)) as P;
     case 5:
-      return (reader.readLongList(offset)) as P;
+      return (reader.readDateTime(offset)) as P;
     case 6:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 7:
+      return (reader.readLongList(offset)) as P;
+    case 8:
+      return (reader.readString(offset)) as P;
+    case 9:
       return (reader.readDateTimeOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -259,6 +278,58 @@ extension TaskQueryWhere on QueryBuilder<Task, Task, QWhereClause> {
 }
 
 extension TaskQueryFilter on QueryBuilder<Task, Task, QFilterCondition> {
+  QueryBuilder<Task, Task, QAfterFilterCondition> colorEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'color',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Task, Task, QAfterFilterCondition> colorGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'color',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Task, Task, QAfterFilterCondition> colorLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'color',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Task, Task, QAfterFilterCondition> colorBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'color',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
   QueryBuilder<Task, Task, QAfterFilterCondition> descIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -532,6 +603,145 @@ extension TaskQueryFilter on QueryBuilder<Task, Task, QFilterCondition> {
     return QueryBuilder.apply(this, (query) {
       return query.listLength(
         r'doneAt',
+        lower,
+        includeLower,
+        upper,
+        includeUpper,
+      );
+    });
+  }
+
+  QueryBuilder<Task, Task, QAfterFilterCondition> doneWithTimerElementEqualTo(
+      DateTime value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'doneWithTimer',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Task, Task, QAfterFilterCondition>
+      doneWithTimerElementGreaterThan(
+    DateTime value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'doneWithTimer',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Task, Task, QAfterFilterCondition> doneWithTimerElementLessThan(
+    DateTime value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'doneWithTimer',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Task, Task, QAfterFilterCondition> doneWithTimerElementBetween(
+    DateTime lower,
+    DateTime upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'doneWithTimer',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<Task, Task, QAfterFilterCondition> doneWithTimerLengthEqualTo(
+      int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'doneWithTimer',
+        length,
+        true,
+        length,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<Task, Task, QAfterFilterCondition> doneWithTimerIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'doneWithTimer',
+        0,
+        true,
+        0,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<Task, Task, QAfterFilterCondition> doneWithTimerIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'doneWithTimer',
+        0,
+        false,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<Task, Task, QAfterFilterCondition> doneWithTimerLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'doneWithTimer',
+        0,
+        true,
+        length,
+        include,
+      );
+    });
+  }
+
+  QueryBuilder<Task, Task, QAfterFilterCondition>
+      doneWithTimerLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'doneWithTimer',
+        length,
+        include,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<Task, Task, QAfterFilterCondition> doneWithTimerLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'doneWithTimer',
         lower,
         includeLower,
         upper,
@@ -1288,6 +1498,18 @@ extension TaskQueryObject on QueryBuilder<Task, Task, QFilterCondition> {}
 extension TaskQueryLinks on QueryBuilder<Task, Task, QFilterCondition> {}
 
 extension TaskQuerySortBy on QueryBuilder<Task, Task, QSortBy> {
+  QueryBuilder<Task, Task, QAfterSortBy> sortByColor() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'color', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Task, Task, QAfterSortBy> sortByColorDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'color', Sort.desc);
+    });
+  }
+
   QueryBuilder<Task, Task, QAfterSortBy> sortByDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'desc', Sort.asc);
@@ -1362,6 +1584,18 @@ extension TaskQuerySortBy on QueryBuilder<Task, Task, QSortBy> {
 }
 
 extension TaskQuerySortThenBy on QueryBuilder<Task, Task, QSortThenBy> {
+  QueryBuilder<Task, Task, QAfterSortBy> thenByColor() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'color', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Task, Task, QAfterSortBy> thenByColorDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'color', Sort.desc);
+    });
+  }
+
   QueryBuilder<Task, Task, QAfterSortBy> thenByDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'desc', Sort.asc);
@@ -1448,6 +1682,12 @@ extension TaskQuerySortThenBy on QueryBuilder<Task, Task, QSortThenBy> {
 }
 
 extension TaskQueryWhereDistinct on QueryBuilder<Task, Task, QDistinct> {
+  QueryBuilder<Task, Task, QDistinct> distinctByColor() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'color');
+    });
+  }
+
   QueryBuilder<Task, Task, QDistinct> distinctByDesc(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -1458,6 +1698,12 @@ extension TaskQueryWhereDistinct on QueryBuilder<Task, Task, QDistinct> {
   QueryBuilder<Task, Task, QDistinct> distinctByDoneAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'doneAt');
+    });
+  }
+
+  QueryBuilder<Task, Task, QDistinct> distinctByDoneWithTimer() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'doneWithTimer');
     });
   }
 
@@ -1508,6 +1754,12 @@ extension TaskQueryProperty on QueryBuilder<Task, Task, QQueryProperty> {
     });
   }
 
+  QueryBuilder<Task, int, QQueryOperations> colorProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'color');
+    });
+  }
+
   QueryBuilder<Task, String?, QQueryOperations> descProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'desc');
@@ -1517,6 +1769,12 @@ extension TaskQueryProperty on QueryBuilder<Task, Task, QQueryProperty> {
   QueryBuilder<Task, List<DateTime>, QQueryOperations> doneAtProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'doneAt');
+    });
+  }
+
+  QueryBuilder<Task, List<DateTime>, QQueryOperations> doneWithTimerProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'doneWithTimer');
     });
   }
 

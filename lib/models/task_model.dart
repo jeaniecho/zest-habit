@@ -13,6 +13,8 @@ class Task {
   String? goal;
   String? desc;
   List<DateTime> doneAt;
+  List<DateTime> doneWithTimer;
+  int color;
 
   Task({
     this.id = Isar.autoIncrement,
@@ -24,5 +26,7 @@ class Task {
     required this.goal,
     required this.desc,
     this.doneAt = const [],
+    this.doneWithTimer = const [],
+    this.color = 0xFF000000,
   });
 }

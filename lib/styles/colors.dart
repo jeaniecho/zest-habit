@@ -1,5 +1,16 @@
 import 'package:flutter/material.dart';
 
+List<int> taskColors = [
+  0xFF000000,
+  0xFF435EEB,
+  0XFF40A2E3,
+  0XFF50CD73,
+  0XFFC854F1,
+  0XFFE74646,
+  0XFFFF8080,
+  0XFFFFD93D,
+];
+
 class HTColors {
   HTColors._();
 
