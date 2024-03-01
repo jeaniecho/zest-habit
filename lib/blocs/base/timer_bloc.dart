@@ -58,6 +58,11 @@ class TimerBloc extends Disposable {
   Function(Task?) get setSelectedTask => appBloc.setTimerTask;
   Task? get selectedTaskValue => appBloc.timerTaskValue;
 
+  final BehaviorSubject<bool> _hasStringError = BehaviorSubject.seeded(false);
+  Stream<bool> get hasStringError => _hasStringError.stream;
+  Function(bool) get setHasStringError => _hasStringError.add;
+  bool get hasStringErrorValue => _hasStringError.value;
+
   late CountdownTimer timer;
 
   final AppBloc appBloc;
@@ -80,6 +85,7 @@ class TimerBloc extends Disposable {
     _hour.close();
     _minute.close();
     _second.close();
+    _hasStringError.close();
     timer.cancel();
   }
 

@@ -464,15 +464,21 @@ class EditableTimerText extends StatelessWidget {
       onFocusChange: (value) {
         timerBloc.setIsFocused(value);
       },
-      child: StreamBuilder<bool>(
-          stream: timerBloc.isFocused,
+      child: StreamBuilder<List>(
+          stream: Rx.combineLatestList(
+              [timerBloc.isFocused, timerBloc.hasStringError]),
           builder: (context, snapshot) {
-            bool isFocused = snapshot.data ?? false;
+            bool isFocused = snapshot.data?[0] ?? false;
+            bool hasStringError = snapshot.data?[1] ?? false;
 
             return Container(
               padding: HTEdgeInsets.horizontal16,
               decoration: BoxDecoration(
-                color: isFocused ? HTColors.grey010 : HTColors.white,
+                color: isFocused
+                    ? hasStringError
+                        ? HTColors.red[100]
+                        : HTColors.grey010
+                    : HTColors.white,
                 borderRadius: HTBorderRadius.circular10,
               ),
               child: SizedBox(
@@ -491,6 +497,7 @@ class EditableTimerText extends StatelessWidget {
                           },
                           onTapOutside: (event) {
                             hourController.text = timerBloc.hourValue;
+                            timerBloc.setHasStringError(false);
                             FocusScope.of(context).unfocus();
                           },
                           onChanged: (value) {
@@ -498,9 +505,12 @@ class EditableTimerText extends StatelessWidget {
 
                             if (value.length > 2) {
                               timerBloc.showTimerExceed();
+                              timerBloc.setHasStringError(true);
 
                               hourString = value.substring(0, 2);
                               hourController.text = hourString;
+                            } else {
+                              timerBloc.setHasStringError(false);
                             }
 
                             String checked = timerBloc.timeStringCheck(
@@ -531,6 +541,7 @@ class EditableTimerText extends StatelessWidget {
                           },
                           onTapOutside: (event) {
                             minuteController.text = timerBloc.minuteValue;
+                            timerBloc.setHasStringError(false);
                             FocusScope.of(context).unfocus();
                           },
                           onChanged: (value) {
@@ -538,9 +549,12 @@ class EditableTimerText extends StatelessWidget {
 
                             if (value.length > 2) {
                               timerBloc.showTimerExceed();
+                              timerBloc.setHasStringError(true);
 
                               minuteString = value.substring(0, 2);
                               minuteController.text = minuteString;
+                            } else {
+                              timerBloc.setHasStringError(false);
                             }
 
                             String checked = timerBloc.timeStringCheck(
@@ -571,6 +585,7 @@ class EditableTimerText extends StatelessWidget {
                           },
                           onTapOutside: (event) {
                             secondController.text = timerBloc.secondValue;
+                            timerBloc.setHasStringError(false);
                             FocusScope.of(context).unfocus();
                           },
                           onChanged: (value) {
@@ -578,9 +593,12 @@ class EditableTimerText extends StatelessWidget {
 
                             if (value.length > 2) {
                               timerBloc.showTimerExceed();
+                              timerBloc.setHasStringError(true);
 
                               secondString = value.substring(0, 2);
                               secondController.text = secondString;
+                            } else {
+                              timerBloc.setHasStringError(false);
                             }
 
                             String checked = timerBloc.timeStringCheck(
