@@ -85,17 +85,6 @@ class HTColors {
   static const grey070 = Color(0xFF394150);
   static const grey080 = Color(0xFF272F3E);
   static const grey090 = Color(0xFF151515);
-  static bool isAppGrey(c) => [
-        grey010,
-        grey020,
-        grey030,
-        grey040,
-        grey050,
-        grey060,
-        grey070,
-        grey080,
-        grey090,
-      ].contains(c);
 
   // Clear
   static const clear = Color(0x00FFFFFF);
