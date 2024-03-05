@@ -11,15 +11,6 @@
 		331C808B294A63AB00263BE5 /* RunnerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331C807B294A618700263BE5 /* RunnerTests.swift */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
-		87499BF02B7644AC0090852A /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 87499BEF2B7644AC0090852A /* WidgetKit.framework */; };
-		87499BF22B7644AC0090852A /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 87499BF12B7644AC0090852A /* SwiftUI.framework */; };
-		87499BF52B7644AC0090852A /* habitWidgetsBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87499BF42B7644AC0090852A /* habitWidgetsBundle.swift */; };
-		87499BF72B7644AC0090852A /* habitWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87499BF62B7644AC0090852A /* habitWidgets.swift */; };
-		87499BF92B7644AD0090852A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 87499BF82B7644AD0090852A /* Assets.xcassets */; };
-		87499BFD2B7644AD0090852A /* habitWidgetsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 87499BEE2B7644AC0090852A /* habitWidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		87499C042B7648F10090852A /* intentDefinition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87499C032B7648F10090852A /* intentDefinition.swift */; };
-		87499C052B7648F10090852A /* intentDefinition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87499C032B7648F10090852A /* intentDefinition.swift */; };
-		88660850EFFFEE8D70D9946E /* Pods_habitWidgetsExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED4C339F04623DA06A24D26C /* Pods_habitWidgetsExtension.framework */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
@@ -36,13 +27,6 @@
 			remoteGlobalIDString = 97C146ED1CF9000F007C117D;
 			remoteInfo = Runner;
 		};
-		87499BFB2B7644AD0090852A /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 97C146E61CF9000F007C117D /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 87499BED2B7644AC0090852A;
-			remoteInfo = habitWidgetsExtension;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -52,7 +36,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				87499BFD2B7644AD0090852A /* habitWidgetsExtension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -84,14 +67,8 @@
 		7991ED2053DFE5BB7BA15253 /* Pods-RunnerTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.debug.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.debug.xcconfig"; sourceTree = "<group>"; };
 		7AE195DE6D9AA8EED5943988 /* Pods-habitWidgetsExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-habitWidgetsExtension.debug.xcconfig"; path = "Target Support Files/Pods-habitWidgetsExtension/Pods-habitWidgetsExtension.debug.xcconfig"; sourceTree = "<group>"; };
 		7AFA3C8E1D35360C0083082E /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Release.xcconfig; path = Flutter/Release.xcconfig; sourceTree = "<group>"; };
-		87499BEE2B7644AC0090852A /* habitWidgetsExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = habitWidgetsExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		87499BEF2B7644AC0090852A /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		87499BF12B7644AC0090852A /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
-		87499BF42B7644AC0090852A /* habitWidgetsBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = habitWidgetsBundle.swift; sourceTree = "<group>"; };
-		87499BF62B7644AC0090852A /* habitWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = habitWidgets.swift; sourceTree = "<group>"; };
-		87499BF82B7644AD0090852A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		87499BFA2B7644AD0090852A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		87499C032B7648F10090852A /* intentDefinition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = intentDefinition.swift; sourceTree = "<group>"; };
 		9728E4744692E259C7482A5B /* Pods-Runner-habitWidgetsExtension.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner-habitWidgetsExtension.profile.xcconfig"; path = "Target Support Files/Pods-Runner-habitWidgetsExtension/Pods-Runner-habitWidgetsExtension.profile.xcconfig"; sourceTree = "<group>"; };
 		9740EEB21CF90195004384FC /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Debug.xcconfig; path = Flutter/Debug.xcconfig; sourceTree = "<group>"; };
 		9740EEB31CF90195004384FC /* Generated.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Generated.xcconfig; path = Flutter/Generated.xcconfig; sourceTree = "<group>"; };
@@ -112,16 +89,6 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		87499BEB2B7644AC0090852A /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				87499BF22B7644AC0090852A /* SwiftUI.framework in Frameworks */,
-				87499BF02B7644AC0090852A /* WidgetKit.framework in Frameworks */,
-				88660850EFFFEE8D70D9946E /* Pods_habitWidgetsExtension.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		8EF5F19D722821BCE0513B44 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -161,17 +128,6 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		87499BF32B7644AC0090852A /* habitWidgets */ = {
-			isa = PBXGroup;
-			children = (
-				87499BF42B7644AC0090852A /* habitWidgetsBundle.swift */,
-				87499BF62B7644AC0090852A /* habitWidgets.swift */,
-				87499BF82B7644AD0090852A /* Assets.xcassets */,
-				87499BFA2B7644AD0090852A /* Info.plist */,
-			);
-			path = habitWidgets;
-			sourceTree = "<group>";
-		};
 		9435C0861C95162DEB1E845C /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -205,10 +161,8 @@
 		97C146E51CF9000F007C117D = {
 			isa = PBXGroup;
 			children = (
-				87499C032B7648F10090852A /* intentDefinition.swift */,
 				9740EEB11CF90186004384FC /* Flutter */,
 				97C146F01CF9000F007C117D /* Runner */,
-				87499BF32B7644AC0090852A /* habitWidgets */,
 				97C146EF1CF9000F007C117D /* Products */,
 				331C8082294A63A400263BE5 /* RunnerTests */,
 				9435C0861C95162DEB1E845C /* Pods */,
@@ -222,7 +176,6 @@
 			children = (
 				97C146EE1CF9000F007C117D /* Runner.app */,
 				331C8081294A63A400263BE5 /* RunnerTests.xctest */,
-				87499BEE2B7644AC0090852A /* habitWidgetsExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -264,24 +217,6 @@
 			productReference = 331C8081294A63A400263BE5 /* RunnerTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		87499BED2B7644AC0090852A /* habitWidgetsExtension */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 87499C022B7644AD0090852A /* Build configuration list for PBXNativeTarget "habitWidgetsExtension" */;
-			buildPhases = (
-				A149DB1B0366472AB7A9EC72 /* [CP] Check Pods Manifest.lock */,
-				87499BEA2B7644AC0090852A /* Sources */,
-				87499BEB2B7644AC0090852A /* Frameworks */,
-				87499BEC2B7644AC0090852A /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = habitWidgetsExtension;
-			productName = habitWidgetsExtension;
-			productReference = 87499BEE2B7644AC0090852A /* habitWidgetsExtension.appex */;
-			productType = "com.apple.product-type.app-extension";
-		};
 		97C146ED1CF9000F007C117D /* Runner */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 97C147051CF9000F007C117D /* Build configuration list for PBXNativeTarget "Runner" */;
@@ -299,7 +234,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				87499BFC2B7644AD0090852A /* PBXTargetDependency */,
 			);
 			name = Runner;
 			productName = Runner;
@@ -320,9 +254,6 @@
 					331C8080294A63A400263BE5 = {
 						CreatedOnToolsVersion = 14.0;
 						TestTargetID = 97C146ED1CF9000F007C117D;
-					};
-					87499BED2B7644AC0090852A = {
-						CreatedOnToolsVersion = 15.0.1;
 					};
 					97C146ED1CF9000F007C117D = {
 						CreatedOnToolsVersion = 7.3.1;
@@ -345,7 +276,6 @@
 			targets = (
 				97C146ED1CF9000F007C117D /* Runner */,
 				331C8080294A63A400263BE5 /* RunnerTests */,
-				87499BED2B7644AC0090852A /* habitWidgetsExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -355,14 +285,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		87499BEC2B7644AC0090852A /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				87499BF92B7644AD0090852A /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -456,28 +378,6 @@
 			shellPath = /bin/sh;
 			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" build";
 		};
-		A149DB1B0366472AB7A9EC72 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-habitWidgetsExtension-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
 		C303CF04D44ECDE3917F13C3 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -506,22 +406,11 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		87499BEA2B7644AC0090852A /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				87499BF72B7644AC0090852A /* habitWidgets.swift in Sources */,
-				87499C052B7648F10090852A /* intentDefinition.swift in Sources */,
-				87499BF52B7644AC0090852A /* habitWidgetsBundle.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		97C146EA1CF9000F007C117D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
-				87499C042B7648F10090852A /* intentDefinition.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -533,11 +422,6 @@
 			isa = PBXTargetDependency;
 			target = 97C146ED1CF9000F007C117D /* Runner */;
 			targetProxy = 331C8085294A63A400263BE5 /* PBXContainerItemProxy */;
-		};
-		87499BFC2B7644AD0090852A /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 87499BED2B7644AC0090852A /* habitWidgetsExtension */;
-			targetProxy = 87499BFB2B7644AD0090852A /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -682,129 +566,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Runner.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Runner";
-			};
-			name = Profile;
-		};
-		87499BFF2B7644AD0090852A /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7AE195DE6D9AA8EED5943988 /* Pods-habitWidgetsExtension.debug.xcconfig */;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = V2PH44NVAY;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu17;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = habitWidgets/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = habitWidgets;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.0;
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = dev.jeanie.habitApp.habitWidgets;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		87499C002B7644AD0090852A /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 45F94DACD0B4CC84C8A58AF8 /* Pods-habitWidgetsExtension.release.xcconfig */;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = V2PH44NVAY;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu17;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = habitWidgets/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = habitWidgets;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.0;
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = dev.jeanie.habitApp.habitWidgets;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
-		87499C012B7644AD0090852A /* Profile */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 42F9F4622AC36DA23DFAE09B /* Pods-habitWidgetsExtension.profile.xcconfig */;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = V2PH44NVAY;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu17;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = habitWidgets/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = habitWidgets;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.0;
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = dev.jeanie.habitApp.habitWidgets;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Profile;
 		};
@@ -973,16 +734,6 @@
 				331C8088294A63A400263BE5 /* Debug */,
 				331C8089294A63A400263BE5 /* Release */,
 				331C808A294A63A400263BE5 /* Profile */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		87499C022B7644AD0090852A /* Build configuration list for PBXNativeTarget "habitWidgetsExtension" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				87499BFF2B7644AD0090852A /* Debug */,
-				87499C002B7644AD0090852A /* Release */,
-				87499C012B7644AD0090852A /* Profile */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
