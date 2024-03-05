@@ -91,7 +91,7 @@ class HTCalendar extends StatelessWidget {
               color: HTColors.grey030,
               fontWeight: FontWeight.w500,
             ),
-            todayDecoration: const BoxDecoration(),
+            todayDecoration: const BoxDecoration(shape: BoxShape.circle),
             selectedDecoration: const BoxDecoration(
               color: HTColors.black,
               shape: BoxShape.circle,
