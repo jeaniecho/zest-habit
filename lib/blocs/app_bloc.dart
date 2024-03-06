@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:habit_app/models/settings_model.dart';
 import 'package:habit_app/models/task_model.dart';
 import 'package:habit_app/utils/functions.dart';
@@ -33,17 +34,26 @@ class AppBloc {
   }
 
   Future<Settings> getSettings() async {
-    Settings settings = await isar.settings.where().findFirst() ?? Settings();
+    Settings settings = await isar.settings.where().findFirst() ??
+        Settings(
+            isDarkMode: SchedulerBinding
+                    .instance.platformDispatcher.platformBrightness ==
+                Brightness.dark);
 
     _settings.add(settings);
     return settings;
   }
 
   setDarkMode(bool value, BuildContext context) async {
+    Settings newSettings = _settings.value.copyWith(isDarkMode: value);
+
+    _settings.add(newSettings);
+
     await isar.writeTxn(() async {
-      await isar.settings.put(_settings.value.copyWith(isDarkMode: value));
+      await isar.settings.put(newSettings);
     });
-    await getSettings();
+
+    // await getSettings();
   }
 
   Future<List<Task>> getTasks() async {

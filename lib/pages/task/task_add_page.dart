@@ -143,7 +143,14 @@ class TaskAddEmojiPicker extends StatelessWidget {
         decoration: BoxDecoration(
           color: htGreys(context).white,
           borderRadius: HTBorderRadius.circular10,
-          boxShadow: HTBoxShadows.shadows01,
+          boxShadow: [
+            BoxShadow(
+              color: htGreys(context).black.withOpacity(0.12),
+              blurRadius: 8,
+              spreadRadius: 2,
+              offset: const Offset(0, 2),
+            )
+          ],
         ),
         child: SizedBox(
           width: MediaQuery.sizeOf(context).width - 48,

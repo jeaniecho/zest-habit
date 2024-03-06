@@ -41,7 +41,7 @@ class ModePage extends StatelessWidget {
                         HTRadio(
                           value: isDarkMode,
                           groupValue: false,
-                          text: 'Light (Default)',
+                          text: 'Light',
                           onTap: () {
                             appBloc.setDarkMode(false, context);
                           },

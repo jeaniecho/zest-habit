@@ -83,6 +83,8 @@ class BasePage extends StatelessWidget {
                               context: context,
                               isScrollControlled: true,
                               backgroundColor: HTColors.clear,
+                              barrierColor:
+                                  htGreys(context).black.withOpacity(0.1),
                               useSafeArea: true,
                               builder: (context) {
                                 return Provider(
@@ -152,6 +154,7 @@ class BaseEndDrawer extends StatelessWidget {
     return Drawer(
       backgroundColor: htGreys(context).white,
       surfaceTintColor: htGreys(context).white,
+      elevation: 0,
       shape: RoundedRectangleBorder(borderRadius: HTBorderRadius.circularZero),
       width: 300,
       child: SafeArea(

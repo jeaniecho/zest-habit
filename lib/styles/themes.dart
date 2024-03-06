@@ -11,6 +11,7 @@ class HTThemes {
     ),
     scaffoldBackgroundColor: HTColors.white,
     splashColor: HTColors.clear,
+    shadowColor: HTColors.black,
     primaryColor: HTColors.black,
     focusColor: HTColors.grey030,
     highlightColor: HTColors.grey040,
@@ -80,13 +81,18 @@ class HTThemes {
       backgroundColor: HTColors.black,
     ),
     scaffoldBackgroundColor: HTColors.black,
+    shadowColor: HTColors.white,
     splashColor: HTColors.clear,
     primaryColor: HTColors.white,
-    focusColor: HTColors.grey080,
-    highlightColor: HTColors.clear,
+    focusColor: HTColors.grey070,
+    highlightColor: HTColors.grey060,
     cardColor: HTColors.black,
-    disabledColor: HTColors.grey070,
+    disabledColor: HTColors.grey080,
     colorScheme: HTColors.darkColorScheme,
+    textSelectionTheme: const TextSelectionThemeData(
+        cursorColor: HTColors.grey040,
+        selectionColor: HTColors.grey070,
+        selectionHandleColor: HTColors.grey060),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         elevation: 0,
@@ -95,6 +101,46 @@ class HTThemes {
         backgroundColor: HTColors.white,
         shape: RoundedRectangleBorder(borderRadius: HTBorderRadius.circular8),
       ),
+    ),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(
+        foregroundColor: HTColors.white,
+      ),
+    ),
+    inputDecorationTheme: InputDecorationTheme(
+      filled: true,
+      fillColor: HTColors.grey090,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      enabledBorder: OutlineInputBorder(
+        borderSide: const BorderSide(color: HTColors.grey090, width: 1),
+        borderRadius: HTBorderRadius.circular10,
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderSide: const BorderSide(color: HTColors.grey070, width: 1),
+        borderRadius: HTBorderRadius.circular10,
+      ),
+      errorBorder: OutlineInputBorder(
+        borderSide: const BorderSide(color: HTColors.red, width: 1),
+        borderRadius: HTBorderRadius.circular10,
+      ),
+    ),
+    buttonTheme: const ButtonThemeData(
+      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      buttonColor: HTColors.white,
+      disabledColor: HTColors.grey070,
+    ),
+    radioTheme: RadioThemeData(
+      visualDensity: const VisualDensity(
+        horizontal: VisualDensity.minimumDensity,
+        vertical: VisualDensity.minimumDensity,
+      ),
+      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      fillColor:
+          MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
+        return (states.contains(MaterialState.selected))
+            ? HTColors.white
+            : HTColors.grey060;
+      }),
     ),
     useMaterial3: true,
     fontFamily: 'Pretendard',

@@ -87,8 +87,18 @@ class TaskDetailAction extends StatelessWidget {
         offset: const Offset(4, 4),
         routeTheme: const PullDownMenuRouteTheme().copyWith(
             backgroundColor: htGreys(context).white,
-            beginShadow: HTBoxShadows.dropDownBlur12SpreadOpacity8,
-            endShadow: HTBoxShadows.dropDownBlur24Spread4pacity8),
+            beginShadow: BoxShadow(
+              color: htGreys(context).black.withOpacity(0.08),
+              blurRadius: 12,
+              spreadRadius: 0,
+              offset: const Offset(0, 2),
+            ),
+            endShadow: BoxShadow(
+              color: htGreys(context).black.withOpacity(0.08),
+              blurRadius: 24,
+              spreadRadius: 4,
+              offset: const Offset(0, 8),
+            )),
         itemBuilder: (context) => [
               PullDownMenuItem(
                 title: 'Edit',
