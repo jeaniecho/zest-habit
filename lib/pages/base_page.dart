@@ -42,10 +42,10 @@ class BasePage extends StatelessWidget {
               child: Container(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   border: Border(
                     top: BorderSide(
-                      color: HTColors.grey010,
+                      color: htGreys(context).grey010,
                       width: 1,
                     ),
                   ),
@@ -71,8 +71,8 @@ class BasePage extends StatelessWidget {
                           Icons.calendar_today_rounded,
                           size: 22,
                           color: bottomIndex == 0
-                              ? HTColors.black
-                              : HTColors.grey040,
+                              ? htGreys(context).black
+                              : htGreys(context).grey040,
                         ),
                       ),
                     ),
@@ -98,15 +98,15 @@ class BasePage extends StatelessWidget {
                           child: Container(
                             width: 48,
                             height: 48,
-                            decoration: const BoxDecoration(
-                              color: HTColors.black,
+                            decoration: BoxDecoration(
+                              color: htGreys(context).black,
                               shape: BoxShape.circle,
                             ),
-                            child: const Center(
+                            child: Center(
                               child: Icon(
                                 Icons.add_rounded,
                                 size: 24,
-                                color: HTColors.white,
+                                color: htGreys(context).white,
                               ),
                             ),
                           ),
@@ -129,8 +129,8 @@ class BasePage extends StatelessWidget {
                           Icons.timer_outlined,
                           size: 24,
                           color: bottomIndex == 1
-                              ? HTColors.black
-                              : HTColors.grey040,
+                              ? htGreys(context).black
+                              : htGreys(context).grey040,
                         ),
                       ),
                     ),
@@ -150,8 +150,8 @@ class BaseEndDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      backgroundColor: HTColors.white,
-      surfaceTintColor: HTColors.white,
+      backgroundColor: htGreys(context).white,
+      surfaceTintColor: htGreys(context).white,
       shape: RoundedRectangleBorder(borderRadius: HTBorderRadius.circularZero),
       width: 300,
       child: SafeArea(
@@ -164,11 +164,11 @@ class BaseEndDrawer extends StatelessWidget {
                 onTap: () {
                   rootScaffoldKey.currentState!.closeEndDrawer();
                 },
-                child: const Padding(
+                child: Padding(
                   padding: HTEdgeInsets.all12,
                   child: Icon(
                     Icons.close_rounded,
-                    color: HTColors.grey040,
+                    color: htGreys(context).grey040,
                     size: 24,
                   ),
                 ),
@@ -227,7 +227,7 @@ class BaseEndDrawer extends StatelessWidget {
                     return HTText(
                       'App Version ${packageInfo.version} (${packageInfo.buildNumber})',
                       typoToken: HTTypoToken.bodyMedium,
-                      color: HTColors.grey040,
+                      color: htGreys(context).grey040,
                     );
                   }),
             ],
@@ -255,7 +255,7 @@ class BaseEndDrawerItem extends StatelessWidget {
         child: HTText(
           text,
           typoToken: HTTypoToken.bodyLarge,
-          color: HTColors.black,
+          color: htGreys(context).black,
         ),
       ),
     );

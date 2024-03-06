@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:habit_app/blocs/app_bloc.dart';
 import 'package:habit_app/blocs/task/task_detail_bloc.dart';
+import 'package:habit_app/models/settings_model.dart';
 import 'package:habit_app/models/task_model.dart';
 import 'package:habit_app/styles/colors.dart';
 import 'package:habit_app/styles/effects.dart';
@@ -85,7 +86,7 @@ class TaskDetailAction extends StatelessWidget {
     return PullDownButton(
         offset: const Offset(4, 4),
         routeTheme: const PullDownMenuRouteTheme().copyWith(
-            backgroundColor: HTColors.white,
+            backgroundColor: htGreys(context).white,
             beginShadow: HTBoxShadows.dropDownBlur12SpreadOpacity8,
             endShadow: HTBoxShadows.dropDownBlur24Spread4pacity8),
         itemBuilder: (context) => [
@@ -108,9 +109,9 @@ class TaskDetailAction extends StatelessWidget {
             ],
         buttonBuilder: (context, showMenu) => GestureDetector(
               onTap: showMenu,
-              child: const Icon(
+              child: Icon(
                 Icons.more_horiz,
-                color: HTColors.black,
+                color: htGreys(context).black,
                 size: 24,
               ),
             ));
@@ -122,19 +123,20 @@ class TaskDetailBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const SingleChildScrollView(
+    return SingleChildScrollView(
       padding: HTEdgeInsets.vertical24,
       child: Column(
         children: [
-          TaskDesc(),
-          Divider(color: HTColors.grey010, thickness: 12, height: 12),
+          const TaskDesc(),
+          Divider(color: htGreys(context).grey010, thickness: 12, height: 12),
           Column(
             children: [
-              TaskCalendar(),
-              Divider(color: HTColors.grey010, thickness: 12, height: 12),
+              const TaskCalendar(),
+              Divider(
+                  color: htGreys(context).grey010, thickness: 12, height: 12),
             ],
           ),
-          TaskDetailInfo(),
+          const TaskDetailInfo(),
           HTSpacers.height48,
         ],
       ),
@@ -157,21 +159,21 @@ class TaskEditButton extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
         decoration: BoxDecoration(
-          color: HTColors.grey010,
+          color: htGreys(context).grey010,
           borderRadius: HTBorderRadius.circular24,
         ),
-        child: const Row(
+        child: Row(
           children: [
             Icon(
               Icons.edit_rounded,
               size: 14,
-              color: HTColors.black,
+              color: htGreys(context).black,
             ),
             HTSpacers.width4,
             HTText(
               'Edit',
               typoToken: HTTypoToken.subtitleMedium,
-              color: HTColors.black,
+              color: htGreys(context).black,
             )
           ],
         ),
@@ -203,11 +205,11 @@ class TaskDesc extends StatelessWidget {
                         ? HTText(
                             task.emoji!,
                             typoToken: HTTypoToken.headlineLarge,
-                            color: HTColors.black,
+                            color: htGreys(context).black,
                           )
-                        : const Icon(
+                        : Icon(
                             Icons.emoji_emotions_rounded,
-                            color: HTColors.grey030,
+                            color: htGreys(context).grey030,
                             size: 36,
                           ),
                     const Spacer(),
@@ -217,7 +219,7 @@ class TaskDesc extends StatelessWidget {
                 HTText(
                   task.title,
                   typoToken: HTTypoToken.headlineMedium,
-                  color: HTColors.black,
+                  color: htGreys(context).black,
                 ),
                 if (task.goal != null && task.goal!.isNotEmpty)
                   Padding(
@@ -225,7 +227,7 @@ class TaskDesc extends StatelessWidget {
                     child: HTText(
                       task.goal!,
                       typoToken: HTTypoToken.captionMedium,
-                      color: HTColors.grey040,
+                      color: htGreys(context).grey040,
                     ),
                   ),
                 // if (task.desc != null)
@@ -233,13 +235,13 @@ class TaskDesc extends StatelessWidget {
                 //     margin: HTEdgeInsets.top12,
                 //     padding: HTEdgeInsets.h16v12,
                 //     decoration: BoxDecoration(
-                //       color: HTColors.grey010,
+                //       color: grey010,
                 //       borderRadius: HTBorderRadius.circular10,
                 //     ),
                 //     child: HTText(
                 //       task.desc!,
                 //       typoToken: HTTypoToken.captionMedium,
-                //       color: HTColors.grey070,
+                //       color: grey070,
                 //     ),
                 //   ),
                 HTSpacers.height16,
@@ -351,15 +353,15 @@ class TaskWeeklyTitle extends StatelessWidget {
                               Icons.chevron_left_rounded,
                               size: 24,
                               color: isBefore
-                                  ? HTColors.grey030
-                                  : HTColors.grey060,
+                                  ? htGreys(context).grey030
+                                  : htGreys(context).grey060,
                             ),
                           ),
                         ),
                         HTText(
                           '${DateFormat.MMMM().format(currDate)} $weekNum${stndrd(weekNum)} week',
                           typoToken: HTTypoToken.headlineSmall,
-                          color: HTColors.black,
+                          color: htGreys(context).black,
                           height: 1,
                           underline: true,
                         ),
@@ -375,8 +377,9 @@ class TaskWeeklyTitle extends StatelessWidget {
                             child: Icon(
                               Icons.chevron_right_rounded,
                               size: 24,
-                              color:
-                                  isLater ? HTColors.grey030 : HTColors.grey060,
+                              color: isLater
+                                  ? htGreys(context).grey030
+                                  : htGreys(context).grey060,
                             ),
                           ),
                         ),
@@ -388,7 +391,7 @@ class TaskWeeklyTitle extends StatelessWidget {
                 HTText(
                   'You are about ${progressPercentage(task.from, task.until!, task.doneAt)}% closer to our goal.',
                   typoToken: HTTypoToken.captionMedium,
-                  color: HTColors.grey040,
+                  color: htGreys(context).grey040,
                 )
             ],
           );
@@ -435,15 +438,15 @@ class TaskMonthlyTitle extends StatelessWidget {
                               Icons.chevron_left_rounded,
                               size: 24,
                               color: isBefore
-                                  ? HTColors.grey030
-                                  : HTColors.grey060,
+                                  ? htGreys(context).grey030
+                                  : htGreys(context).grey060,
                             ),
                           ),
                         ),
                         HTText(
                           '${currMonth.year} ${DateFormat.MMMM().format(currMonth)}',
                           typoToken: HTTypoToken.headlineSmall,
-                          color: HTColors.black,
+                          color: htGreys(context).black,
                           height: 1,
                           underline: true,
                         ),
@@ -459,8 +462,9 @@ class TaskMonthlyTitle extends StatelessWidget {
                             child: Icon(
                               Icons.chevron_right_rounded,
                               size: 24,
-                              color:
-                                  isAfter ? HTColors.grey030 : HTColors.grey060,
+                              color: isAfter
+                                  ? htGreys(context).grey030
+                                  : htGreys(context).grey060,
                             ),
                           ),
                         ),
@@ -473,7 +477,7 @@ class TaskMonthlyTitle extends StatelessWidget {
                   child: HTText(
                     'You are about ${progressPercentage(task.from, task.until!, task.doneAt)}% closer to our goal.',
                     typoToken: HTTypoToken.captionMedium,
-                    color: HTColors.grey040,
+                    color: htGreys(context).grey040,
                   ),
                 )
             ],
@@ -488,6 +492,7 @@ class TaskWeeklyCalendar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     TaskDetailBloc taskDetailBloc = context.read<TaskDetailBloc>();
+    AppBloc appBloc = context.read<AppBloc>();
 
     return SizedBox(
       height: 86,
@@ -497,9 +502,15 @@ class TaskWeeklyCalendar extends StatelessWidget {
             taskDetailBloc.doneDates,
             taskDetailBloc.taskObj,
             taskDetailBloc.timerDates,
+            appBloc.settings,
           ]),
           builder: (context, snapshot) {
             Task task = snapshot.data?[2] ?? taskDetailBloc.task;
+
+            Settings settings = snapshot.data?[4] ?? Settings();
+            if (settings.isDarkMode && task.color == 0xFF000000) {
+              task.color = 0xFFFFFFFF;
+            }
 
             DateTime now = DateTime.now().getDate();
             DateTime currDate = htMostRecentWeekday(snapshot.data?[0] ?? now);
@@ -536,7 +547,7 @@ class TaskWeeklyCalendar extends StatelessWidget {
                     HTText(
                       htWeekdayToText(task.from.weekday),
                       typoToken: HTTypoToken.captionXSmall,
-                      color: HTColors.grey050,
+                      color: htGreys(context).grey050,
                     ),
                     HTSpacers.height12,
                     Container(
@@ -545,14 +556,15 @@ class TaskWeeklyCalendar extends StatelessWidget {
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         border: Border.all(
-                            color:
-                                isDone ? Color(task.color) : HTColors.grey010,
+                            color: isDone
+                                ? Color(task.color)
+                                : htGreys(context).grey010,
                             width: 1),
                         color: isDone
                             ? Color(task.color)
                             : isLater
-                                ? HTColors.white
-                                : HTColors.grey010,
+                                ? htGreys(context).white
+                                : htGreys(context).grey010,
                       ),
                       child: Center(
                           child: isDone
@@ -560,13 +572,13 @@ class TaskWeeklyCalendar extends StatelessWidget {
                                   isDoneWithTimer
                                       ? Icons.timer_rounded
                                       : Icons.check_rounded,
-                                  color: HTColors.white,
+                                  color: htGreys(context).white,
                                   size: 20,
                                 )
                               : HTText(
                                   '${task.from.day}',
                                   typoToken: HTTypoToken.subtitleXSmall,
-                                  color: HTColors.grey040,
+                                  color: htGreys(context).grey040,
                                   height: 1.25,
                                 )),
                     ),
@@ -577,7 +589,7 @@ class TaskWeeklyCalendar extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: htIsSameDay(task.from, now)
                             ? HTColors.red
-                            : HTColors.white,
+                            : htGreys(context).white,
                         shape: BoxShape.circle,
                       ),
                     ),
@@ -613,7 +625,7 @@ class TaskWeeklyCalendar extends StatelessWidget {
                         HTText(
                           htWeekdayToText(repeatAt[index]),
                           typoToken: HTTypoToken.captionXSmall,
-                          color: HTColors.grey050,
+                          color: htGreys(context).grey050,
                         ),
                         HTSpacers.height12,
                         Container(
@@ -624,13 +636,13 @@ class TaskWeeklyCalendar extends StatelessWidget {
                             border: Border.all(
                                 color: isDone
                                     ? Color(task.color)
-                                    : HTColors.grey010,
+                                    : htGreys(context).grey010,
                                 width: 1),
                             color: isDone
                                 ? Color(task.color)
                                 : isLater
-                                    ? HTColors.white
-                                    : HTColors.grey010,
+                                    ? htGreys(context).white
+                                    : htGreys(context).grey010,
                           ),
                           child: Center(
                               child: isDone
@@ -638,13 +650,13 @@ class TaskWeeklyCalendar extends StatelessWidget {
                                       isDoneWithTimer
                                           ? Icons.timer_rounded
                                           : Icons.check_rounded,
-                                      color: HTColors.white,
+                                      color: htGreys(context).white,
                                       size: 20,
                                     )
                                   : HTText(
                                       '$day',
                                       typoToken: HTTypoToken.subtitleXSmall,
-                                      color: HTColors.grey040,
+                                      color: htGreys(context).grey040,
                                       height: 1.25,
                                     )),
                         ),
@@ -653,7 +665,8 @@ class TaskWeeklyCalendar extends StatelessWidget {
                           width: 4,
                           height: 4,
                           decoration: BoxDecoration(
-                            color: isToday ? HTColors.red : HTColors.white,
+                            color:
+                                isToday ? HTColors.red : htGreys(context).white,
                             shape: BoxShape.circle,
                           ),
                         ),
@@ -676,12 +689,21 @@ class TaskMonthlyCalendar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     TaskDetailBloc taskDetailBloc = context.read<TaskDetailBloc>();
+    AppBloc appBloc = context.read<AppBloc>();
 
     return StreamBuilder<List>(
-        stream: Rx.combineLatestList(
-            [taskDetailBloc.currDate, taskDetailBloc.taskObj]),
+        stream: Rx.combineLatestList([
+          taskDetailBloc.currDate,
+          taskDetailBloc.taskObj,
+          appBloc.settings
+        ]),
         builder: (context, snapshot) {
           Task task = snapshot.data?[1] ?? taskDetailBloc.task;
+
+          Settings settings = snapshot.data?[2] ?? Settings();
+          if (settings.isDarkMode && task.color == 0xFF000000) {
+            task.color = 0xFFFFFFFF;
+          }
 
           DateTime currDate = snapshot.data?[0] ?? DateTime.now().getDate();
           DateTime currMonth = DateTime(currDate.year, currDate.month, 1);
@@ -699,7 +721,7 @@ class TaskMonthlyCalendar extends StatelessWidget {
                 16, // (boxWidth * 7days) + (boxPadding * (7-1)days) + containerPadding
             padding: HTEdgeInsets.all8,
             decoration: BoxDecoration(
-              color: HTColors.grey010,
+              color: htGreys(context).grey010,
               borderRadius: HTBorderRadius.circular8,
             ),
             child: StreamBuilder<List>(
@@ -752,15 +774,15 @@ class TaskMonthlyCalendar extends StatelessWidget {
                             color: isDone
                                 ? Color(task.color)
                                 : isLater
-                                    ? HTColors.white
+                                    ? htGreys(context).white
                                     : Color(task.color).withOpacity(0.2),
                             borderRadius: HTBorderRadius.circular8,
                           ),
                           child: isDone && isDoneWithTimer
-                              ? const Center(
+                              ? Center(
                                   child: Icon(
                                     Icons.timer_rounded,
-                                    color: HTColors.white,
+                                    color: htGreys(context).white,
                                     size: 18,
                                   ),
                                 )
@@ -774,7 +796,7 @@ class TaskMonthlyCalendar extends StatelessWidget {
                           width: 28,
                           height: 28,
                           decoration: BoxDecoration(
-                            color: HTColors.grey010,
+                            color: htGreys(context).grey010,
                             borderRadius: HTBorderRadius.circular8,
                           ),
                         );
@@ -789,7 +811,7 @@ class TaskMonthlyCalendar extends StatelessWidget {
                           width: 28,
                           height: 28,
                           decoration: BoxDecoration(
-                            color: HTColors.white50,
+                            color: htGreys(context).white.withOpacity(0.5),
                             borderRadius: HTBorderRadius.circular8,
                           ),
                         );
@@ -805,15 +827,15 @@ class TaskMonthlyCalendar extends StatelessWidget {
                           color: isDone
                               ? Color(task.color)
                               : isLater
-                                  ? HTColors.white
+                                  ? htGreys(context).white
                                   : Color(task.color).withOpacity(0.2),
                           borderRadius: HTBorderRadius.circular8,
                         ),
                         child: isDone && isDoneWithTimer
-                            ? const Center(
+                            ? Center(
                                 child: Icon(
                                   Icons.timer_rounded,
-                                  color: HTColors.white,
+                                  color: htGreys(context).white,
                                   size: 18,
                                 ),
                               )
@@ -846,48 +868,51 @@ class TaskDetailInfo extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 HTSpacers.height24,
-                const HTText(
+                HTText(
                   'Repeat',
                   typoToken: HTTypoToken.captionMedium,
-                  color: HTColors.grey050,
+                  color: htGreys(context).grey050,
                 ),
                 HTSpacers.height12,
                 Container(
                   padding: HTEdgeInsets.h16v12,
                   decoration: BoxDecoration(
-                    border: Border.all(color: HTColors.grey010, width: 1),
+                    border:
+                        Border.all(color: htGreys(context).grey010, width: 1),
                     borderRadius: HTBorderRadius.circular10,
                   ),
                   child: HTText(
                     '\u2022  ${htRepeatAtToText(task.repeatAt)}',
                     typoToken: HTTypoToken.captionMedium,
-                    color: HTColors.black,
+                    color: htGreys(context).black,
                   ),
                 ),
                 HTSpacers.height12,
                 Container(
                   padding: HTEdgeInsets.h16v12,
                   decoration: BoxDecoration(
-                    border: Border.all(color: HTColors.grey010, width: 1),
+                    border:
+                        Border.all(color: htGreys(context).grey010, width: 1),
                     borderRadius: HTBorderRadius.circular10,
                   ),
                   child: HTText(
                     '\u2022  From ${DateFormat('yyyy.MM.dd').format(task.from)}',
                     typoToken: HTTypoToken.captionMedium,
-                    color: HTColors.black,
+                    color: htGreys(context).black,
                   ),
                 ),
                 HTSpacers.height12,
                 Container(
                   padding: HTEdgeInsets.h16v12,
                   decoration: BoxDecoration(
-                    border: Border.all(color: HTColors.grey010, width: 1),
+                    border:
+                        Border.all(color: htGreys(context).grey010, width: 1),
                     borderRadius: HTBorderRadius.circular10,
                   ),
                   child: HTText(
                     '\u2022  ${htUntilToText(task.until, long: true)}',
                     typoToken: HTTypoToken.captionMedium,
-                    color: HTColors.black,
+                    color: htGreys(context).black,
                   ),
                 ),
               ],

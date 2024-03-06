@@ -7,9 +7,8 @@ import 'package:habit_app/widgets/ht_text.dart';
 class HTAnimatedToggle extends StatefulWidget {
   final List<String> values;
   final ValueChanged onToggleCallback;
-  final Color backgroundColor;
-  final Color buttonColor;
-  final Color textColor;
+  final Color? backgroundColor;
+  final Color? buttonColor;
   final double width;
   final double height;
 
@@ -17,9 +16,8 @@ class HTAnimatedToggle extends StatefulWidget {
     super.key,
     required this.values,
     required this.onToggleCallback,
-    this.backgroundColor = HTColors.grey010,
-    this.buttonColor = HTColors.white,
-    this.textColor = HTColors.black,
+    this.backgroundColor,
+    this.buttonColor,
     this.width = 320,
     this.height = 40,
   });
@@ -50,7 +48,7 @@ class _HTAnimatedToggleState extends State<HTAnimatedToggle> {
               width: widget.width,
               height: widget.height,
               decoration: ShapeDecoration(
-                color: widget.backgroundColor,
+                color: widget.backgroundColor ?? htGreys(context).grey010,
                 shape: RoundedRectangleBorder(
                   borderRadius: HTBorderRadius.circular12,
                 ),
@@ -62,7 +60,7 @@ class _HTAnimatedToggleState extends State<HTAnimatedToggle> {
                   (index) => HTText(
                     widget.values[index],
                     typoToken: HTTypoToken.captionMedium,
-                    color: HTColors.grey050,
+                    color: htGreys(context).grey050,
                   ),
                 ),
               ),
@@ -78,7 +76,7 @@ class _HTAnimatedToggleState extends State<HTAnimatedToggle> {
               height: widget.height,
               margin: HTEdgeInsets.all2,
               decoration: ShapeDecoration(
-                color: widget.buttonColor,
+                color: widget.buttonColor ?? htGreys(context).white,
                 shape: RoundedRectangleBorder(
                   borderRadius: HTBorderRadius.circular10,
                 ),
@@ -87,7 +85,7 @@ class _HTAnimatedToggleState extends State<HTAnimatedToggle> {
               child: HTText(
                 initialPosition ? widget.values[0] : widget.values[1],
                 typoToken: HTTypoToken.subtitleMedium,
-                color: HTColors.grey080,
+                color: htGreys(context).grey080,
               ),
             ),
           ),

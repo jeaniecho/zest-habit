@@ -164,13 +164,13 @@ class TimerBloc extends Disposable {
       autoDismiss: true,
       snackbarDuration: const Duration(seconds: 3),
       position: HTSnackbarPosition.top,
-      builder: (context) => const HTToastCard(
+      builder: (context) => HTToastCard(
         title: HTText(
           '⛔️ Please set within 99:59:59',
           typoToken: HTTypoToken.bodyMedium,
-          color: HTColors.white,
+          color: htGreys(context).white,
         ),
-        color: HTColors.grey080,
+        color: htGreys(context).grey080,
       ),
     ).show(shellNavKey.currentContext!);
   }
@@ -186,13 +186,13 @@ class TimerBloc extends Disposable {
         autoDismiss: true,
         snackbarDuration: const Duration(seconds: 3),
         position: HTSnackbarPosition.top,
-        builder: (context) => const HTToastCard(
+        builder: (context) => HTToastCard(
           title: HTText(
             '⏰ Timer Ended!',
             typoToken: HTTypoToken.bodyMedium,
-            color: HTColors.white,
+            color: htGreys(context).white,
           ),
-          color: HTColors.grey080,
+          color: htGreys(context).grey080,
         ),
       ).show(shellNavKey.currentContext!);
 

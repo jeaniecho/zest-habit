@@ -45,10 +45,10 @@ class TimerAppbar extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
           child: Row(
             children: [
-              const HTText(
+              HTText(
                 'Timer',
                 typoToken: HTTypoToken.headlineML,
-                color: HTColors.black,
+                color: htGreys(context).black,
               ),
               const Spacer(),
               InkWell(
@@ -100,7 +100,7 @@ class TimerTask extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
-                color: HTColors.grey010,
+                color: htGreys(context).grey010,
                 borderRadius: HTBorderRadius.circular10,
               ),
               child: StreamBuilder<Task?>(
@@ -112,10 +112,10 @@ class TimerTask extends StatelessWidget {
                         selectedTask!.emoji!.isNotEmpty;
 
                     if (selectedTask == null) {
-                      return const HTText(
+                      return HTText(
                         'Select Task...',
                         typoToken: HTTypoToken.bodyMedium,
-                        color: HTColors.grey040,
+                        color: htGreys(context).grey040,
                         height: 1.2,
                       );
                     } else {
@@ -123,18 +123,18 @@ class TimerTask extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           if (!hasEmoji)
-                            const Padding(
+                            Padding(
                               padding: HTEdgeInsets.right4,
                               child: Icon(
                                 Icons.emoji_emotions_rounded,
-                                color: HTColors.grey030,
+                                color: htGreys(context).grey030,
                                 size: 18,
                               ),
                             ),
                           HTText(
                             '${hasEmoji ? '${selectedTask.emoji} ' : ''}${selectedTask.title}',
                             typoToken: HTTypoToken.subtitleMedium,
-                            color: HTColors.black,
+                            color: htGreys(context).black,
                           ),
                           if (!isTimerOn)
                             Padding(
@@ -147,13 +147,13 @@ class TimerTask extends StatelessWidget {
                                 child: Container(
                                   width: 18,
                                   height: 18,
-                                  decoration: const BoxDecoration(
+                                  decoration: BoxDecoration(
                                     shape: BoxShape.circle,
-                                    color: HTColors.grey040,
+                                    color: htGreys(context).grey040,
                                   ),
-                                  child: const Icon(
+                                  child: Icon(
                                     Icons.close_rounded,
-                                    color: HTColors.grey010,
+                                    color: htGreys(context).grey010,
                                     size: 14,
                                   ),
                                 ),
@@ -207,7 +207,7 @@ class TimerWidget extends StatelessWidget {
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               border: Border.all(
-                                color: HTColors.grey020,
+                                color: htGreys(context).grey020,
                                 width: 1,
                                 strokeAlign: BorderSide.strokeAlignOutside,
                               ),
@@ -224,10 +224,10 @@ class TimerWidget extends StatelessWidget {
                                         curr.inMilliseconds /
                                             start.inMilliseconds,
                                     strokeWidth: 5,
-                                    backgroundColor: HTColors.white,
+                                    backgroundColor: htGreys(context).white,
                                     color: curr.isNegative
-                                        ? HTColors.white
-                                        : HTColors.black,
+                                        ? htGreys(context).white
+                                        : htGreys(context).black,
                                   ),
                                 ),
                               ),
@@ -237,8 +237,8 @@ class TimerWidget extends StatelessWidget {
                               child: Container(
                                 width: timerSize - 6.5,
                                 height: timerSize - 6.5,
-                                decoration: const BoxDecoration(
-                                  color: HTColors.white,
+                                decoration: BoxDecoration(
+                                  color: htGreys(context).white,
                                   shape: BoxShape.circle,
                                 ),
                               ),
@@ -265,9 +265,12 @@ class TimerWidget extends StatelessWidget {
                           height: 80,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: isTimerOn ? HTColors.white : HTColors.black,
+                            color: isTimerOn
+                                ? htGreys(context).white
+                                : htGreys(context).black,
                             border: isTimerOn
-                                ? Border.all(color: HTColors.grey020, width: 1)
+                                ? Border.all(
+                                    color: htGreys(context).grey020, width: 1)
                                 : null,
                           ),
                           child: IconButton(
@@ -283,8 +286,9 @@ class TimerWidget extends StatelessWidget {
                                   ? Icons.stop_rounded
                                   : Icons.play_arrow_rounded,
                               size: isTimerOn ? 40 : 48,
-                              color:
-                                  isTimerOn ? HTColors.black : HTColors.white,
+                              color: isTimerOn
+                                  ? htGreys(context).black
+                                  : htGreys(context).white,
                             ),
                           ),
                         ),
@@ -300,9 +304,10 @@ class TimerWidget extends StatelessWidget {
                                   margin: HTEdgeInsets.left32,
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
-                                    color: HTColors.white,
+                                    color: htGreys(context).white,
                                     border: Border.all(
-                                        color: HTColors.grey020, width: 1),
+                                        color: htGreys(context).grey020,
+                                        width: 1),
                                   ),
                                   child: IconButton(
                                     onPressed: () {
@@ -317,7 +322,7 @@ class TimerWidget extends StatelessWidget {
                                             ? Icons.play_arrow_rounded
                                             : Icons.pause_rounded,
                                         size: isTimerPaused ? 48 : 40,
-                                        color: HTColors.black),
+                                        color: htGreys(context).black),
                                   ),
                                 );
                               }),
@@ -366,13 +371,13 @@ class FixedTimerText extends StatelessWidget {
                 autoDismiss: true,
                 snackbarDuration: const Duration(seconds: 3),
                 position: HTSnackbarPosition.top,
-                builder: (context) => const HTToastCard(
+                builder: (context) => HTToastCard(
                   title: HTText(
                     '⛔️ Adjust time after timer ends.',
                     typoToken: HTTypoToken.bodyMedium,
-                    color: HTColors.white,
+                    color: htGreys(context).white,
                   ),
-                  color: HTColors.grey080,
+                  color: htGreys(context).grey080,
                 ),
               ).show(shellNavKey.currentContext!);
             },
@@ -386,14 +391,14 @@ class FixedTimerText extends StatelessWidget {
                       child: HTText(
                         timeList[0],
                         typoToken: HTTypoToken.bodyHuge,
-                        color: HTColors.black,
+                        color: htGreys(context).black,
                         height: 1.25,
                         textAlign: TextAlign.center,
                       )),
-                  const HTText(
+                  HTText(
                     ':',
                     typoToken: HTTypoToken.bodyHuge,
-                    color: HTColors.black,
+                    color: htGreys(context).black,
                     height: 1,
                   ),
                   SizedBox(
@@ -401,14 +406,14 @@ class FixedTimerText extends StatelessWidget {
                       child: HTText(
                         timeList[1],
                         typoToken: HTTypoToken.bodyHuge,
-                        color: HTColors.black,
+                        color: htGreys(context).black,
                         height: 1.25,
                         textAlign: TextAlign.center,
                       )),
-                  const HTText(
+                  HTText(
                     ':',
                     typoToken: HTTypoToken.bodyHuge,
-                    color: HTColors.black,
+                    color: htGreys(context).black,
                     height: 1,
                   ),
                   SizedBox(
@@ -416,7 +421,7 @@ class FixedTimerText extends StatelessWidget {
                       child: HTText(
                         timeList[2],
                         typoToken: HTTypoToken.bodyHuge,
-                        color: HTColors.black,
+                        color: htGreys(context).black,
                         height: 1.25,
                         textAlign: TextAlign.center,
                       )),
@@ -478,8 +483,8 @@ class EditableTimerText extends StatelessWidget {
                 color: isFocused
                     ? hasStringError
                         ? HTColors.red[100]
-                        : HTColors.grey010
-                    : HTColors.white,
+                        : htGreys(context).grey010
+                    : htGreys(context).white,
                 borderRadius: HTBorderRadius.circular10,
               ),
               child: SizedBox(
@@ -525,10 +530,10 @@ class EditableTimerText extends StatelessWidget {
                           decoration: timerDecoration,
                           cursorHeight: 40,
                         )),
-                    const HTText(
+                    HTText(
                       ':',
                       typoToken: HTTypoToken.bodyHuge,
-                      color: HTColors.black,
+                      color: htGreys(context).black,
                       height: 1,
                     ),
                     SizedBox(
@@ -569,10 +574,10 @@ class EditableTimerText extends StatelessWidget {
                           decoration: timerDecoration,
                           cursorHeight: 40,
                         )),
-                    const HTText(
+                    HTText(
                       ':',
                       typoToken: HTTypoToken.bodyHuge,
-                      color: HTColors.black,
+                      color: htGreys(context).black,
                       height: 1,
                     ),
                     SizedBox(
@@ -627,12 +632,12 @@ class TimerTaskPicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const HTBottomModal(
+    return HTBottomModal(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           HTSpacers.height8,
-          TimeTaskPickerClose(),
+          const TimeTaskPickerClose(),
           HTSpacers.height16,
           Padding(
             padding: HTEdgeInsets.horizontal20,
@@ -642,19 +647,19 @@ class TimerTaskPicker extends StatelessWidget {
                 HTText(
                   'Select Task',
                   typoToken: HTTypoToken.headlineMedium,
-                  color: HTColors.black,
+                  color: htGreys(context).black,
                 ),
                 HTSpacers.height8,
                 HTText(
                   'Only today\'s tasks are displayed',
                   typoToken: HTTypoToken.bodySmall,
-                  color: HTColors.grey050,
+                  color: htGreys(context).grey050,
                 ),
                 HTSpacers.height8,
               ],
             ),
           ),
-          TimerTaskList(),
+          const TimerTaskList(),
         ],
       ),
     );
@@ -680,21 +685,21 @@ class TimerTaskList extends StatelessWidget {
                 width: 120,
                 height: 120,
                 decoration: BoxDecoration(
-                  color: HTColors.grey020,
+                  color: htGreys(context).grey020,
                   borderRadius: HTBorderRadius.circular12,
                 ),
               ),
               HTSpacers.height24,
-              const HTText(
+              HTText(
                 'There is no task',
                 typoToken: HTTypoToken.subtitleLarge,
-                color: HTColors.black,
+                color: htGreys(context).black,
               ),
               HTSpacers.height8,
-              const HTText(
+              HTText(
                 'Start your habit journey now! Add a task to get going.',
                 typoToken: HTTypoToken.bodyXSmall,
-                color: HTColors.grey050,
+                color: htGreys(context).grey050,
               ),
               HTSpacers.height160,
             ],
@@ -736,32 +741,32 @@ class TimerTaskItem extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         decoration: BoxDecoration(
-          color: HTColors.white,
-          border: Border.all(color: HTColors.grey010, width: 1),
+          color: htGreys(context).white,
+          border: Border.all(color: htGreys(context).grey010, width: 1),
           borderRadius: HTBorderRadius.circular10,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             task.emoji == null || task.emoji!.isEmpty
-                ? const Padding(
+                ? Padding(
                     padding: HTEdgeInsets.right4,
                     child: Icon(
                       Icons.emoji_emotions_rounded,
-                      color: HTColors.grey030,
+                      color: htGreys(context).grey030,
                       size: 24,
                     ),
                   )
                 : HTText(
                     task.emoji!,
                     typoToken: HTTypoToken.headlineSmall,
-                    color: HTColors.black,
+                    color: htGreys(context).black,
                     height: 1.25,
                   ),
             HTText(
               task.title,
               typoToken: HTTypoToken.headlineSmall,
-              color: HTColors.black,
+              color: htGreys(context).black,
             ),
             Padding(
               padding: HTEdgeInsets.top4,
@@ -771,12 +776,12 @@ class TimerTaskItem extends StatelessWidget {
                     HTText(
                       '${htUntilToText(task.until)} ㆍ ',
                       typoToken: HTTypoToken.captionSmall,
-                      color: HTColors.grey040,
+                      color: htGreys(context).grey040,
                     ),
                   HTText(
                     htRepeatAtToText(task.repeatAt),
                     typoToken: HTTypoToken.captionSmall,
-                    color: HTColors.grey040,
+                    color: htGreys(context).grey040,
                   ),
                 ],
               ),
@@ -805,13 +810,13 @@ class TimeTaskPickerClose extends StatelessWidget {
             width: 28,
             height: 28,
             margin: HTEdgeInsets.horizontal16,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: HTColors.grey040,
+              color: htGreys(context).grey040,
             ),
-            child: const Icon(
+            child: Icon(
               Icons.close_rounded,
-              color: HTColors.white,
+              color: htGreys(context).white,
             ),
           ),
         ),

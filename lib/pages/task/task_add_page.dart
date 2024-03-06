@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:habit_app/blocs/app_bloc.dart';
 import 'package:habit_app/blocs/task/task_add_bloc.dart';
+import 'package:habit_app/models/settings_model.dart';
 import 'package:habit_app/pages/task/task_detail_page.dart';
 import 'package:habit_app/styles/colors.dart';
 import 'package:habit_app/styles/effects.dart';
@@ -99,7 +101,7 @@ class TaskAddEmoji extends StatelessWidget {
           width: 48,
           height: 48,
           decoration: BoxDecoration(
-            color: HTColors.grey010,
+            color: htGreys(context).grey010,
             borderRadius: HTBorderRadius.circular10,
           ),
           child: StreamBuilder<String>(
@@ -108,9 +110,9 @@ class TaskAddEmoji extends StatelessWidget {
                 String emoji = snapshot.data ?? '';
 
                 if (emoji.isEmpty) {
-                  return const Icon(
+                  return Icon(
                     Icons.emoji_emotions_rounded,
-                    color: HTColors.grey030,
+                    color: htGreys(context).grey030,
                     size: 28,
                   );
                 } else {
@@ -139,7 +141,7 @@ class TaskAddEmojiPicker extends StatelessWidget {
       left: 24,
       child: Container(
         decoration: BoxDecoration(
-          color: HTColors.white,
+          color: htGreys(context).white,
           borderRadius: HTBorderRadius.circular10,
           boxShadow: HTBoxShadows.shadows01,
         ),
@@ -162,7 +164,7 @@ class TaskAddEmojiPicker extends StatelessWidget {
                   return RawScrollbar(
                     thickness: 6,
                     minThumbLength: 80,
-                    thumbColor: HTColors.grey020,
+                    thumbColor: htGreys(context).grey020,
                     radius: const Radius.circular(10),
                     controller: emojiScrollController,
                     child: GridView.builder(
@@ -187,7 +189,7 @@ class TaskAddEmojiPicker extends StatelessWidget {
                               child: Center(
                                   child: Icon(
                                 Icons.emoji_emotions_rounded,
-                                color: HTColors.grey030,
+                                color: htGreys(context).grey030,
                                 size: emojiSize * 0.75,
                               )),
                             ),
@@ -246,13 +248,13 @@ class TaskAddClose extends StatelessWidget {
             width: 28,
             height: 28,
             margin: HTEdgeInsets.horizontal16,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: HTColors.grey040,
+              color: htGreys(context).grey040,
             ),
-            child: const Icon(
+            child: Icon(
               Icons.close_rounded,
-              color: HTColors.white,
+              color: htGreys(context).white,
             ),
           ),
         ),
@@ -292,7 +294,7 @@ class _TaskAddTitleState extends State<TaskAddTitle> {
                 suffix: const SizedBox(width: 48),
                 hintText: 'Add your task here...',
                 hintStyle: HTTypoToken.bodyXLarge.textStyle.copyWith(
-                  color: HTColors.grey030,
+                  color: htGreys(context).grey030,
                 ),
               ),
             ),
@@ -309,7 +311,7 @@ class _TaskAddTitleState extends State<TaskAddTitle> {
                         return HTText(
                           '${title.length}/30',
                           typoToken: HTTypoToken.captionMedium,
-                          color: HTColors.grey040,
+                          color: htGreys(context).grey040,
                           height: 1.25,
                         );
                       }),
@@ -351,7 +353,7 @@ class _TaskAddGoalState extends State<TaskAddGoal> {
               onChanged: (value) => taskAddBloc.setGoal(value),
               onTapOutside: (event) => FocusScope.of(context).unfocus(),
               style: HTTypoToken.bodyMedium.textStyle
-                  .copyWith(color: HTColors.black),
+                  .copyWith(color: htGreys(context).black),
               maxLength: 100,
               maxLines: 7,
               minLines: 7,
@@ -361,7 +363,7 @@ class _TaskAddGoalState extends State<TaskAddGoal> {
                   hintText:
                       '(Optional) Describe the habit you want to build and set your goals here.',
                   hintStyle: HTTypoToken.bodyMedium.textStyle.copyWith(
-                    color: HTColors.grey030,
+                    color: htGreys(context).grey030,
                   )),
             ),
             if (_hasFocus)
@@ -376,7 +378,7 @@ class _TaskAddGoalState extends State<TaskAddGoal> {
                       return HTText(
                         '${goal.length}/100',
                         typoToken: HTTypoToken.captionMedium,
-                        color: HTColors.grey040,
+                        color: htGreys(context).grey040,
                       );
                     }),
               )
@@ -398,11 +400,14 @@ class TaskAddColor extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     TaskAddBloc taskAddBloc = context.read<TaskAddBloc>();
+    AppBloc appBloc = context.read<AppBloc>();
 
-    return StreamBuilder<int>(
-        stream: taskAddBloc.selectedColor,
+    return StreamBuilder<List>(
+        stream:
+            Rx.combineLatestList([taskAddBloc.selectedColor, appBloc.settings]),
         builder: (context, snapshot) {
-          int selectedColor = snapshot.data ?? 0xFF000000;
+          int selectedColor = snapshot.data?[0] ?? 0xFF000000;
+          Settings settings = snapshot.data?[1] ?? Settings();
 
           return SizedBox(
             height: 44,
@@ -411,6 +416,11 @@ class TaskAddColor extends StatelessWidget {
               padding: HTEdgeInsets.horizontal24,
               itemBuilder: (context, index) {
                 int currColor = taskColors[index];
+
+                int displayColor = currColor;
+                if (settings.isDarkMode && displayColor == 0xFF000000) {
+                  displayColor = 0xFFFFFFFF;
+                }
 
                 return GestureDetector(
                   onTap: () {
@@ -423,8 +433,8 @@ class TaskAddColor extends StatelessWidget {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: currColor == selectedColor
-                          ? HTColors.black
-                          : HTColors.white,
+                          ? htGreys(context).black
+                          : htGreys(context).white,
                     ),
                     child: Center(
                       child: Container(
@@ -432,11 +442,11 @@ class TaskAddColor extends StatelessWidget {
                         height: 32,
                         decoration: BoxDecoration(
                           border: Border.all(
-                              color: HTColors.white,
+                              color: htGreys(context).white,
                               width: 4,
                               strokeAlign: BorderSide.strokeAlignOutside),
                           shape: BoxShape.circle,
-                          color: Color(currColor),
+                          color: Color(displayColor),
                         ),
                       ),
                     ),
@@ -475,15 +485,15 @@ class TaskAddRepeatAt extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const HTText(
+                      HTText(
                         'Repeat',
                         typoToken: HTTypoToken.subtitleXLarge,
-                        color: HTColors.black,
+                        color: htGreys(context).black,
                         height: 1,
                       ),
                       CupertinoSwitch(
                           value: isRepeat,
-                          activeColor: HTColors.black,
+                          activeColor: htGreys(context).black,
                           onChanged: (value) => taskAddBloc.setIsRepeat(value)),
                     ],
                   ),
@@ -502,7 +512,7 @@ class TaskAddRepeatAt extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 12, vertical: 8),
                           decoration: BoxDecoration(
-                            color: HTColors.grey010,
+                            color: htGreys(context).grey010,
                             borderRadius: HTBorderRadius.circular10,
                           ),
                           child: Column(
@@ -541,11 +551,12 @@ class TaskAddRepeatAt extends StatelessWidget {
                                                 shape: BoxShape.circle,
                                                 border: Border.all(
                                                     color: isSelected
-                                                        ? HTColors.black
-                                                        : HTColors.grey020,
+                                                        ? htGreys(context).black
+                                                        : htGreys(context)
+                                                            .grey020,
                                                     width: 1),
                                                 color: isSelected
-                                                    ? HTColors.black
+                                                    ? htGreys(context).black
                                                     : HTColors.clear,
                                               ),
                                               child: Center(
@@ -555,8 +566,8 @@ class TaskAddRepeatAt extends StatelessWidget {
                                                     ? HTTypoToken.subtitleXSmall
                                                     : HTTypoToken.bodyXSmall,
                                                 color: isSelected
-                                                    ? HTColors.white
-                                                    : HTColors.grey060,
+                                                    ? htGreys(context).white
+                                                    : htGreys(context).grey060,
                                                 height: 1.25,
                                               )),
                                             ),
@@ -630,10 +641,10 @@ class _TaskAddFromState extends State<TaskAddFrom> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const HTText(
+                      HTText(
                         'Start Date',
                         typoToken: HTTypoToken.subtitleXLarge,
-                        color: HTColors.black,
+                        color: htGreys(context).black,
                         height: 1,
                       ),
                       GestureDetector(
@@ -647,7 +658,7 @@ class _TaskAddFromState extends State<TaskAddFrom> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 12, vertical: 8),
                           decoration: BoxDecoration(
-                            color: HTColors.grey010,
+                            color: htGreys(context).grey010,
                             borderRadius: HTBorderRadius.circular10,
                           ),
                           child: HTText(
@@ -656,7 +667,7 @@ class _TaskAddFromState extends State<TaskAddFrom> {
                                     ? ' (Today)'
                                     : DateFormat(' (E)').format(from)),
                             typoToken: HTTypoToken.bodyMedium,
-                            color: HTColors.black,
+                            color: htGreys(context).black,
                             height: 1.2,
                           ),
                         ),
@@ -720,10 +731,10 @@ class _TaskAddUntilState extends State<TaskAddUntil> {
                   height: 56,
                   child: Row(
                     children: [
-                      const HTText(
+                      HTText(
                         'End Date',
                         typoToken: HTTypoToken.subtitleXLarge,
-                        color: HTColors.black,
+                        color: htGreys(context).black,
                         height: 1,
                       ),
                       const Spacer(),
@@ -739,13 +750,13 @@ class _TaskAddUntilState extends State<TaskAddUntil> {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 12, vertical: 8),
                             decoration: BoxDecoration(
-                              color: HTColors.grey010,
+                              color: htGreys(context).grey010,
                               borderRadius: HTBorderRadius.circular10,
                             ),
                             child: HTText(
                               DateFormat('yyyy.MM.dd').format(until),
                               typoToken: HTTypoToken.bodyMedium,
-                              color: HTColors.black,
+                              color: htGreys(context).black,
                               height: 1.2,
                             ),
                           ),
@@ -753,7 +764,7 @@ class _TaskAddUntilState extends State<TaskAddUntil> {
                       HTSpacers.width8,
                       CupertinoSwitch(
                           value: until != null,
-                          activeColor: HTColors.black,
+                          activeColor: htGreys(context).black,
                           onChanged: (value) {
                             if (value) {
                               taskAddBloc.setUntil(
@@ -827,19 +838,19 @@ class TaskAddSubmit extends StatelessWidget {
                           }
                         }
                       : null,
-                  child: const Row(
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(
                         Icons.check_rounded,
-                        color: HTColors.white,
+                        color: htGreys(context).white,
                         size: 24,
                       ),
                       HTSpacers.width4,
                       HTText(
                         'Done',
                         typoToken: HTTypoToken.subtitleXLarge,
-                        color: HTColors.white,
+                        color: htGreys(context).white,
                         height: 1.25,
                       ),
                     ],

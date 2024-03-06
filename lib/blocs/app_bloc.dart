@@ -1,3 +1,6 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:habit_app/models/settings_model.dart';
 import 'package:habit_app/models/task_model.dart';
 import 'package:habit_app/utils/functions.dart';
 import 'package:isar/isar.dart';
@@ -6,9 +9,14 @@ import 'package:rxdart/rxdart.dart';
 class AppBloc {
   final Isar isar;
 
+  final BehaviorSubject<Settings> _settings =
+      BehaviorSubject.seeded(Settings());
+  Stream<Settings> get settings => _settings.stream;
+  Function(Settings) get setSettings => _settings.add;
+
   final BehaviorSubject<int> _bottomIndex = BehaviorSubject.seeded(0);
   Stream<int> get bottomIndex => _bottomIndex.stream;
-  Function get setBottomIndex => _bottomIndex.add;
+  Function(int) get setBottomIndex => _bottomIndex.add;
 
   final BehaviorSubject<List<Task>> _tasks = BehaviorSubject.seeded([]);
   Stream<List<Task>> get tasks => _tasks.stream;
@@ -20,7 +28,22 @@ class AppBloc {
   Task? get timerTaskValue => _timerTask.value;
 
   AppBloc({required this.isar}) {
+    getSettings();
     getTasks();
+  }
+
+  Future<Settings> getSettings() async {
+    Settings settings = await isar.settings.where().findFirst() ?? Settings();
+
+    _settings.add(settings);
+    return settings;
+  }
+
+  setDarkMode(bool value, BuildContext context) async {
+    await isar.writeTxn(() async {
+      await isar.settings.put(_settings.value.copyWith(isDarkMode: value));
+    });
+    await getSettings();
   }
 
   Future<List<Task>> getTasks() async {

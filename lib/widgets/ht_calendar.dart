@@ -26,7 +26,7 @@ class HTCalendar extends StatelessWidget {
       child: Container(
         padding: HTEdgeInsets.all16,
         decoration: BoxDecoration(
-          color: HTColors.grey010,
+          color: htGreys(context).grey010,
           borderRadius: HTBorderRadius.circular10,
         ),
         child: TableCalendar(
@@ -45,32 +45,32 @@ class HTCalendar extends StatelessWidget {
             dowTextFormatter: (date, locale) {
               return DateFormat('EEE').format(date).toUpperCase();
             },
-            weekdayStyle: const TextStyle(
+            weekdayStyle: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w600,
-              color: HTColors.grey040,
+              color: htGreys(context).grey040,
             ),
-            weekendStyle: const TextStyle(
+            weekendStyle: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w600,
-              color: HTColors.grey040,
+              color: htGreys(context).grey040,
             ),
           ),
           availableGestures: AvailableGestures.horizontalSwipe,
           headerStyle: HeaderStyle(
             titleTextStyle: HTTypoToken.subtitleLarge.textStyle
-                .copyWith(color: HTColors.grey080, height: 1),
+                .copyWith(color: htGreys(context).grey080, height: 1),
             formatButtonVisible: false,
             headerMargin: HTEdgeInsets.vertical10,
             headerPadding: HTEdgeInsets.zero,
-            leftChevronIcon: const Icon(
+            leftChevronIcon: Icon(
               Icons.arrow_back_ios_new_rounded,
-              color: HTColors.black,
+              color: htGreys(context).black,
               size: 22,
             ),
-            rightChevronIcon: const Icon(
+            rightChevronIcon: Icon(
               Icons.arrow_forward_ios_rounded,
-              color: HTColors.black,
+              color: htGreys(context).black,
               size: 22,
             ),
             titleCentered: true,
@@ -79,21 +79,21 @@ class HTCalendar extends StatelessWidget {
             outsideDaysVisible: false,
             cellMargin: HTEdgeInsets.all2,
             defaultTextStyle: HTTypoToken.bodyXLarge.textStyle
-                .copyWith(color: HTColors.grey080),
+                .copyWith(color: htGreys(context).grey080),
             weekendTextStyle: HTTypoToken.bodyXLarge.textStyle
-                .copyWith(color: HTColors.grey080),
+                .copyWith(color: htGreys(context).grey080),
             todayTextStyle: HTTypoToken.subtitleXLarge.textStyle,
             selectedTextStyle: HTTypoToken.headlineSmall.textStyle.copyWith(
-              color: HTColors.white,
+              color: htGreys(context).white,
               fontWeight: FontWeight.w500,
             ),
             disabledTextStyle: HTTypoToken.bodyLarge.textStyle.copyWith(
-              color: HTColors.grey030,
+              color: htGreys(context).grey030,
               fontWeight: FontWeight.w500,
             ),
             todayDecoration: const BoxDecoration(shape: BoxShape.circle),
-            selectedDecoration: const BoxDecoration(
-              color: HTColors.black,
+            selectedDecoration: BoxDecoration(
+              color: htGreys(context).black,
               shape: BoxShape.circle,
             ),
           ),

@@ -44,10 +44,10 @@ class DailyAppbar extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
           child: Row(
             children: [
-              const HTText(
+              HTText(
                 'Task',
                 typoToken: HTTypoToken.headlineML,
-                color: HTColors.black,
+                color: htGreys(context).black,
               ),
               const Spacer(),
               InkWell(
@@ -84,10 +84,10 @@ class DailyDates extends StatelessWidget {
 
           return Container(
             height: totalHeight,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               border: Border(
                 bottom: BorderSide(
-                  color: HTColors.grey010,
+                  color: htGreys(context).grey010,
                   width: 1,
                 ),
               ),
@@ -110,9 +110,9 @@ class DailyDates extends StatelessWidget {
                               width: dateSize,
                               height: dateSize,
                               margin: HTEdgeInsets.right12,
-                              decoration: const BoxDecoration(
+                              decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: HTColors.grey010,
+                                color: htGreys(context).grey010,
                               ),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -120,12 +120,12 @@ class DailyDates extends StatelessWidget {
                                   HTText(
                                     date.year.toString(),
                                     typoToken: HTTypoToken.captionXXSmall,
-                                    color: HTColors.grey040,
+                                    color: htGreys(context).grey040,
                                   ),
                                   HTText(
                                     DateFormat.MMM().format(date),
                                     typoToken: HTTypoToken.captionSmall,
-                                    color: HTColors.grey050,
+                                    color: htGreys(context).grey050,
                                   ),
                                 ],
                               ),
@@ -143,12 +143,12 @@ class DailyDates extends StatelessWidget {
                                     htIsSameDay(DateTime.now().getDate(), date)
                                         ? Border.all(
                                             color: isSelected
-                                                ? HTColors.black
-                                                : HTColors.grey020)
+                                                ? htGreys(context).black
+                                                : htGreys(context).grey020)
                                         : null,
                                 color: isSelected
-                                    ? HTColors.black
-                                    : HTColors.white,
+                                    ? htGreys(context).black
+                                    : htGreys(context).white,
                               ),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -156,15 +156,15 @@ class DailyDates extends StatelessWidget {
                                   HTText(
                                     htWeekdayToText(date.weekday),
                                     typoToken: HTTypoToken.captionXXSmall,
-                                    color: HTColors.grey030,
+                                    color: htGreys(context).grey030,
                                   ),
                                   HTSpacers.height1,
                                   HTText(
                                     date.day.toString(),
                                     typoToken: HTTypoToken.subtitleMedium,
                                     color: isSelected
-                                        ? HTColors.white
-                                        : HTColors.black,
+                                        ? htGreys(context).white
+                                        : htGreys(context).black,
                                   ),
                                 ],
                               ),
@@ -190,12 +190,12 @@ class DailyDates extends StatelessWidget {
                         left: 0,
                         child: Container(
                           height: totalHeight,
-                          color: HTColors.white,
+                          color: htGreys(context).white,
                           child: GestureDetector(
                             onTap: () {
                               dailyBloc.scrollToToday();
                             },
-                            child: const Row(
+                            child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Padding(
@@ -203,7 +203,7 @@ class DailyDates extends StatelessWidget {
                                   child: Icon(
                                     Icons.keyboard_double_arrow_left_rounded,
                                     size: 24,
-                                    color: HTColors.grey040,
+                                    color: htGreys(context).grey040,
                                   ),
                                 ),
                                 Padding(
@@ -211,7 +211,7 @@ class DailyDates extends StatelessWidget {
                                   child: VerticalDivider(
                                     width: 1,
                                     thickness: 1,
-                                    color: HTColors.grey020,
+                                    color: htGreys(context).grey020,
                                   ),
                                 ),
                               ],
@@ -233,12 +233,12 @@ class DailyDates extends StatelessWidget {
                         right: 0,
                         child: Container(
                           height: totalHeight,
-                          color: HTColors.white,
+                          color: htGreys(context).white,
                           child: GestureDetector(
                             onTap: () {
                               dailyBloc.scrollToToday();
                             },
-                            child: const Row(
+                            child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Padding(
@@ -246,7 +246,7 @@ class DailyDates extends StatelessWidget {
                                   child: VerticalDivider(
                                     width: 1,
                                     thickness: 1,
-                                    color: HTColors.grey020,
+                                    color: htGreys(context).grey020,
                                   ),
                                 ),
                                 Padding(
@@ -254,7 +254,7 @@ class DailyDates extends StatelessWidget {
                                   child: Icon(
                                     Icons.keyboard_double_arrow_right_rounded,
                                     size: 24,
-                                    color: HTColors.grey040,
+                                    color: htGreys(context).grey040,
                                   ),
                                 ),
                               ],
@@ -279,7 +279,7 @@ class DailyTaskList extends StatelessWidget {
 
     return Expanded(
       child: Container(
-        color: HTColors.grey010,
+        color: htGreys(context).grey010,
         child: StreamBuilder<List>(
             stream: Rx.combineLatestList(
                 [dailyBloc.currTasks, dailyBloc.dateIndex]),
@@ -308,13 +308,13 @@ class DailyTaskList extends StatelessWidget {
                             HTText(
                               '${currTasks.length} Task${currTasks.length > 1 ? 's' : ''}',
                               typoToken: HTTypoToken.captionSmall,
-                              color: HTColors.grey040,
+                              color: htGreys(context).grey040,
                             ),
                             const Spacer(),
                             HTText(
                               '${doneTasks.length} Done',
                               typoToken: HTTypoToken.captionSmall,
-                              color: HTColors.grey040,
+                              color: htGreys(context).grey040,
                             ),
                           ],
                         ),
@@ -327,21 +327,21 @@ class DailyTaskList extends StatelessWidget {
                               width: 120,
                               height: 120,
                               decoration: BoxDecoration(
-                                color: HTColors.grey020,
+                                color: htGreys(context).grey020,
                                 borderRadius: HTBorderRadius.circular12,
                               ),
                             ),
                             HTSpacers.height24,
-                            const HTText(
+                            HTText(
                               'Let\'s kickstart with a new task!',
                               typoToken: HTTypoToken.subtitleLarge,
-                              color: HTColors.black,
+                              color: htGreys(context).black,
                             ),
                             HTSpacers.height8,
-                            const HTText(
+                            HTText(
                               'Start your habit journey now! Add a task to get going.',
                               typoToken: HTTypoToken.bodyXSmall,
-                              color: HTColors.grey050,
+                              color: htGreys(context).grey050,
                             ),
                             HTSpacers.height40,
                           ],
@@ -364,13 +364,13 @@ class DailyTaskList extends StatelessWidget {
                           HTText(
                             '${currTasks.length} Task${currTasks.length > 1 ? 's' : ''}',
                             typoToken: HTTypoToken.captionSmall,
-                            color: HTColors.grey040,
+                            color: htGreys(context).grey040,
                           ),
                           const Spacer(),
                           HTText(
                             '${doneTasks.length} Done',
                             typoToken: HTTypoToken.captionSmall,
-                            color: HTColors.grey040,
+                            color: htGreys(context).grey040,
                           ),
                         ],
                       ),
@@ -414,7 +414,8 @@ class TaskBox extends StatelessWidget {
         width: double.infinity,
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         decoration: BoxDecoration(
-            color: HTColors.white, borderRadius: HTBorderRadius.circular12),
+            color: htGreys(context).white,
+            borderRadius: HTBorderRadius.circular12),
         child: Row(
           children: [
             Column(
@@ -424,18 +425,18 @@ class TaskBox extends StatelessWidget {
                     ? HTText(
                         task.emoji!,
                         typoToken: HTTypoToken.subtitleXLarge,
-                        color: HTColors.black,
+                        color: htGreys(context).black,
                         height: 1.25,
                       )
-                    : const Icon(
+                    : Icon(
                         Icons.emoji_emotions_rounded,
-                        color: HTColors.grey030,
+                        color: htGreys(context).grey030,
                         size: 20,
                       ),
                 HTText(
                   task.title,
                   typoToken: HTTypoToken.headlineXSmall,
-                  color: HTColors.black,
+                  color: htGreys(context).black,
                 ),
                 Padding(
                   padding: HTEdgeInsets.top2,
@@ -445,12 +446,12 @@ class TaskBox extends StatelessWidget {
                         HTText(
                           '${htUntilToText(task.until)} ㆍ ',
                           typoToken: HTTypoToken.captionXSmall,
-                          color: HTColors.grey040,
+                          color: htGreys(context).grey040,
                         ),
                       HTText(
                         htRepeatAtToText(task.repeatAt),
                         typoToken: HTTypoToken.captionXSmall,
-                        color: HTColors.grey040,
+                        color: htGreys(context).grey040,
                       ),
                     ],
                   ),
@@ -474,13 +475,17 @@ class TaskBox extends StatelessWidget {
                       children: [
                         Icon(
                           Icons.check_circle_rounded,
-                          color: isDone ? HTColors.black : HTColors.grey030,
+                          color: isDone
+                              ? htGreys(context).black
+                              : htGreys(context).grey030,
                           size: 24,
                         ),
                         HTText(
                           'Done',
                           typoToken: HTTypoToken.subtitleXSmall,
-                          color: isDone ? HTColors.black : HTColors.grey050,
+                          color: isDone
+                              ? htGreys(context).black
+                              : htGreys(context).grey050,
                         )
                       ],
                     ),

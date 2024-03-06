@@ -9,20 +9,20 @@ class HTRadio<T> extends StatelessWidget {
   final T groupValue;
   final String text;
   final Function() onTap;
-  final Color unselectedColor;
-  final Color unselectedTextColor;
-  final Color selectedColor;
-  final Color selectedTextColor;
+  final Color? unselectedColor;
+  final Color? unselectedTextColor;
+  final Color? selectedColor;
+  final Color? selectedTextColor;
   final EdgeInsets padding;
   const HTRadio({
     super.key,
     required this.value,
     required this.groupValue,
     required this.text,
-    this.unselectedColor = HTColors.grey040,
-    this.unselectedTextColor = HTColors.grey060,
-    this.selectedColor = HTColors.black,
-    this.selectedTextColor = HTColors.black,
+    this.unselectedColor,
+    this.unselectedTextColor,
+    this.selectedColor,
+    this.selectedTextColor,
     required this.onTap,
     this.padding = HTEdgeInsets.vertical12,
   });
@@ -31,8 +31,12 @@ class HTRadio<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     bool isSelected = value == groupValue;
 
-    Color color = isSelected ? selectedColor : unselectedColor;
-    Color textColor = isSelected ? selectedTextColor : unselectedTextColor;
+    Color color = isSelected
+        ? (selectedColor ?? htGreys(context).black)
+        : (unselectedColor ?? htGreys(context).grey040);
+    Color textColor = isSelected
+        ? (selectedTextColor ?? htGreys(context).black)
+        : (unselectedTextColor ?? htGreys(context).grey060);
     HTTypoToken typo =
         isSelected ? HTTypoToken.subtitleMedium : HTTypoToken.bodyMedium;
 

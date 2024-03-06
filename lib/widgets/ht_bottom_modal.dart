@@ -12,8 +12,8 @@ class HTBottomModal extends StatelessWidget {
 
     return Container(
       height: mainHeight,
-      decoration: const BoxDecoration(
-        color: HTColors.white,
+      decoration: BoxDecoration(
+        color: htGreys(context).white,
         borderRadius: HTBorderRadius.top24,
       ),
       child: child,

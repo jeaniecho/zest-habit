@@ -33,6 +33,7 @@ class HTAppbar extends StatelessWidget implements PreferredSizeWidget {
     double height = 56 + (bottom?.preferredSize.height ?? 0);
 
     return AppBar(
+      backgroundColor: htGreys(context).white,
       toolbarHeight: height,
       elevation: elevation,
       scrolledUnderElevation: 0,
@@ -54,10 +55,10 @@ class HTAppbar extends StatelessWidget implements PreferredSizeWidget {
                   child: Container(
                     margin: HTEdgeInsets.left4,
                     padding: HTEdgeInsets.all12,
-                    child: const Icon(
+                    child: Icon(
                       Icons.arrow_back_ios_new_rounded,
                       size: 24,
-                      color: HTColors.grey080,
+                      color: htGreys(context).grey080,
                     ),
                   ),
                 )),
@@ -66,7 +67,7 @@ class HTAppbar extends StatelessWidget implements PreferredSizeWidget {
           : HTText(
               title!,
               typoToken: HTTypoToken.subtitleLarge,
-              color: HTColors.grey070,
+              color: htGreys(context).grey070,
             ),
       actions: [
         if (showClose == true)
@@ -77,10 +78,10 @@ class HTAppbar extends StatelessWidget implements PreferredSizeWidget {
             child: Container(
               margin: HTEdgeInsets.right4,
               padding: HTEdgeInsets.all12,
-              child: const Icon(
+              child: Icon(
                 Icons.close_rounded,
                 size: 24,
-                color: HTColors.grey040,
+                color: htGreys(context).grey040,
               ),
             ),
           ),

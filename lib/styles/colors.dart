@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+HTGreys htGreys(context) => Theme.of(context).extension<HTGreys>()!;
+
 List<int> taskColors = [
   0xFF000000,
   0xFF435EEB,
@@ -75,7 +77,7 @@ class HTColors {
   static const shimmerBackgorund = grey020;
   static const shimmerHighlight = grey010;
 
-  // Grey
+  // grey
   static const grey010 = Color(0xFFF4F5F7);
   static const grey020 = Color(0xFFE5E7EB);
   static const grey030 = Color(0xFFD3D6DB);
@@ -152,4 +154,82 @@ class HTColors {
   static const skyBlue = Color(0xFFE4F4FF);
 
   static const orange = Color(0xFFEC920B);
+}
+
+class HTGreys extends ThemeExtension<HTGreys> {
+  final Color white;
+  final Color black;
+  final Color grey010;
+  final Color grey020;
+  final Color grey030;
+  final Color grey040;
+  final Color grey050;
+  final Color grey060;
+  final Color grey070;
+  final Color grey080;
+  final Color grey090;
+
+  HTGreys({
+    this.white = const Color(0xFFFFFFFF),
+    this.black = const Color(0xFF000000),
+    this.grey010 = const Color(0xFFF4F5F7),
+    this.grey020 = const Color(0xFFE5E7EB),
+    this.grey030 = const Color(0xFFD3D6DB),
+    this.grey040 = const Color(0xFFA0A6B1),
+    this.grey050 = const Color(0xFF6C727F),
+    this.grey060 = const Color(0xFF4D5562),
+    this.grey070 = const Color(0xFF394150),
+    this.grey080 = const Color(0xFF272F3E),
+    this.grey090 = const Color(0xFF151515),
+  });
+
+  @override
+  HTGreys copyWith({
+    Color? white,
+    Color? black,
+    Color? grey010,
+    Color? grey020,
+    Color? grey030,
+    Color? grey040,
+    Color? grey050,
+    Color? grey060,
+    Color? grey070,
+    Color? grey080,
+    Color? grey090,
+  }) {
+    return HTGreys(
+      white: white ?? this.white,
+      black: black ?? this.black,
+      grey010: grey010 ?? this.grey010,
+      grey020: grey020 ?? this.grey020,
+      grey030: grey030 ?? this.grey030,
+      grey040: grey040 ?? this.grey040,
+      grey050: grey050 ?? this.grey050,
+      grey060: grey060 ?? this.grey060,
+      grey070: grey070 ?? this.grey070,
+      grey080: grey080 ?? this.grey080,
+      grey090: grey090 ?? this.grey090,
+    );
+  }
+
+  @override
+  HTGreys lerp(ThemeExtension<HTGreys>? other, double t) {
+    if (other is HTGreys) {
+      return HTGreys(
+        white: Color.lerp(white, other.white, t)!,
+        black: Color.lerp(black, other.black, t)!,
+        grey010: Color.lerp(grey010, other.grey010, t)!,
+        grey020: Color.lerp(grey020, other.grey020, t)!,
+        grey030: Color.lerp(grey030, other.grey030, t)!,
+        grey040: Color.lerp(grey040, other.grey040, t)!,
+        grey050: Color.lerp(grey050, other.grey050, t)!,
+        grey060: Color.lerp(grey060, other.grey060, t)!,
+        grey070: Color.lerp(grey070, other.grey070, t)!,
+        grey080: Color.lerp(grey080, other.grey080, t)!,
+        grey090: Color.lerp(grey090, other.grey090, t)!,
+      );
+    } else {
+      return this;
+    }
+  }
 }
