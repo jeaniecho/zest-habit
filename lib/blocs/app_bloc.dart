@@ -113,6 +113,13 @@ class AppBloc {
       task.doneAt.add(date);
     }
 
+    try {
+      final toRemove = task.doneWithTimer
+          .firstWhere((element) => htIsSameDay(element, date));
+      task.doneWithTimer.remove(toRemove);
+      // ignore: empty_catches
+    } catch (e) {}
+
     await isar.writeTxn(() async {
       await isar.tasks.put(task);
     });
