@@ -116,4 +116,9 @@ class HTNotification {
   static Future<void> cancelAllNotifications() async {
     await plugin.cancelAll();
   }
+
+  static viewNotifiations() async {
+    print(await plugin.getActiveNotifications());
+    print((await plugin.pendingNotificationRequests()).map((e) => e.title));
+  }
 }

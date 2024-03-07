@@ -10,6 +10,7 @@ import 'package:habit_app/styles/colors.dart';
 import 'package:habit_app/styles/tokens.dart';
 import 'package:habit_app/styles/typos.dart';
 import 'package:habit_app/utils/functions.dart';
+import 'package:habit_app/utils/notifications.dart';
 import 'package:habit_app/widgets/ht_scale.dart';
 import 'package:habit_app/widgets/ht_text.dart';
 import 'package:intl/intl.dart';
