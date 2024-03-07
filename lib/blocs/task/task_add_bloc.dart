@@ -54,6 +54,10 @@ class TaskAddBloc extends Disposable {
   Stream<int> get selectedColor => _selectedColor.stream;
   Function(int) get setSelectedColor => _selectedColor.add;
 
+  final BehaviorSubject<DateTime?> _alarmTime = BehaviorSubject.seeded(null);
+  Stream<DateTime?> get alarmTime => _alarmTime.stream;
+  Function(DateTime?) get setAlarmTime => _alarmTime.add;
+
   late final TextEditingController titleController;
   late final TextEditingController goalController;
 
@@ -75,6 +79,7 @@ class TaskAddBloc extends Disposable {
       _from.add(task!.from);
       _until.add(task!.until);
       _selectedColor.add(task!.color);
+      _alarmTime.add(task!.alarmTime);
     }
 
     titleController = TextEditingController(text: task?.title);
@@ -93,6 +98,7 @@ class TaskAddBloc extends Disposable {
     _until.close();
     _openEmoji.close();
     _selectedColor.close();
+    _alarmTime.close();
   }
 
   setIsRepeat(bool repeat) {
@@ -127,6 +133,7 @@ class TaskAddBloc extends Disposable {
       desc: '',
       until: _until.value,
       color: _selectedColor.value,
+      alarmTime: _alarmTime.value,
     );
   }
 
@@ -146,6 +153,7 @@ class TaskAddBloc extends Disposable {
       until: _until.value,
       doneAt: task.doneAt,
       color: _selectedColor.value,
+      alarmTime: _alarmTime.value,
     );
   }
 

@@ -98,56 +98,119 @@ class TaskAddAlarm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        // HTNotification.requestNotificationPermission();
-        // HTNotification.showNotification();
+    TaskAddBloc taskAddBloc = context.read<TaskAddBloc>();
 
-        showCupertinoModalPopup(
-            context: context,
-            builder: (context) => Container(
-                  height: 216,
-                  padding: HTEdgeInsets.top8,
-                  margin: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).viewInsets.bottom,
+    return StreamBuilder<DateTime?>(
+        stream: taskAddBloc.alarmTime,
+        builder: (context, snapshot) {
+          DateTime? alarmTime = snapshot.data;
+
+          return GestureDetector(
+            onTap: () {
+              HTNotification.requestNotificationPermission();
+              // HTNotification.showNotification();
+
+              DateTime initialDateTime =
+                  alarmTime ?? DateTime.now().copyWith(minute: 0);
+
+              taskAddBloc.setAlarmTime(initialDateTime);
+
+              showCupertinoModalPopup(
+                  context: context,
+                  builder: (context) => Container(
+                        padding: HTEdgeInsets.top16,
+                        margin: EdgeInsets.only(
+                          bottom: MediaQuery.of(context).viewInsets.bottom,
+                        ),
+                        color: htGreys(context).white,
+                        child: SafeArea(
+                          top: false,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Padding(
+                                padding: HTEdgeInsets.horizontal16,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    TextButton(
+                                        onPressed: () {
+                                          taskAddBloc.setAlarmTime(null);
+                                          Navigator.pop(context);
+                                        },
+                                        child: HTText(
+                                          'Turn Off',
+                                          typoToken:
+                                              HTTypoToken.buttonTextMedium,
+                                          color: htGreys(context).grey060,
+                                          height: 1.25,
+                                        )),
+                                    ElevatedButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: HTText(
+                                          'Done',
+                                          typoToken:
+                                              HTTypoToken.buttonTextMedium,
+                                          color: htGreys(context).white,
+                                          height: 1.25,
+                                        )),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(
+                                height: 200,
+                                child: CupertinoDatePicker(
+                                  initialDateTime: initialDateTime,
+                                  mode: CupertinoDatePickerMode.time,
+                                  use24hFormat: false,
+                                  onDateTimeChanged: (dateTime) {
+                                    taskAddBloc.setAlarmTime(dateTime);
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ));
+            },
+            child: Container(
+              height: 48,
+              padding: HTEdgeInsets.horizontal16,
+              decoration: BoxDecoration(
+                color: htGreys(context).grey010,
+                borderRadius: HTBorderRadius.circular10,
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.notifications_rounded,
+                    size: 20,
+                    color: alarmTime == null
+                        ? htGreys(context).grey050
+                        : htGreys(context).black,
                   ),
-                  color: htGreys(context).white,
-                  child: SafeArea(
-                    top: false,
-                    child: CupertinoDatePicker(
-                      initialDateTime: DateTime.now().copyWith(minute: 0),
-                      mode: CupertinoDatePickerMode.time,
-                      use24hFormat: false,
-                      onDateTimeChanged: (dateTime) {},
-                    ),
-                  ),
-                ));
-      },
-      child: Container(
-        height: 48,
-        padding: HTEdgeInsets.horizontal16,
-        decoration: BoxDecoration(
-          color: htGreys(context).grey010,
-          borderRadius: HTBorderRadius.circular10,
-        ),
-        child: Row(
-          children: [
-            Icon(
-              Icons.notifications_rounded,
-              size: 20,
-              color: htGreys(context).grey050,
+                  HTSpacers.width4,
+                  alarmTime == null
+                      ? HTText(
+                          'Alarm Off',
+                          typoToken: HTTypoToken.bodyMedium,
+                          color: htGreys(context).grey050,
+                          height: 1.25,
+                        )
+                      : HTText(
+                          DateFormat.jm().format(alarmTime),
+                          typoToken: HTTypoToken.bodyMedium,
+                          color: htGreys(context).black,
+                          height: 1.25,
+                        ),
+                ],
+              ),
             ),
-            HTSpacers.width4,
-            const HTText(
-              'Alarm Off',
-              typoToken: HTTypoToken.bodyMedium,
-              color: HTColors.grey050,
-              height: 1,
-            )
-          ],
-        ),
-      ),
-    );
+          );
+        });
   }
 }
 

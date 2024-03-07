@@ -15,6 +15,7 @@ class Task {
   List<DateTime> doneAt;
   List<DateTime> doneWithTimer;
   int color;
+  DateTime? alarmTime;
 
   Task({
     this.id = Isar.autoIncrement,
@@ -28,5 +29,6 @@ class Task {
     this.doneAt = const [],
     this.doneWithTimer = const [],
     this.color = 0xFF000000,
+    this.alarmTime,
   });
 }
