@@ -4,6 +4,7 @@ import 'package:habit_app/models/task_model.dart';
 import 'package:habit_app/utils/disposable.dart';
 import 'package:habit_app/utils/enums.dart';
 import 'package:habit_app/utils/functions.dart';
+import 'package:habit_app/utils/notifications.dart';
 import 'package:rxdart/rxdart.dart';
 
 class TaskAddBloc extends Disposable {
@@ -138,7 +139,19 @@ class TaskAddBloc extends Disposable {
   }
 
   Future<Task> addTask() async {
-    return await appBloc.addTask(getNewTask());
+    Task newTask = getNewTask();
+
+    if (newTask.alarmTime != null) {
+      await HTNotification.scheduleNotification(
+        repeatDays: newTask.repeatAt ?? [],
+        id: newTask.id,
+        title: newTask.title,
+        body: 'Reminding you to complete this task!',
+        dateTime: newTask.from,
+      );
+    }
+
+    return await appBloc.addTask(newTask);
   }
 
   Task getUpdatedTask(Task task) {
@@ -159,7 +172,20 @@ class TaskAddBloc extends Disposable {
 
   Future<Task?> updateTask() async {
     if (task != null) {
-      return await appBloc.updateTask(getUpdatedTask(task!));
+      Task newTask = getUpdatedTask(task!);
+
+      if (newTask.alarmTime != null) {
+        await HTNotification.cancelNotification(newTask.id);
+        await HTNotification.scheduleNotification(
+          repeatDays: newTask.repeatAt ?? [],
+          id: newTask.id,
+          title: newTask.title,
+          body: 'Reminding you to complete this task!',
+          dateTime: newTask.from,
+        );
+      }
+
+      return await appBloc.updateTask(newTask);
     }
 
     return null;
