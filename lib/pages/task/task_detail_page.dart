@@ -8,7 +8,6 @@ import 'package:habit_app/blocs/task/task_detail_bloc.dart';
 import 'package:habit_app/models/settings_model.dart';
 import 'package:habit_app/models/task_model.dart';
 import 'package:habit_app/styles/colors.dart';
-import 'package:habit_app/styles/effects.dart';
 import 'package:habit_app/styles/tokens.dart';
 import 'package:habit_app/styles/typos.dart';
 import 'package:habit_app/utils/functions.dart';
@@ -139,14 +138,11 @@ class TaskDetailBody extends StatelessWidget {
         children: [
           const TaskDesc(),
           Divider(color: htGreys(context).grey010, thickness: 12, height: 12),
-          Column(
-            children: [
-              const TaskCalendar(),
-              Divider(
-                  color: htGreys(context).grey010, thickness: 12, height: 12),
-            ],
-          ),
-          const TaskDetailInfo(),
+          const TaskCalendar(),
+          Divider(color: htGreys(context).grey010, thickness: 12, height: 12),
+          const TaskDetailRepeat(),
+          Divider(color: htGreys(context).grey010, thickness: 12, height: 12),
+          const TaskDetailAlarm(),
           HTSpacers.height48,
         ],
       ),
@@ -860,8 +856,8 @@ class TaskMonthlyCalendar extends StatelessWidget {
   }
 }
 
-class TaskDetailInfo extends StatelessWidget {
-  const TaskDetailInfo({super.key});
+class TaskDetailRepeat extends StatelessWidget {
+  const TaskDetailRepeat({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -921,6 +917,51 @@ class TaskDetailInfo extends StatelessWidget {
                   ),
                   child: HTText(
                     '\u2022  ${htUntilToText(task.until, long: true)}',
+                    typoToken: HTTypoToken.captionMedium,
+                    color: htGreys(context).black,
+                  ),
+                ),
+                HTSpacers.height24,
+              ],
+            ),
+          );
+        });
+  }
+}
+
+class TaskDetailAlarm extends StatelessWidget {
+  const TaskDetailAlarm({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    TaskDetailBloc taskDetailBloc = context.read<TaskDetailBloc>();
+
+    return StreamBuilder<Task>(
+        stream: taskDetailBloc.taskObj,
+        builder: (context, snapshot) {
+          Task task = snapshot.data ?? taskDetailBloc.task;
+
+          return Padding(
+            padding: HTEdgeInsets.horizontal24,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                HTSpacers.height24,
+                HTText(
+                  'Alarm',
+                  typoToken: HTTypoToken.captionMedium,
+                  color: htGreys(context).grey050,
+                ),
+                HTSpacers.height12,
+                Container(
+                  padding: HTEdgeInsets.h16v12,
+                  decoration: BoxDecoration(
+                    border:
+                        Border.all(color: htGreys(context).grey010, width: 1),
+                    borderRadius: HTBorderRadius.circular10,
+                  ),
+                  child: HTText(
+                    '\u2022  ${task.alarmTime == null ? 'Never' : (DateFormat.jm().format(task.alarmTime!))}',
                     typoToken: HTTypoToken.captionMedium,
                     color: htGreys(context).black,
                   ),
