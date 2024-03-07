@@ -51,7 +51,7 @@ class TimerAppbar extends StatelessWidget {
                 color: htGreys(context).black,
               ),
               const Spacer(),
-              InkWell(
+              GestureDetector(
                 onTap: () {
                   rootScaffoldKey.currentState!.openEndDrawer();
                 },

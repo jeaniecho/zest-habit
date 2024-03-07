@@ -7,12 +7,12 @@ import 'package:habit_app/blocs/task/task_add_bloc.dart';
 import 'package:habit_app/models/settings_model.dart';
 import 'package:habit_app/pages/task/task_detail_page.dart';
 import 'package:habit_app/styles/colors.dart';
-import 'package:habit_app/styles/effects.dart';
 import 'package:habit_app/styles/tokens.dart';
 import 'package:habit_app/styles/typos.dart';
 import 'package:habit_app/utils/emojis.dart';
 import 'package:habit_app/utils/enums.dart';
 import 'package:habit_app/utils/functions.dart';
+import 'package:habit_app/utils/notifications.dart';
 import 'package:habit_app/widgets/ht_bottom_modal.dart';
 import 'package:habit_app/widgets/ht_calendar.dart';
 import 'package:habit_app/widgets/ht_radio.dart';
@@ -49,7 +49,16 @@ class TaskAddBody extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    TaskAddEmoji(),
+                    Padding(
+                      padding: HTEdgeInsets.horizontal24,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          TaskAddEmoji(),
+                          TaskAddAlarm(),
+                        ],
+                      ),
+                    ),
                     HTSpacers.height8,
                     TaskAddTitle(),
                     HTSpacers.height10,
@@ -84,6 +93,64 @@ class TaskAddBody extends StatelessWidget {
   }
 }
 
+class TaskAddAlarm extends StatelessWidget {
+  const TaskAddAlarm({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        // HTNotification.requestNotificationPermission();
+        // HTNotification.showNotification();
+
+        showCupertinoModalPopup(
+            context: context,
+            builder: (context) => Container(
+                  height: 216,
+                  padding: HTEdgeInsets.top8,
+                  margin: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom,
+                  ),
+                  color: htGreys(context).white,
+                  child: SafeArea(
+                    top: false,
+                    child: CupertinoDatePicker(
+                      initialDateTime: DateTime.now().copyWith(minute: 0),
+                      mode: CupertinoDatePickerMode.time,
+                      use24hFormat: false,
+                      onDateTimeChanged: (dateTime) {},
+                    ),
+                  ),
+                ));
+      },
+      child: Container(
+        height: 48,
+        padding: HTEdgeInsets.horizontal16,
+        decoration: BoxDecoration(
+          color: htGreys(context).grey010,
+          borderRadius: HTBorderRadius.circular10,
+        ),
+        child: Row(
+          children: [
+            Icon(
+              Icons.notifications_rounded,
+              size: 20,
+              color: htGreys(context).grey050,
+            ),
+            HTSpacers.width4,
+            const HTText(
+              'Alarm Off',
+              typoToken: HTTypoToken.bodyMedium,
+              color: HTColors.grey050,
+              height: 1,
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class TaskAddEmoji extends StatelessWidget {
   const TaskAddEmoji({super.key});
 
@@ -91,39 +158,36 @@ class TaskAddEmoji extends StatelessWidget {
   Widget build(BuildContext context) {
     TaskAddBloc taskAddBloc = context.read<TaskAddBloc>();
 
-    return Padding(
-      padding: HTEdgeInsets.horizontal24,
-      child: InkWell(
-        onTap: () {
-          taskAddBloc.toggleOpenEmoji();
-        },
-        child: Container(
-          width: 48,
-          height: 48,
-          decoration: BoxDecoration(
-            color: htGreys(context).grey010,
-            borderRadius: HTBorderRadius.circular10,
-          ),
-          child: StreamBuilder<String>(
-              stream: taskAddBloc.emoji,
-              builder: (context, snapshot) {
-                String emoji = snapshot.data ?? '';
-
-                if (emoji.isEmpty) {
-                  return Icon(
-                    Icons.emoji_emotions_rounded,
-                    color: htGreys(context).grey030,
-                    size: 28,
-                  );
-                } else {
-                  return Center(
-                      child: Text(
-                    emoji,
-                    style: const TextStyle(fontSize: 28),
-                  ));
-                }
-              }),
+    return GestureDetector(
+      onTap: () {
+        taskAddBloc.toggleOpenEmoji();
+      },
+      child: Container(
+        width: 48,
+        height: 48,
+        decoration: BoxDecoration(
+          color: htGreys(context).grey010,
+          borderRadius: HTBorderRadius.circular10,
         ),
+        child: StreamBuilder<String>(
+            stream: taskAddBloc.emoji,
+            builder: (context, snapshot) {
+              String emoji = snapshot.data ?? '';
+
+              if (emoji.isEmpty) {
+                return Icon(
+                  Icons.emoji_emotions_rounded,
+                  color: htGreys(context).grey030,
+                  size: 28,
+                );
+              } else {
+                return Center(
+                    child: Text(
+                  emoji,
+                  style: const TextStyle(fontSize: 28),
+                ));
+              }
+            }),
       ),
     );
   }

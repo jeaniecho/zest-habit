@@ -8,6 +8,7 @@ import 'package:habit_app/models/task_model.dart';
 import 'package:habit_app/router.dart';
 import 'package:habit_app/styles/colors.dart';
 import 'package:habit_app/styles/themes.dart';
+import 'package:habit_app/utils/notifications.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
@@ -23,6 +24,8 @@ void main() async {
     ],
     directory: dir.path,
   );
+
+  HTNotification.init();
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
