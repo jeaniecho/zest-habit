@@ -13,6 +13,7 @@ import 'package:habit_app/utils/emojis.dart';
 import 'package:habit_app/utils/enums.dart';
 import 'package:habit_app/utils/functions.dart';
 import 'package:habit_app/utils/notifications.dart';
+import 'package:habit_app/utils/painters.dart';
 import 'package:habit_app/widgets/ht_bottom_modal.dart';
 import 'package:habit_app/widgets/ht_calendar.dart';
 import 'package:habit_app/widgets/ht_radio.dart';
@@ -568,55 +569,104 @@ class TaskAddColor extends StatelessWidget {
           int selectedColor = snapshot.data?[0] ?? 0xFF000000;
           Settings settings = snapshot.data?[1] ?? Settings();
 
-          return SizedBox(
-            height: 44,
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              padding: HTEdgeInsets.horizontal24,
-              itemBuilder: (context, index) {
-                int currColor = taskColors[index];
+          bool isFirstTask = settings.createdTaskCount == 0;
 
-                int displayColor = currColor;
-                if (settings.isDarkMode && displayColor == 0xFF000000) {
-                  displayColor = 0xFFFFFFFF;
-                }
+          return Stack(
+            clipBehavior: Clip.none,
+            children: [
+              SizedBox(
+                height: 44,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  padding: HTEdgeInsets.horizontal24,
+                  itemBuilder: (context, index) {
+                    int currColor = taskColors[index];
 
-                return GestureDetector(
-                  onTap: () {
-                    taskAddBloc.setSelectedColor(currColor);
-                  },
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 150),
-                    width: 44,
-                    height: 44,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: currColor == selectedColor
-                          ? htGreys(context).black
-                          : htGreys(context).white,
-                    ),
-                    child: Center(
-                      child: Container(
-                        width: 32,
-                        height: 32,
+                    int displayColor = currColor;
+                    if (settings.isDarkMode && displayColor == 0xFF000000) {
+                      displayColor = 0xFFFFFFFF;
+                    }
+
+                    return GestureDetector(
+                      onTap: () {
+                        taskAddBloc.setSelectedColor(currColor);
+                      },
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 150),
+                        width: 44,
+                        height: 44,
                         decoration: BoxDecoration(
-                          border: Border.all(
-                              color: htGreys(context).white,
-                              width: 4,
-                              strokeAlign: BorderSide.strokeAlignOutside),
                           shape: BoxShape.circle,
-                          color: Color(displayColor),
+                          color: currColor == selectedColor
+                              ? htGreys(context).black
+                              : htGreys(context).white,
+                        ),
+                        child: Center(
+                          child: Container(
+                            width: 32,
+                            height: 32,
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                  color: htGreys(context).white,
+                                  width: 4,
+                                  strokeAlign: BorderSide.strokeAlignOutside),
+                              shape: BoxShape.circle,
+                              color: Color(displayColor),
+                            ),
+                          ),
                         ),
                       ),
+                    );
+                  },
+                  separatorBuilder: (cotext, index) {
+                    return HTSpacers.width8;
+                  },
+                  itemCount: taskColors.length,
+                ),
+              ),
+              Positioned(
+                top: -58,
+                left: 16,
+                child: Container(
+                  decoration: BoxDecoration(boxShadow: [
+                    BoxShadow(
+                      color: htGreys(context).black.withOpacity(0.08),
+                      blurRadius: 12,
+                      spreadRadius: 0,
+                      offset: const Offset(0, 2),
                     ),
+                  ]),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        height: 40,
+                        padding: HTEdgeInsets.horizontal16,
+                        decoration: BoxDecoration(
+                          color: htGreys(context).white,
+                          borderRadius: HTBorderRadius.circular10,
+                        ),
+                        child: Center(
+                          child: HTText(
+                            '🎨 Change color of your task',
+                            typoToken: HTTypoToken.bodyMedium,
+                            color: htGreys(context).black,
+                            height: 1.25,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: HTEdgeInsets.left20,
+                        child: CustomPaint(
+                          painter: InvertedTrianglePainter(),
+                          size: const Size(20, 10),
+                        ),
+                      ),
+                    ],
                   ),
-                );
-              },
-              separatorBuilder: (cotext, index) {
-                return HTSpacers.width8;
-              },
-              itemCount: taskColors.length,
-            ),
+                ),
+              ),
+            ],
           );
         });
   }

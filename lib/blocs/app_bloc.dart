@@ -77,6 +77,8 @@ class AppBloc {
     });
     await getTasks();
 
+    await incrementCreatedTaskCount();
+
     return task;
   }
 
@@ -151,5 +153,17 @@ class AppBloc {
     } catch (e) {
       return false;
     }
+  }
+
+  Future incrementCreatedTaskCount() async {
+    Settings settings = _settings.value;
+    settings =
+        settings.copyWith(createdTaskCount: settings.createdTaskCount + 1);
+
+    await isar.writeTxn(() async {
+      await isar.settings.put(settings);
+    });
+
+    await getSettings();
   }
 }

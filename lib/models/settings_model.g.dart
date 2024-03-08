@@ -17,13 +17,18 @@ const SettingsSchema = CollectionSchema(
   name: r'Settings',
   id: -8656046621518759136,
   properties: {
-    r'isDarkMode': PropertySchema(
+    r'createdTaskCount': PropertySchema(
       id: 0,
+      name: r'createdTaskCount',
+      type: IsarType.long,
+    ),
+    r'isDarkMode': PropertySchema(
+      id: 1,
       name: r'isDarkMode',
       type: IsarType.bool,
     ),
     r'isNotificationOn': PropertySchema(
-      id: 1,
+      id: 2,
       name: r'isNotificationOn',
       type: IsarType.bool,
     )
@@ -57,8 +62,9 @@ void _settingsSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeBool(offsets[0], object.isDarkMode);
-  writer.writeBool(offsets[1], object.isNotificationOn);
+  writer.writeLong(offsets[0], object.createdTaskCount);
+  writer.writeBool(offsets[1], object.isDarkMode);
+  writer.writeBool(offsets[2], object.isNotificationOn);
 }
 
 Settings _settingsDeserialize(
@@ -68,9 +74,10 @@ Settings _settingsDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = Settings(
+    createdTaskCount: reader.readLongOrNull(offsets[0]) ?? 0,
     id: id,
-    isDarkMode: reader.readBoolOrNull(offsets[0]) ?? false,
-    isNotificationOn: reader.readBoolOrNull(offsets[1]) ?? false,
+    isDarkMode: reader.readBoolOrNull(offsets[1]) ?? false,
+    isNotificationOn: reader.readBoolOrNull(offsets[2]) ?? false,
   );
   return object;
 }
@@ -83,8 +90,10 @@ P _settingsDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readBoolOrNull(offset) ?? false) as P;
+      return (reader.readLongOrNull(offset) ?? 0) as P;
     case 1:
+      return (reader.readBoolOrNull(offset) ?? false) as P;
+    case 2:
       return (reader.readBoolOrNull(offset) ?? false) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -180,6 +189,62 @@ extension SettingsQueryWhere on QueryBuilder<Settings, Settings, QWhereClause> {
 
 extension SettingsQueryFilter
     on QueryBuilder<Settings, Settings, QFilterCondition> {
+  QueryBuilder<Settings, Settings, QAfterFilterCondition>
+      createdTaskCountEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'createdTaskCount',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Settings, Settings, QAfterFilterCondition>
+      createdTaskCountGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'createdTaskCount',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Settings, Settings, QAfterFilterCondition>
+      createdTaskCountLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'createdTaskCount',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Settings, Settings, QAfterFilterCondition>
+      createdTaskCountBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'createdTaskCount',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
   QueryBuilder<Settings, Settings, QAfterFilterCondition> idEqualTo(Id value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -260,6 +325,18 @@ extension SettingsQueryLinks
     on QueryBuilder<Settings, Settings, QFilterCondition> {}
 
 extension SettingsQuerySortBy on QueryBuilder<Settings, Settings, QSortBy> {
+  QueryBuilder<Settings, Settings, QAfterSortBy> sortByCreatedTaskCount() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'createdTaskCount', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Settings, Settings, QAfterSortBy> sortByCreatedTaskCountDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'createdTaskCount', Sort.desc);
+    });
+  }
+
   QueryBuilder<Settings, Settings, QAfterSortBy> sortByIsDarkMode() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'isDarkMode', Sort.asc);
@@ -287,6 +364,18 @@ extension SettingsQuerySortBy on QueryBuilder<Settings, Settings, QSortBy> {
 
 extension SettingsQuerySortThenBy
     on QueryBuilder<Settings, Settings, QSortThenBy> {
+  QueryBuilder<Settings, Settings, QAfterSortBy> thenByCreatedTaskCount() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'createdTaskCount', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Settings, Settings, QAfterSortBy> thenByCreatedTaskCountDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'createdTaskCount', Sort.desc);
+    });
+  }
+
   QueryBuilder<Settings, Settings, QAfterSortBy> thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
@@ -326,6 +415,12 @@ extension SettingsQuerySortThenBy
 
 extension SettingsQueryWhereDistinct
     on QueryBuilder<Settings, Settings, QDistinct> {
+  QueryBuilder<Settings, Settings, QDistinct> distinctByCreatedTaskCount() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'createdTaskCount');
+    });
+  }
+
   QueryBuilder<Settings, Settings, QDistinct> distinctByIsDarkMode() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'isDarkMode');
@@ -344,6 +439,12 @@ extension SettingsQueryProperty
   QueryBuilder<Settings, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
+    });
+  }
+
+  QueryBuilder<Settings, int, QQueryOperations> createdTaskCountProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'createdTaskCount');
     });
   }
 
