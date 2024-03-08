@@ -19,6 +19,7 @@ class AppBloc {
   final BehaviorSubject<int> _bottomIndex = BehaviorSubject.seeded(0);
   Stream<int> get bottomIndex => _bottomIndex.stream;
   Function(int) get setBottomIndex => _bottomIndex.add;
+  int get bottomIndexValue => _bottomIndex.value;
 
   final BehaviorSubject<List<Task>> _tasks = BehaviorSubject.seeded([]);
   Stream<List<Task>> get tasks => _tasks.stream;
