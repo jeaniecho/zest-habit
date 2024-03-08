@@ -161,7 +161,7 @@ class TaskAddBloc extends Disposable {
         id: newTask.id,
         title: newTask.title,
         body: 'Reminding you to complete this task!',
-        dateTime: newTask.from,
+        dateTime: newTask.alarmTime!,
       );
     }
 
@@ -196,7 +196,7 @@ class TaskAddBloc extends Disposable {
           id: newTask.id,
           title: newTask.title,
           body: 'Reminding you to complete this task!',
-          dateTime: newTask.from,
+          dateTime: newTask.alarmTime!,
         );
       }
 
