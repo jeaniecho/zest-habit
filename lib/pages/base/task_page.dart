@@ -15,6 +15,7 @@ import 'package:habit_app/widgets/ht_text.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 class TaskPage extends StatelessWidget {
   const TaskPage({super.key});
@@ -165,10 +166,11 @@ class DailyDates extends StatelessWidget {
   Widget build(BuildContext context) {
     TaskBloc dailyBloc = context.read<TaskBloc>();
 
-    return StreamBuilder<int>(
-        stream: dailyBloc.dateIndex,
+    return StreamBuilder<List>(
+        stream: Rx.combineLatestList([dailyBloc.dateIndex, dailyBloc.dates]),
         builder: (context, snapshot) {
-          int dateIndex = snapshot.data ?? 0;
+          int dateIndex = snapshot.data?[0] ?? 0;
+          List<DateTime> dates = snapshot.data?[1] ?? dailyBloc.getDates();
 
           double dateSize = 52;
           double totalHeight = dateSize + 16;
@@ -191,7 +193,7 @@ class DailyDates extends StatelessWidget {
                     padding: HTEdgeInsets.horizontal16,
                     shrinkWrap: true,
                     itemBuilder: (context, index) {
-                      DateTime date = dailyBloc.dates[index];
+                      DateTime date = dates[index];
                       bool isSelected = index == dateIndex;
 
                       return Row(
@@ -267,7 +269,7 @@ class DailyDates extends StatelessWidget {
                     separatorBuilder: (context, index) {
                       return HTSpacers.width12;
                     },
-                    itemCount: dailyBloc.dates.length),
+                    itemCount: dates.length),
                 StreamBuilder<int>(
                     stream: dailyBloc.notToday,
                     builder: (context, snapshot) {
@@ -499,7 +501,7 @@ class DailyTaskList extends StatelessWidget {
         color: htGreys(context).grey010,
         child: StreamBuilder<List>(
             stream: Rx.combineLatestList(
-                [dailyBloc.currTasks, dailyBloc.dateIndex]),
+                [dailyBloc.currTasks, dailyBloc.dateIndex, dailyBloc.dates]),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return const Center(child: CircularProgressIndicator());
@@ -507,9 +509,11 @@ class DailyTaskList extends StatelessWidget {
 
               List<Task> currTasks = snapshot.data?[0] ?? [];
               int dateIndex = snapshot.data?[1] ?? 0;
+              List<DateTime> dates = snapshot.data?[2] ?? dailyBloc.getDates();
+
+              DateTime currDate = dates[dateIndex];
               List<Task> doneTasks = currTasks
-                  .where((element) =>
-                      htIsDone(dailyBloc.dates[dateIndex], element.doneAt))
+                  .where((element) => htIsDone(currDate, element.doneAt))
                   .toList();
 
               if (currTasks.isEmpty) {
@@ -546,7 +550,13 @@ class DailyTaskList extends StatelessWidget {
                         itemBuilder: (context, index) {
                           Task task = currTasks[index];
 
-                          return TaskBox(task: task);
+                          DateTime today = DateTime.now().getDate();
+
+                          return TaskBox(
+                            task: task,
+                            disabled: !isSameDay(today, currDate) &&
+                                today.isBefore(currDate.getDate()),
+                          );
                         },
                         separatorBuilder: (context, index) {
                           return HTSpacers.height8;
@@ -575,9 +585,9 @@ class TaskBox extends StatelessWidget {
     AppBloc appBloc = context.read<AppBloc>();
     TaskBloc dailyBloc = context.read<TaskBloc>();
 
-    bool isOld = disabled &&
-        task.until != null &&
-        task.until!.isBefore(DateTime.now().getDate());
+    DateTime today = DateTime.now().getDate();
+
+    bool isOld = disabled && task.until != null && task.until!.isBefore(today);
 
     return HTScale(
       onTap: () {
@@ -634,11 +644,15 @@ class TaskBox extends StatelessWidget {
             ),
             const Spacer(),
             if (!disabled)
-              StreamBuilder<int>(
-                  stream: dailyBloc.dateIndex,
+              StreamBuilder<List>(
+                  stream: Rx.combineLatestList(
+                      [dailyBloc.dateIndex, dailyBloc.dates]),
                   builder: (context, snapshot) {
-                    int dateIndex = snapshot.data ?? 0;
-                    DateTime date = dailyBloc.dates[dateIndex];
+                    int dateIndex = snapshot.data?[0] ?? 0;
+                    List<DateTime> dates =
+                        snapshot.data?[1] ?? dailyBloc.getDates();
+
+                    DateTime date = dates[dateIndex];
                     bool isDone = appBloc.isDone(task, date);
 
                     return GestureDetector(

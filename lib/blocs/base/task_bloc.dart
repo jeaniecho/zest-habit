@@ -12,7 +12,8 @@ class TaskBloc extends Disposable {
   final AppBloc appBloc;
   final double deviceWidth;
 
-  late final List<DateTime> dates;
+  final BehaviorSubject<List<DateTime>> _dates = BehaviorSubject.seeded([]);
+  Stream<List<DateTime>> get dates => _dates.stream;
 
   final BehaviorSubject<int> _tabIndex = BehaviorSubject.seeded(0);
   Stream<int> get tabIndex => _tabIndex.stream;
@@ -32,7 +33,7 @@ class TaskBloc extends Disposable {
   late final double dateScrollOffset;
 
   TaskBloc({required this.appBloc, required this.deviceWidth}) {
-    dates = getDates();
+    getDates();
     dateScrollOffset =
         (dateWidth * (prevDates + 1) - ((deviceWidth - 84) / 2)).toDouble();
 
@@ -40,7 +41,7 @@ class TaskBloc extends Disposable {
         ScrollController(initialScrollOffset: dateScrollOffset);
 
     appBloc.tasks.listen((tasks) {
-      getCurrTasks(tasks, dates[_dateIndex.value]);
+      getCurrTasks(tasks, _dates.value[_dateIndex.value]);
     });
 
     dateScrollController.addListener(() {
@@ -77,13 +78,14 @@ class TaskBloc extends Disposable {
               lastMonth.day,
             ).add(Duration(days: i)));
 
+    _dates.add(items);
     return items;
   }
 
   setDateIndex(int index) {
     _dateIndex.add(index);
 
-    DateTime currDate = dates[index];
+    DateTime currDate = _dates.value[index];
     getCurrTasks(appBloc.tasksValue, currDate);
   }
 
@@ -103,6 +105,7 @@ class TaskBloc extends Disposable {
   }
 
   scrollToToday() {
+    getDates();
     DateTime now = DateTime.now().getDate();
 
     dateScrollController.animateTo(
