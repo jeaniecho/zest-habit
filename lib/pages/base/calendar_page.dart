@@ -16,8 +16,8 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
 
-class DailyPage extends StatelessWidget {
-  const DailyPage({super.key});
+class CalendarPage extends StatelessWidget {
+  const CalendarPage({super.key});
 
   static const routeName = '/daily';
 

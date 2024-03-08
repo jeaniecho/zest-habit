@@ -57,9 +57,9 @@ class BasePage extends StatelessWidget {
                       behavior: HitTestBehavior.opaque,
                       onTap: () {
                         if (context.canPop()) {
-                          context.go(DailyPage.routeName);
+                          context.go(CalendarPage.routeName);
                         } else {
-                          context.replace(DailyPage.routeName);
+                          context.replace(CalendarPage.routeName);
                         }
 
                         appBloc.setBottomIndex(0);

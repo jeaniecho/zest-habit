@@ -29,9 +29,9 @@ final router = GoRouter(
       },
       routes: [
         GoRoute(
-            path: DailyPage.routeName,
+            path: CalendarPage.routeName,
             builder: (context, state) {
-              return const DailyPage();
+              return const CalendarPage();
             }),
         GoRoute(
             path: TimerPage.routeName,
