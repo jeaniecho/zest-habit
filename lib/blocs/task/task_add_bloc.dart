@@ -63,6 +63,11 @@ class TaskAddBloc extends Disposable {
   Stream<bool> get titleError => _titleError.stream;
   Function(bool) get setTitleError => _titleError.add;
 
+  final BehaviorSubject<bool> _showColorTooltip = BehaviorSubject.seeded(false);
+  Stream<bool> get showColorTooltip => _showColorTooltip.stream;
+  Function(bool) get setShowColorTooltip => _showColorTooltip.add;
+  bool get showColorTooltipValue => _showColorTooltip.value;
+
   late final TextEditingController titleController;
   late final TextEditingController goalController;
 
@@ -89,6 +94,10 @@ class TaskAddBloc extends Disposable {
 
     titleController = TextEditingController(text: task?.title);
     goalController = TextEditingController(text: task?.goal);
+
+    if (appBloc.settingsValue.createdTaskCount == 0) {
+      _showColorTooltip.add(true);
+    }
   }
 
   @override

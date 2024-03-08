@@ -14,6 +14,7 @@ class AppBloc {
       BehaviorSubject.seeded(Settings());
   Stream<Settings> get settings => _settings.stream;
   Function(Settings) get setSettings => _settings.add;
+  Settings get settingsValue => _settings.value;
 
   final BehaviorSubject<int> _bottomIndex = BehaviorSubject.seeded(0);
   Stream<int> get bottomIndex => _bottomIndex.stream;

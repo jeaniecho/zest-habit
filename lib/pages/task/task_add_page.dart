@@ -548,6 +548,10 @@ class _TaskAddGoalState extends State<TaskAddGoal> {
           setState(() {
             _hasFocus = value;
           });
+
+          if (value && taskAddBloc.showColorTooltipValue) {
+            taskAddBloc.setShowColorTooltip(false);
+          }
         },
       ),
     );
@@ -562,14 +566,23 @@ class TaskAddColor extends StatelessWidget {
     TaskAddBloc taskAddBloc = context.read<TaskAddBloc>();
     AppBloc appBloc = context.read<AppBloc>();
 
+    ScrollController scrollController = ScrollController();
+    scrollController.addListener(() {
+      if (taskAddBloc.showColorTooltipValue) {
+        taskAddBloc.setShowColorTooltip(false);
+      }
+    });
+
     return StreamBuilder<List>(
-        stream:
-            Rx.combineLatestList([taskAddBloc.selectedColor, appBloc.settings]),
+        stream: Rx.combineLatestList([
+          taskAddBloc.selectedColor,
+          appBloc.settings,
+          taskAddBloc.showColorTooltip
+        ]),
         builder: (context, snapshot) {
           int selectedColor = snapshot.data?[0] ?? 0xFF000000;
           Settings settings = snapshot.data?[1] ?? Settings();
-
-          bool isFirstTask = settings.createdTaskCount == 0;
+          bool showColorTooltip = snapshot.data?[2] ?? false;
 
           return Stack(
             clipBehavior: Clip.none,
@@ -577,6 +590,7 @@ class TaskAddColor extends StatelessWidget {
               SizedBox(
                 height: 44,
                 child: ListView.separated(
+                  controller: scrollController,
                   scrollDirection: Axis.horizontal,
                   padding: HTEdgeInsets.horizontal24,
                   itemBuilder: (context, index) {
@@ -590,6 +604,10 @@ class TaskAddColor extends StatelessWidget {
                     return GestureDetector(
                       onTap: () {
                         taskAddBloc.setSelectedColor(currColor);
+
+                        if (taskAddBloc.showColorTooltipValue) {
+                          taskAddBloc.setShowColorTooltip(false);
+                        }
                       },
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 150),
@@ -624,48 +642,49 @@ class TaskAddColor extends StatelessWidget {
                   itemCount: taskColors.length,
                 ),
               ),
-              Positioned(
-                top: -58,
-                left: 16,
-                child: Container(
-                  decoration: BoxDecoration(boxShadow: [
-                    BoxShadow(
-                      color: htGreys(context).black.withOpacity(0.08),
-                      blurRadius: 12,
-                      spreadRadius: 0,
-                      offset: const Offset(0, 2),
-                    ),
-                  ]),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        height: 40,
-                        padding: HTEdgeInsets.horizontal16,
-                        decoration: BoxDecoration(
-                          color: htGreys(context).white,
-                          borderRadius: HTBorderRadius.circular10,
-                        ),
-                        child: Center(
-                          child: HTText(
-                            '🎨 Change color of your task',
-                            typoToken: HTTypoToken.bodyMedium,
-                            color: htGreys(context).black,
-                            height: 1.25,
+              if (showColorTooltip)
+                Positioned(
+                  top: -58,
+                  left: 16,
+                  child: Container(
+                    decoration: BoxDecoration(boxShadow: [
+                      BoxShadow(
+                        color: htGreys(context).black.withOpacity(0.08),
+                        blurRadius: 12,
+                        spreadRadius: 0,
+                        offset: const Offset(0, 2),
+                      ),
+                    ]),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          height: 40,
+                          padding: HTEdgeInsets.horizontal16,
+                          decoration: BoxDecoration(
+                            color: htGreys(context).white,
+                            borderRadius: HTBorderRadius.circular10,
+                          ),
+                          child: Center(
+                            child: HTText(
+                              '🎨 Change color of your task',
+                              typoToken: HTTypoToken.bodyMedium,
+                              color: htGreys(context).black,
+                              height: 1.25,
+                            ),
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: HTEdgeInsets.left20,
-                        child: CustomPaint(
-                          painter: InvertedTrianglePainter(),
-                          size: const Size(20, 10),
+                        Padding(
+                          padding: HTEdgeInsets.left20,
+                          child: CustomPaint(
+                            painter: InvertedTrianglePainter(),
+                            size: const Size(20, 10),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
             ],
           );
         });
