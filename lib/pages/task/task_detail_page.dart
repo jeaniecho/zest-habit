@@ -48,6 +48,9 @@ class TaskDetailAction extends StatelessWidget {
     AppBloc appBloc = context.read<AppBloc>();
     TaskDetailBloc taskDetailBloc = context.read<TaskDetailBloc>();
 
+    bool isOld = taskDetailBloc.task.until != null &&
+        taskDetailBloc.task.until!.isBefore(DateTime.now().getDate());
+
     showDeleteDialog() {
       showCupertinoModalPopup(
           context: context,
@@ -99,14 +102,15 @@ class TaskDetailAction extends StatelessWidget {
               offset: const Offset(0, 8),
             )),
         itemBuilder: (context) => [
-              PullDownMenuItem(
-                title: 'Edit',
-                icon: CupertinoIcons.pen,
-                onTap: () {
-                  taskDetailBloc.showEditModal(context);
-                },
-              ),
-              const PullDownMenuDivider(),
+              if (!isOld)
+                PullDownMenuItem(
+                  title: 'Edit',
+                  icon: CupertinoIcons.pen,
+                  onTap: () {
+                    taskDetailBloc.showEditModal(context);
+                  },
+                ),
+              if (!isOld) const PullDownMenuDivider(),
               PullDownMenuItem(
                 title: 'Delete',
                 icon: CupertinoIcons.trash,
@@ -156,6 +160,12 @@ class TaskEditButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     TaskDetailBloc taskDetailBloc = context.read<TaskDetailBloc>();
+
+    bool isOld = taskDetailBloc.task.until != null &&
+        taskDetailBloc.task.until!.isBefore(DateTime.now().getDate());
+    if (isOld) {
+      return const SizedBox.shrink();
+    }
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
