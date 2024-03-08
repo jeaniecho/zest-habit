@@ -413,51 +413,76 @@ class _TaskAddTitleState extends State<TaskAddTitle> {
 
     return Padding(
       padding: HTEdgeInsets.horizontal24,
-      child: Focus(
-        child: Stack(
-          children: [
-            TextField(
-              controller: taskAddBloc.titleController,
-              onChanged: (value) => taskAddBloc.setTitle(value),
-              onTapOutside: (event) => FocusScope.of(context).unfocus(),
-              style: HTTypoToken.subtitleXLarge.textStyle,
-              maxLength: 30,
-              textCapitalization: TextCapitalization.words,
-              decoration: InputDecoration(
-                counterText: '',
-                suffix: const SizedBox(width: 48),
-                hintText: 'Add your task here...',
-                hintStyle: HTTypoToken.bodyXLarge.textStyle.copyWith(
-                  color: htGreys(context).grey030,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Focus(
+            child: Stack(
+              children: [
+                TextField(
+                  controller: taskAddBloc.titleController,
+                  onChanged: (value) {
+                    taskAddBloc.setTitle(value);
+                    if (value.trim().isNotEmpty) {
+                      taskAddBloc.setTitleError(false);
+                    }
+                  },
+                  onTapOutside: (event) => FocusScope.of(context).unfocus(),
+                  style: HTTypoToken.subtitleXLarge.textStyle,
+                  maxLength: 30,
+                  textCapitalization: TextCapitalization.words,
+                  decoration: InputDecoration(
+                    counterText: '',
+                    suffix: const SizedBox(width: 48),
+                    hintText: 'Add your task here...',
+                    hintStyle: HTTypoToken.bodyXLarge.textStyle.copyWith(
+                      color: htGreys(context).grey030,
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            if (_hasFocus)
-              Positioned.fill(
-                right: 16,
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: StreamBuilder<String>(
-                      stream: taskAddBloc.title,
-                      builder: (context, snapshot) {
-                        String title = snapshot.data ?? '';
+                if (_hasFocus)
+                  Positioned.fill(
+                    right: 16,
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: StreamBuilder<String>(
+                          stream: taskAddBloc.title,
+                          builder: (context, snapshot) {
+                            String title = snapshot.data ?? '';
 
-                        return HTText(
-                          '${title.length}/30',
-                          typoToken: HTTypoToken.captionMedium,
-                          color: htGreys(context).grey040,
-                          height: 1.25,
-                        );
-                      }),
-                ),
-              ),
-          ],
-        ),
-        onFocusChange: (value) {
-          setState(() {
-            _hasFocus = value;
-          });
-        },
+                            return HTText(
+                              '${title.length}/30',
+                              typoToken: HTTypoToken.captionMedium,
+                              color: htGreys(context).grey040,
+                              height: 1.25,
+                            );
+                          }),
+                    ),
+                  ),
+              ],
+            ),
+            onFocusChange: (value) {
+              setState(() {
+                _hasFocus = value;
+              });
+            },
+          ),
+          StreamBuilder<bool>(
+              stream: taskAddBloc.titleError,
+              builder: (context, snapshot) {
+                bool titleError = snapshot.data ?? false;
+
+                if (titleError) {
+                  return const HTText(
+                    'Please fill title.',
+                    typoToken: HTTypoToken.bodyMedium,
+                    color: HTColors.red,
+                  );
+                } else {
+                  return const SizedBox.shrink();
+                }
+              }),
+        ],
       ),
     );
   }
@@ -942,6 +967,7 @@ class TaskAddSubmit extends StatelessWidget {
         ]),
         builder: (context, snapshot) {
           String title = snapshot.data?[0] ?? '';
+          title = title.trim();
 
           bool canSubmit = title.isNotEmpty;
 
@@ -951,27 +977,33 @@ class TaskAddSubmit extends StatelessWidget {
               padding: HTEdgeInsets.h24v16,
               child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
+                      backgroundColor: canSubmit
+                          ? htGreys(context).black
+                          : htGreys(context).grey030,
                       padding: HTEdgeInsets.vertical16,
                       shape: RoundedRectangleBorder(
                           borderRadius: HTBorderRadius.circular10)),
-                  onPressed: canSubmit
-                      ? () {
-                          if (taskAddBloc.task != null) {
-                            taskAddBloc.updateTask().then((value) {
-                              if (value != null) {
-                                Navigator.pop(
-                                    context, taskAddBloc.getUpdatedTask(value));
-                              }
-                            });
-                          } else {
-                            taskAddBloc.addTask().then((value) {
-                              context.push(TaskDetailPage.routeName,
-                                  extra: value);
-                              Navigator.pop(context);
-                            });
+                  onPressed: () {
+                    if (canSubmit) {
+                      if (taskAddBloc.task != null) {
+                        taskAddBloc.updateTask().then((value) {
+                          if (value != null) {
+                            Navigator.pop(
+                                context, taskAddBloc.getUpdatedTask(value));
                           }
-                        }
-                      : null,
+                        });
+                      } else {
+                        taskAddBloc.addTask().then((value) {
+                          context.push(TaskDetailPage.routeName, extra: value);
+                          Navigator.pop(context);
+                        });
+                      }
+                    } else {
+                      if (title.isEmpty) {
+                        taskAddBloc.setTitleError(true);
+                      }
+                    }
+                  },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

@@ -59,6 +59,10 @@ class TaskAddBloc extends Disposable {
   Stream<DateTime?> get alarmTime => _alarmTime.stream;
   Function(DateTime?) get setAlarmTime => _alarmTime.add;
 
+  final BehaviorSubject<bool> _titleError = BehaviorSubject.seeded(false);
+  Stream<bool> get titleError => _titleError.stream;
+  Function(bool) get setTitleError => _titleError.add;
+
   late final TextEditingController titleController;
   late final TextEditingController goalController;
 
@@ -100,6 +104,7 @@ class TaskAddBloc extends Disposable {
     _openEmoji.close();
     _selectedColor.close();
     _alarmTime.close();
+    _titleError.close();
   }
 
   setIsRepeat(bool repeat) {
