@@ -435,16 +435,18 @@ class AllTaskList extends StatelessWidget {
                 return const EmptyTaskList();
               }
 
-              tasks.sort((a, b) => -a.from.compareTo(b.from));
-              List<Task> oldTasks = tasks
+              List<Task> activeTasks = tasks.toList();
+
+              activeTasks.sort((a, b) => -a.from.compareTo(b.from));
+              List<Task> oldTasks = activeTasks
                   .where((element) =>
                       element.until != null &&
                       element.until!.isBefore(DateTime.now().getDate()))
                   .toList();
               for (Task task in oldTasks) {
-                tasks.remove(task);
+                activeTasks.remove(task);
               }
-              tasks = tasks + oldTasks;
+              tasks = activeTasks + oldTasks;
 
               return SingleChildScrollView(
                 padding:
