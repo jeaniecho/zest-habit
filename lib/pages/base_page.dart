@@ -3,7 +3,7 @@ import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:go_router/go_router.dart';
 import 'package:habit_app/blocs/app_bloc.dart';
 import 'package:habit_app/blocs/task/task_add_bloc.dart';
-import 'package:habit_app/pages/base/calendar_page.dart';
+import 'package:habit_app/pages/base/task_page.dart';
 import 'package:habit_app/pages/base/timer_page.dart';
 import 'package:habit_app/pages/drawer/licenses_page.dart';
 import 'package:habit_app/pages/drawer/mode_page.dart';
@@ -57,9 +57,9 @@ class BasePage extends StatelessWidget {
                       behavior: HitTestBehavior.opaque,
                       onTap: () {
                         if (context.canPop()) {
-                          context.go(CalendarPage.routeName);
+                          context.go(TaskPage.routeName);
                         } else {
-                          context.replace(CalendarPage.routeName);
+                          context.replace(TaskPage.routeName);
                         }
 
                         appBloc.setBottomIndex(0);

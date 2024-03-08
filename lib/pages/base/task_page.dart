@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:habit_app/blocs/app_bloc.dart';
-import 'package:habit_app/blocs/base/calendar_bloc.dart';
+import 'package:habit_app/blocs/base/task_bloc.dart';
 import 'package:habit_app/models/task_model.dart';
 import 'package:habit_app/pages/task/task_detail_page.dart';
 import 'package:habit_app/router.dart';
@@ -16,8 +16,8 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
 
-class CalendarPage extends StatelessWidget {
-  const CalendarPage({super.key});
+class TaskPage extends StatelessWidget {
+  const TaskPage({super.key});
 
   static const routeName = '/calendar';
 
@@ -25,19 +25,19 @@ class CalendarPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Column(
       children: [
-        CalendarAppbar(),
-        CalendarBody(),
+        TaskAppbar(),
+        TaskBody(),
       ],
     );
   }
 }
 
-class CalendarBody extends StatelessWidget {
-  const CalendarBody({super.key});
+class TaskBody extends StatelessWidget {
+  const TaskBody({super.key});
 
   @override
   Widget build(BuildContext context) {
-    CalendarBloc calendarBloc = context.read<CalendarBloc>();
+    TaskBloc calendarBloc = context.read<TaskBloc>();
 
     return StreamBuilder(
       stream: calendarBloc.tabIndex,
@@ -61,12 +61,12 @@ class CalendarBody extends StatelessWidget {
   }
 }
 
-class CalendarAppbar extends StatelessWidget {
-  const CalendarAppbar({super.key});
+class TaskAppbar extends StatelessWidget {
+  const TaskAppbar({super.key});
 
   @override
   Widget build(BuildContext context) {
-    CalendarBloc calendarBloc = context.read<CalendarBloc>();
+    TaskBloc calendarBloc = context.read<TaskBloc>();
 
     return StreamBuilder<int>(
         stream: calendarBloc.tabIndex,
@@ -163,7 +163,7 @@ class DailyDates extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CalendarBloc dailyBloc = context.read<CalendarBloc>();
+    TaskBloc dailyBloc = context.read<TaskBloc>();
 
     return StreamBuilder<int>(
         stream: dailyBloc.dateIndex,
@@ -435,6 +435,17 @@ class AllTaskList extends StatelessWidget {
                 return const EmptyTaskList();
               }
 
+              tasks.sort((a, b) => -a.from.compareTo(b.from));
+              List<Task> oldTasks = tasks
+                  .where((element) =>
+                      element.until != null &&
+                      element.until!.isBefore(DateTime.now().getDate()))
+                  .toList();
+              for (Task task in oldTasks) {
+                tasks.remove(task);
+              }
+              tasks = tasks + oldTasks;
+
               return SingleChildScrollView(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
@@ -479,7 +490,7 @@ class DailyTaskList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CalendarBloc dailyBloc = context.read<CalendarBloc>();
+    TaskBloc dailyBloc = context.read<TaskBloc>();
 
     return Expanded(
       child: Container(
@@ -560,7 +571,7 @@ class TaskBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     AppBloc appBloc = context.read<AppBloc>();
-    CalendarBloc dailyBloc = context.read<CalendarBloc>();
+    TaskBloc dailyBloc = context.read<TaskBloc>();
 
     bool isOld = disabled &&
         task.until != null &&

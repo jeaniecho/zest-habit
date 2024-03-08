@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:habit_app/blocs/task/task_detail_bloc.dart';
 import 'package:habit_app/models/task_model.dart';
-import 'package:habit_app/pages/base/calendar_page.dart';
+import 'package:habit_app/pages/base/task_page.dart';
 import 'package:habit_app/pages/base/timer_page.dart';
 import 'package:habit_app/pages/base_page.dart';
 import 'package:habit_app/pages/drawer/licenses_page.dart';
@@ -20,7 +20,7 @@ final GlobalKey<ScaffoldMessengerState> snackbarKey =
 
 final router = GoRouter(
   navigatorKey: rootNavKey,
-  initialLocation: CalendarPage.routeName,
+  initialLocation: TaskPage.routeName,
   routes: [
     ShellRoute(
       navigatorKey: shellNavKey,
@@ -29,9 +29,9 @@ final router = GoRouter(
       },
       routes: [
         GoRoute(
-            path: CalendarPage.routeName,
+            path: TaskPage.routeName,
             builder: (context, state) {
-              return const CalendarPage();
+              return const TaskPage();
             }),
         GoRoute(
             path: TimerPage.routeName,

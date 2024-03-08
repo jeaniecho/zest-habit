@@ -8,7 +8,7 @@ import 'package:rxdart/rxdart.dart';
 const int prevDates = 30;
 const double dateWidth = 52 + 12;
 
-class CalendarBloc extends Disposable {
+class TaskBloc extends Disposable {
   final AppBloc appBloc;
   final double deviceWidth;
 
@@ -31,7 +31,7 @@ class CalendarBloc extends Disposable {
   late final ScrollController dateScrollController;
   late final double dateScrollOffset;
 
-  CalendarBloc({required this.appBloc, required this.deviceWidth}) {
+  TaskBloc({required this.appBloc, required this.deviceWidth}) {
     dates = getDates();
     dateScrollOffset =
         (dateWidth * (prevDates + 1) - ((deviceWidth - 84) / 2)).toDouble();
