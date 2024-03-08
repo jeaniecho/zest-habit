@@ -790,7 +790,12 @@ class TaskMonthlyCalendar extends StatelessWidget {
                       bool isLater = (inSameMonth && index > todayDateInCal) ||
                           (!inSameMonth &&
                               DateTime(currMonth.year, currMonth.month)
-                                  .isAfter(DateTime(now.year, now.month))) ||
+                                  .isAfter(DateTime(now.year, now.month)));
+
+                      bool notInRange = !repeatToday ||
+                          DateTime(currMonth.year, currMonth.month,
+                                  dateInCalendar)
+                              .isBefore(task.from) ||
                           isOld;
 
                       if (repeatAt.isEmpty &&
@@ -832,11 +837,7 @@ class TaskMonthlyCalendar extends StatelessWidget {
                         );
                       }
 
-                      // no repeat || before
-                      if (!repeatToday ||
-                          DateTime(currMonth.year, currMonth.month,
-                                  dateInCalendar)
-                              .isBefore(task.from)) {
+                      if (notInRange) {
                         return Container(
                           width: 28,
                           height: 28,
