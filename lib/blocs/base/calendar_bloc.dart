@@ -8,11 +8,15 @@ import 'package:rxdart/rxdart.dart';
 const int prevDates = 30;
 const double dateWidth = 52 + 12;
 
-class DailyBloc extends Disposable {
+class CalendarBloc extends Disposable {
   final AppBloc appBloc;
   final double deviceWidth;
 
   late final List<DateTime> dates;
+
+  final BehaviorSubject<int> _tabIndex = BehaviorSubject.seeded(0);
+  Stream<int> get tabIndex => _tabIndex.stream;
+  Function(int) get setTabIndex => _tabIndex.add;
 
   final BehaviorSubject<int> _dateIndex = BehaviorSubject.seeded(prevDates);
   Stream<int> get dateIndex => _dateIndex.stream;
@@ -27,7 +31,7 @@ class DailyBloc extends Disposable {
   late final ScrollController dateScrollController;
   late final double dateScrollOffset;
 
-  DailyBloc({required this.appBloc, required this.deviceWidth}) {
+  CalendarBloc({required this.appBloc, required this.deviceWidth}) {
     dates = getDates();
     dateScrollOffset =
         (dateWidth * (prevDates + 1) - ((deviceWidth - 84) / 2)).toDouble();
@@ -57,6 +61,7 @@ class DailyBloc extends Disposable {
     _dateIndex.close();
     _currTasks.close();
     _notToday.close();
+    _tabIndex.close();
     dateScrollController.dispose();
   }
 

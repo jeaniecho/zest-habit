@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:habit_app/blocs/app_bloc.dart';
-import 'package:habit_app/blocs/base/daily_bloc.dart';
+import 'package:habit_app/blocs/base/calendar_bloc.dart';
 import 'package:habit_app/models/task_model.dart';
 import 'package:habit_app/pages/task/task_detail_page.dart';
 import 'package:habit_app/router.dart';
@@ -19,51 +19,142 @@ import 'package:rxdart/rxdart.dart';
 class CalendarPage extends StatelessWidget {
   const CalendarPage({super.key});
 
-  static const routeName = '/daily';
+  static const routeName = '/calendar';
 
   @override
   Widget build(BuildContext context) {
     return const Column(
       children: [
-        DailyAppbar(),
-        DailyDates(),
-        DailyTaskList(),
+        CalendarAppbar(),
+        CalendarBody(),
       ],
     );
   }
 }
 
-class DailyAppbar extends StatelessWidget {
-  const DailyAppbar({super.key});
+class CalendarBody extends StatelessWidget {
+  const CalendarBody({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
-          child: Row(
-            children: [
-              HTText(
-                'Task',
-                typoToken: HTTypoToken.headlineML,
-                color: htGreys(context).black,
-              ),
-              const Spacer(),
-              GestureDetector(
-                onTap: () {
-                  rootScaffoldKey.currentState!.openEndDrawer();
-                },
-                child: const Icon(
-                  Icons.menu_rounded,
-                  size: 24,
-                ),
-              )
-            ],
-          ),
-        )
-      ],
+    CalendarBloc calendarBloc = context.read<CalendarBloc>();
+
+    return StreamBuilder(
+      stream: calendarBloc.tabIndex,
+      builder: (context, snapshot) {
+        int tabIndex = snapshot.data ?? 0;
+
+        if (tabIndex == 0) {
+          return const Expanded(
+            child: Column(
+              children: [
+                DailyDates(),
+                DailyTaskList(),
+              ],
+            ),
+          );
+        } else {
+          return const AllTaskList();
+        }
+      },
     );
+  }
+}
+
+class CalendarAppbar extends StatelessWidget {
+  const CalendarAppbar({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    CalendarBloc calendarBloc = context.read<CalendarBloc>();
+
+    return StreamBuilder<int>(
+        stream: calendarBloc.tabIndex,
+        builder: (context, snapshot) {
+          int tabIndex = snapshot.data ?? 0;
+
+          bool isCalView = tabIndex == 0;
+
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 6),
+            child: Row(
+              children: [
+                Column(
+                  children: [
+                    Row(
+                      children: [
+                        GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: () {
+                            calendarBloc.setTabIndex(0);
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 8, bottom: 4),
+                            child: HTText(
+                              'Calendar',
+                              typoToken: isCalView
+                                  ? HTTypoToken.headlineSmall
+                                  : HTTypoToken.bodyXXLarge,
+                              color: isCalView
+                                  ? htGreys(context).black
+                                  : htGreys(context).grey040,
+                            ),
+                          ),
+                        ),
+                        HTSpacers.width16,
+                        GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: () {
+                            calendarBloc.setTabIndex(1);
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 8, bottom: 4),
+                            child: HTText(
+                              'All Task',
+                              typoToken: isCalView
+                                  ? HTTypoToken.bodyXXLarge
+                                  : HTTypoToken.headlineSmall,
+                              color: isCalView
+                                  ? htGreys(context).grey040
+                                  : htGreys(context).black,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Stack(
+                      children: [
+                        const SizedBox(
+                          height: 3,
+                          width: 192,
+                        ),
+                        AnimatedPositioned(
+                          left: isCalView ? 0 : 99 + 9,
+                          duration: const Duration(milliseconds: 150),
+                          child: Container(
+                            height: 3,
+                            width: isCalView ? 99 : 85,
+                            color: htGreys(context).black,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                const Spacer(),
+                GestureDetector(
+                  onTap: () {
+                    rootScaffoldKey.currentState!.openEndDrawer();
+                  },
+                  child: const Icon(
+                    Icons.menu_rounded,
+                    size: 24,
+                  ),
+                )
+              ],
+            ),
+          );
+        });
   }
 }
 
@@ -72,7 +163,7 @@ class DailyDates extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    DailyBloc dailyBloc = context.read<DailyBloc>();
+    CalendarBloc dailyBloc = context.read<CalendarBloc>();
 
     return StreamBuilder<int>(
         stream: dailyBloc.dateIndex,
@@ -270,12 +361,125 @@ class DailyDates extends StatelessWidget {
   }
 }
 
+class EmptyTaskList extends StatelessWidget {
+  const EmptyTaskList({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+      child: Column(
+        children: [
+          Padding(
+            padding: HTEdgeInsets.horizontal8,
+            child: HTText(
+              '0 Task',
+              typoToken: HTTypoToken.captionSmall,
+              color: htGreys(context).grey040,
+            ),
+          ),
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: 120,
+                  height: 120,
+                  decoration: BoxDecoration(
+                    color: htGreys(context).grey020,
+                    borderRadius: HTBorderRadius.circular12,
+                  ),
+                ),
+                HTSpacers.height24,
+                HTText(
+                  'Let\'s kickstart with a new task!',
+                  typoToken: HTTypoToken.subtitleLarge,
+                  color: htGreys(context).black,
+                ),
+                HTSpacers.height8,
+                HTText(
+                  'Start your habit journey now! Add a task to get going.',
+                  typoToken: HTTypoToken.bodyXSmall,
+                  color: htGreys(context).grey050,
+                ),
+                HTSpacers.height40,
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class AllTaskList extends StatelessWidget {
+  const AllTaskList({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    AppBloc appBloc = context.read<AppBloc>();
+
+    return Expanded(
+      child: Container(
+        color: htGreys(context).grey010,
+        child: StreamBuilder<List<Task>>(
+            stream: appBloc.tasks,
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              List<Task> tasks = snapshot.data ?? [];
+
+              if (tasks.isEmpty) {
+                return const EmptyTaskList();
+              }
+
+              return SingleChildScrollView(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Padding(
+                      padding: HTEdgeInsets.horizontal8,
+                      child: HTText(
+                        '${tasks.length} Task${tasks.length > 1 ? 's' : ''}',
+                        typoToken: HTTypoToken.captionSmall,
+                        color: htGreys(context).grey040,
+                      ),
+                    ),
+                    HTSpacers.height8,
+                    ListView.separated(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          Task task = tasks[index];
+
+                          return TaskBox(
+                            task: task,
+                            disabled: true,
+                          );
+                        },
+                        separatorBuilder: (context, index) {
+                          return HTSpacers.height8;
+                        },
+                        itemCount: tasks.length)
+                  ],
+                ),
+              );
+            }),
+      ),
+    );
+  }
+}
+
 class DailyTaskList extends StatelessWidget {
   const DailyTaskList({super.key});
 
   @override
   Widget build(BuildContext context) {
-    DailyBloc dailyBloc = context.read<DailyBloc>();
+    CalendarBloc dailyBloc = context.read<CalendarBloc>();
 
     return Expanded(
       child: Container(
@@ -296,60 +500,7 @@ class DailyTaskList extends StatelessWidget {
                   .toList();
 
               if (currTasks.isEmpty) {
-                return Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: HTEdgeInsets.horizontal8,
-                        child: Row(
-                          children: [
-                            HTText(
-                              '${currTasks.length} Task${currTasks.length > 1 ? 's' : ''}',
-                              typoToken: HTTypoToken.captionSmall,
-                              color: htGreys(context).grey040,
-                            ),
-                            const Spacer(),
-                            HTText(
-                              '${doneTasks.length} Done',
-                              typoToken: HTTypoToken.captionSmall,
-                              color: htGreys(context).grey040,
-                            ),
-                          ],
-                        ),
-                      ),
-                      Expanded(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              width: 120,
-                              height: 120,
-                              decoration: BoxDecoration(
-                                color: htGreys(context).grey020,
-                                borderRadius: HTBorderRadius.circular12,
-                              ),
-                            ),
-                            HTSpacers.height24,
-                            HTText(
-                              'Let\'s kickstart with a new task!',
-                              typoToken: HTTypoToken.subtitleLarge,
-                              color: htGreys(context).black,
-                            ),
-                            HTSpacers.height8,
-                            HTText(
-                              'Start your habit journey now! Add a task to get going.',
-                              typoToken: HTTypoToken.bodyXSmall,
-                              color: htGreys(context).grey050,
-                            ),
-                            HTSpacers.height40,
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                );
+                return const EmptyTaskList();
               }
 
               return SingleChildScrollView(
@@ -399,12 +550,21 @@ class DailyTaskList extends StatelessWidget {
 
 class TaskBox extends StatelessWidget {
   final Task task;
-  const TaskBox({super.key, required this.task});
+  final bool disabled;
+  const TaskBox({
+    super.key,
+    required this.task,
+    this.disabled = false,
+  });
 
   @override
   Widget build(BuildContext context) {
     AppBloc appBloc = context.read<AppBloc>();
-    DailyBloc dailyBloc = context.read<DailyBloc>();
+    CalendarBloc dailyBloc = context.read<CalendarBloc>();
+
+    bool isOld = disabled &&
+        task.until != null &&
+        task.until!.isBefore(DateTime.now().getDate());
 
     return HTScale(
       onTap: () {
@@ -414,7 +574,7 @@ class TaskBox extends StatelessWidget {
         width: double.infinity,
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         decoration: BoxDecoration(
-            color: htGreys(context).white,
+            color: isOld ? htGreys(context).grey020 : htGreys(context).white,
             borderRadius: HTBorderRadius.circular12),
         child: Row(
           children: [
@@ -436,7 +596,8 @@ class TaskBox extends StatelessWidget {
                 HTText(
                   task.title,
                   typoToken: HTTypoToken.headlineXSmall,
-                  color: htGreys(context).black,
+                  color:
+                      isOld ? htGreys(context).grey050 : htGreys(context).black,
                 ),
                 Padding(
                   padding: HTEdgeInsets.top2,
@@ -459,38 +620,39 @@ class TaskBox extends StatelessWidget {
               ],
             ),
             const Spacer(),
-            StreamBuilder<int>(
-                stream: dailyBloc.dateIndex,
-                builder: (context, snapshot) {
-                  int dateIndex = snapshot.data ?? 0;
-                  DateTime date = dailyBloc.dates[dateIndex];
-                  bool isDone = appBloc.isDone(task, date);
+            if (!disabled)
+              StreamBuilder<int>(
+                  stream: dailyBloc.dateIndex,
+                  builder: (context, snapshot) {
+                    int dateIndex = snapshot.data ?? 0;
+                    DateTime date = dailyBloc.dates[dateIndex];
+                    bool isDone = appBloc.isDone(task, date);
 
-                  return GestureDetector(
-                    onTap: () {
-                      HapticFeedback.lightImpact();
-                      appBloc.toggleTask(task, date);
-                    },
-                    child: Column(
-                      children: [
-                        Icon(
-                          Icons.check_circle_rounded,
-                          color: isDone
-                              ? htGreys(context).black
-                              : htGreys(context).grey030,
-                          size: 24,
-                        ),
-                        HTText(
-                          'Done',
-                          typoToken: HTTypoToken.subtitleXSmall,
-                          color: isDone
-                              ? htGreys(context).black
-                              : htGreys(context).grey050,
-                        )
-                      ],
-                    ),
-                  );
-                })
+                    return GestureDetector(
+                      onTap: () {
+                        HapticFeedback.lightImpact();
+                        appBloc.toggleTask(task, date);
+                      },
+                      child: Column(
+                        children: [
+                          Icon(
+                            Icons.check_circle_rounded,
+                            color: isDone
+                                ? htGreys(context).black
+                                : htGreys(context).grey030,
+                            size: 24,
+                          ),
+                          HTText(
+                            'Done',
+                            typoToken: HTTypoToken.subtitleXSmall,
+                            color: isDone
+                                ? htGreys(context).black
+                                : htGreys(context).grey050,
+                          )
+                        ],
+                      ),
+                    );
+                  })
           ],
         ),
       ),
