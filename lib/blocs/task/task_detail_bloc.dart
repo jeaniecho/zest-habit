@@ -20,8 +20,7 @@ class TaskDetailBloc extends Disposable {
   final BehaviorSubject<bool> _isMonthly = BehaviorSubject<bool>.seeded(true);
   Stream<bool> get isMonthly => _isMonthly.stream;
 
-  final BehaviorSubject<DateTime> _currDate =
-      BehaviorSubject.seeded(DateTime.now().getDate());
+  late final BehaviorSubject<DateTime> _currDate;
   Stream<DateTime> get currDate => _currDate.stream;
 
   final BehaviorSubject<List<int>> _doneDates = BehaviorSubject.seeded([]);
@@ -32,6 +31,11 @@ class TaskDetailBloc extends Disposable {
 
   TaskDetailBloc({required this.task}) {
     _taskObj = BehaviorSubject.seeded(task);
+
+    DateTime today = DateTime.now().getDate();
+
+    bool isOld = task.until != null && task.until!.isBefore(today);
+    _currDate = BehaviorSubject.seeded(isOld ? task.until! : today);
 
     getDoneDatesForMonth(_currDate.value);
   }
@@ -46,15 +50,18 @@ class TaskDetailBloc extends Disposable {
   }
 
   toggleCalendarType() {
-    DateTime now = DateTime.now().getDate();
-
-    if (_isMonthly.value) {
-      getDoneDatesForWeek(now);
-    } else {
-      getDoneDatesForMonth(now);
+    DateTime dateTime = DateTime.now().getDate();
+    if (task.until != null && task.until!.isBefore(dateTime)) {
+      dateTime = task.until!;
     }
 
-    _currDate.add(now);
+    if (_isMonthly.value) {
+      getDoneDatesForWeek(dateTime);
+    } else {
+      getDoneDatesForMonth(dateTime);
+    }
+
+    _currDate.add(dateTime);
     _isMonthly.add(!_isMonthly.value);
   }
 

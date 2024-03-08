@@ -349,9 +349,12 @@ class TaskWeeklyTitle extends StatelessWidget {
                     DateTime currDate = snapshot.data ?? today;
                     int weekNum = htWeekOfMonth(currDate);
 
+                    bool isOld = taskDetailBloc.task.until != null &&
+                        taskDetailBloc.task.until!.isBefore(today);
+
                     bool isBefore = !currDate.isAfter(task.from);
-                    bool isLater = !htMostRecentWeekday(currDate)
-                        .isBefore(htMostRecentWeekday(today));
+                    bool isLater = !htMostRecentWeekday(currDate).isBefore(
+                        htMostRecentWeekday(isOld ? task.until! : today));
 
                     return Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -435,8 +438,12 @@ class TaskMonthlyTitle extends StatelessWidget {
                     DateTime today = DateTime.now().getDate();
                     DateTime currMonth = snapshot.data ?? today;
 
+                    bool isOld = taskDetailBloc.task.until != null &&
+                        taskDetailBloc.task.until!.isBefore(today);
+
                     bool isBefore = htIsSameMonth(task.from, currMonth);
-                    bool isAfter = htIsSameMonth(today, currMonth);
+                    bool isAfter =
+                        htIsSameMonth(isOld ? task.until! : today, currMonth);
 
                     return Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -768,16 +775,23 @@ class TaskMonthlyCalendar extends StatelessWidget {
                       bool repeatToday =
                           repeatAt.contains(currWeekday + firstDayOfWeek);
 
+                      int dateInCalendar = index - fillDays + firstDayOfWeek;
+
                       bool inSameMonth = htIsSameMonth(currMonth, now);
 
                       bool isDone = doneDates.contains(index - fillDays + 1);
                       bool isDoneWithTimer =
                           timerDates.contains(index - fillDays + 1);
 
+                      bool isOld = task.until != null &&
+                          task.until!.isBefore(DateTime(
+                              currMonth.year, currMonth.month, dateInCalendar));
+
                       bool isLater = (inSameMonth && index > todayDateInCal) ||
                           (!inSameMonth &&
                               DateTime(currMonth.year, currMonth.month)
-                                  .isAfter(DateTime(now.year, now.month)));
+                                  .isAfter(DateTime(now.year, now.month))) ||
+                          isOld;
 
                       if (repeatAt.isEmpty &&
                           task.from.day - 1 + fillDays == index) {
@@ -821,7 +835,7 @@ class TaskMonthlyCalendar extends StatelessWidget {
                       // no repeat || before
                       if (!repeatToday ||
                           DateTime(currMonth.year, currMonth.month,
-                                  index - fillDays + firstDayOfWeek)
+                                  dateInCalendar)
                               .isBefore(task.from)) {
                         return Container(
                           width: 28,
