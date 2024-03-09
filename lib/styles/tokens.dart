@@ -111,6 +111,7 @@ class HTSpacers {
   static const height160 = SizedBox(height: 160);
   static const width2 = SizedBox(width: 2);
   static const width4 = SizedBox(width: 4);
+  static const width6 = SizedBox(width: 6);
   static const width8 = SizedBox(width: 8);
   static const width12 = SizedBox(width: 12);
   static const width16 = SizedBox(width: 16);

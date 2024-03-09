@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
-import 'package:habit_app/IAP/iap_service.dart';
+import 'package:habit_app/iap/iap_service.dart';
 import 'package:habit_app/gen/assets.gen.dart';
 import 'package:habit_app/styles/colors.dart';
 import 'package:habit_app/styles/tokens.dart';
@@ -381,7 +380,7 @@ class SubscriptionButton extends StatelessWidget {
                       Padding(
                         padding: EdgeInsets.only(top: 4.h),
                         child: Text(
-                          '${productDetails!.price} / year will be paid after trial ends',
+                          '${productDetails.price} / year will be paid after trial ends',
                           style: TextStyle(
                             fontSize: 12.h,
                             color: HTColors.grey050,

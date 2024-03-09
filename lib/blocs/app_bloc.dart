@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:habit_app/iap/iap_service.dart';
 import 'package:habit_app/models/settings_model.dart';
 import 'package:habit_app/models/task_model.dart';
 import 'package:habit_app/utils/functions.dart';
@@ -10,6 +11,7 @@ import 'package:rxdart/rxdart.dart';
 
 class AppBloc {
   final Isar isar;
+  final IAPService iapService;
 
   final BehaviorSubject<Settings> _settings =
       BehaviorSubject.seeded(Settings());
@@ -31,7 +33,10 @@ class AppBloc {
   Function(Task?) get setTimerTask => _timerTask.add;
   Task? get timerTaskValue => _timerTask.value;
 
-  AppBloc({required this.isar}) {
+  Stream<List> get purchases => iapService.purchases;
+  Stream<bool> get isPro => purchases.map((purchases) => purchases.isNotEmpty);
+
+  AppBloc({required this.isar, required this.iapService}) {
     getSettings();
     getTasks();
   }

@@ -4,12 +4,14 @@ import 'package:go_router/go_router.dart';
 import 'package:habit_app/blocs/app_bloc.dart';
 import 'package:habit_app/blocs/base/task_bloc.dart';
 import 'package:habit_app/models/task_model.dart';
+import 'package:habit_app/pages/etc/subscription_page.dart';
 import 'package:habit_app/pages/task/task_detail_page.dart';
 import 'package:habit_app/router.dart';
 import 'package:habit_app/styles/colors.dart';
 import 'package:habit_app/styles/tokens.dart';
 import 'package:habit_app/styles/typos.dart';
 import 'package:habit_app/utils/functions.dart';
+import 'package:habit_app/utils/page_routes.dart';
 import 'package:habit_app/widgets/ht_scale.dart';
 import 'package:habit_app/widgets/ht_text.dart';
 import 'package:intl/intl.dart';
@@ -38,19 +40,26 @@ class TaskBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TaskBloc calendarBloc = context.read<TaskBloc>();
+    TaskBloc taskBloc = context.read<TaskBloc>();
+    AppBloc appBloc = context.read<AppBloc>();
 
-    return StreamBuilder(
-      stream: calendarBloc.tabIndex,
+    return StreamBuilder<List>(
+      stream: Rx.combineLatestList([taskBloc.tabIndex, appBloc.isPro]),
       builder: (context, snapshot) {
-        int tabIndex = snapshot.data ?? 0;
+        int tabIndex = snapshot.data?[0] ?? 0;
+        bool isPro = snapshot.data?[1] ?? false;
 
         if (tabIndex == 0) {
-          return const Expanded(
-            child: Column(
+          return Expanded(
+            child: Stack(
               children: [
-                DailyDates(),
-                DailyTaskList(),
+                const Column(
+                  children: [
+                    DailyDates(),
+                    DailyTaskList(),
+                  ],
+                ),
+                if (!isPro) const SubscribePopup(),
               ],
             ),
           );
@@ -681,6 +690,93 @@ class TaskBox extends StatelessWidget {
                     );
                   })
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class SubscribePopup extends StatelessWidget {
+  const SubscribePopup({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned.fill(
+      bottom: 24,
+      child: Align(
+        alignment: Alignment.bottomCenter,
+        child: GestureDetector(
+          onTap: () {
+            Navigator.push(rootNavKey.currentContext!,
+                HTPageRoutes.slideUp(const SubscriptionPage()));
+          },
+          child: Container(
+            height: 96,
+            margin: HTEdgeInsets.horizontal24,
+            decoration: BoxDecoration(
+              color: htGreys(context).black,
+              borderRadius: HTBorderRadius.circular10,
+              boxShadow: [
+                BoxShadow(
+                  color: htGreys(context).black.withOpacity(0.2),
+                  blurRadius: 12,
+                  spreadRadius: 0,
+                  offset: const Offset(0, 2),
+                )
+              ],
+            ),
+            child: Row(
+              children: [
+                HTSpacers.width20,
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 22),
+                  child: HTText(
+                    '🤩',
+                    typoToken: HTTypoToken.subtitleLarge,
+                    color: htGreys(context).black,
+                  ),
+                ),
+                HTSpacers.width6,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    HTText(
+                      'Need additional task?',
+                      typoToken: HTTypoToken.subtitleLarge,
+                      color: htGreys(context).white,
+                    ),
+                    HTSpacers.height4,
+                    HTText(
+                      'Try Pro and get unlimited tasks!',
+                      typoToken: HTTypoToken.bodyXXSmall,
+                      color: htGreys(context).grey050,
+                    ),
+                  ],
+                ),
+                const Spacer(),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.arrow_forward,
+                      color: htGreys(context).white,
+                      size: 20,
+                    ),
+                    HTSpacers.height4,
+                    HTText(
+                      'Let\'s\nGo',
+                      typoToken: HTTypoToken.subtitleXSmall,
+                      color: htGreys(context).white,
+                      textAlign: TextAlign.center,
+                      height: 1.25,
+                    ),
+                  ],
+                ),
+                HTSpacers.width16,
+              ],
+            ),
+          ),
         ),
       ),
     );

@@ -10,7 +10,6 @@ import 'package:habit_app/utils/enums.dart';
 import 'package:habit_app/utils/functions.dart';
 import 'package:habit_app/widgets/ht_bottom_modal.dart';
 import 'package:habit_app/widgets/ht_scale.dart';
-import 'package:habit_app/widgets/ht_snackbar.dart';
 import 'package:habit_app/widgets/ht_text.dart';
 import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';

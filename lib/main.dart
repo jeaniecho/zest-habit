@@ -1,7 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:habit_app/IAP/iap_service.dart';
+import 'package:habit_app/iap/iap_service.dart';
 import 'package:habit_app/blocs/app_bloc.dart';
 import 'package:habit_app/blocs/base/task_bloc.dart';
 import 'package:habit_app/blocs/base/timer_bloc.dart';
@@ -45,8 +45,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AppBloc appBloc = AppBloc(isar: isar);
     IAPService iapService = IAPService();
+
+    AppBloc appBloc = AppBloc(isar: isar, iapService: iapService);
     TaskBloc taskBloc = TaskBloc(
         appBloc: appBloc, deviceWidth: MediaQuery.sizeOf(context).width);
     TimerBloc timerBloc = TimerBloc(
