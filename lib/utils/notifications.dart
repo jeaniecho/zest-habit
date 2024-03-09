@@ -66,13 +66,7 @@ class HTNotification {
     tz.initializeTimeZones();
     tz.setLocalLocation(
         tz.getLocation(await FlutterTimezone.getLocalTimezone()));
-    final tz.TZDateTime scheduledDate = tz.TZDateTime.local(
-      dateTime.year,
-      dateTime.month,
-      dateTime.day,
-      dateTime.hour,
-      dateTime.minute,
-    );
+    final tz.TZDateTime scheduledDate = toTZDateTime(dateTime);
 
     const NotificationDetails notificationDetails = NotificationDetails(
       iOS: DarwinNotificationDetails(
@@ -108,11 +102,32 @@ class HTNotification {
       );
     } else {
       // multiple weekly
+      List<tz.TZDateTime> dates =
+          getCorrespondingDates(scheduledDate, repeatDays);
+
+      for (tz.TZDateTime date in dates) {
+        await plugin.zonedSchedule(
+          id * 10 + date.weekday,
+          title,
+          body,
+          date,
+          notificationDetails,
+          uiLocalNotificationDateInterpretation:
+              UILocalNotificationDateInterpretation.absoluteTime,
+          matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
+        );
+      }
     }
   }
 
-  static Future<void> cancelNotification(int id) async {
-    await plugin.cancel(id);
+  static Future<void> cancelNotification(int id, List<int>? repeatAt) async {
+    if (repeatAt != null && repeatAt.isNotEmpty) {
+      for (int i in repeatAt) {
+        await plugin.cancel(id * 10 + i);
+      }
+    } else {
+      await plugin.cancel(id);
+    }
   }
 
   static Future<void> cancelAllNotifications() async {
@@ -125,4 +140,29 @@ class HTNotification {
       print((await plugin.pendingNotificationRequests()).map((e) => e.title));
     }
   }
+}
+
+List<tz.TZDateTime> getCorrespondingDates(
+    DateTime startDate, List<int> repeatDays) {
+  List<tz.TZDateTime> dates = [];
+
+  for (int i = 0; i < 7; i++) {
+    DateTime date = startDate.add(Duration(days: i));
+
+    if (repeatDays.contains(date.weekday)) {
+      dates.add(toTZDateTime(date));
+    }
+  }
+
+  return dates;
+}
+
+tz.TZDateTime toTZDateTime(DateTime dateTime) {
+  return tz.TZDateTime.local(
+    dateTime.year,
+    dateTime.month,
+    dateTime.day,
+    dateTime.hour,
+    dateTime.minute,
+  );
 }
