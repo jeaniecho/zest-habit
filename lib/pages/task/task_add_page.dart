@@ -40,14 +40,15 @@ class TaskAddBody extends StatelessWidget {
 
     return Stack(
       children: [
-        const Column(
+        Column(
           children: [
             HTSpacers.height8,
-            TaskAddClose(),
+            const TaskAddClose(),
             Expanded(
               child: SingleChildScrollView(
+                controller: taskAddBloc.scrollController,
                 padding: HTEdgeInsets.vertical16,
-                child: Column(
+                child: const Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
@@ -75,7 +76,7 @@ class TaskAddBody extends StatelessWidget {
                 ),
               ),
             ),
-            TaskAddSubmit(),
+            const TaskAddSubmit(),
           ],
         ),
         StreamBuilder<bool>(
@@ -840,15 +841,8 @@ class TaskAddRepeatRadio extends StatelessWidget {
   }
 }
 
-class TaskAddFrom extends StatefulWidget {
+class TaskAddFrom extends StatelessWidget {
   const TaskAddFrom({super.key});
-
-  @override
-  State<TaskAddFrom> createState() => _TaskAddFromState();
-}
-
-class _TaskAddFromState extends State<TaskAddFrom> {
-  bool _showCalendar = false;
 
   @override
   Widget build(BuildContext context) {
@@ -857,10 +851,15 @@ class _TaskAddFromState extends State<TaskAddFrom> {
     return Padding(
       padding: HTEdgeInsets.horizontal24,
       child: StreamBuilder<List>(
-          stream: Rx.combineLatestList([taskAddBloc.from, taskAddBloc.until]),
+          stream: Rx.combineLatestList([
+            taskAddBloc.from,
+            taskAddBloc.until,
+            taskAddBloc.showStartCalendar,
+          ]),
           builder: (context, snapshot) {
             DateTime from = snapshot.data?[0] ?? DateTime.now().getDate();
             DateTime? until = snapshot.data?[1];
+            bool showStartCalendar = snapshot.data?[2] ?? false;
 
             return Column(
               children: [
@@ -877,10 +876,7 @@ class _TaskAddFromState extends State<TaskAddFrom> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          HapticFeedback.lightImpact();
-                          setState(() {
-                            _showCalendar = !_showCalendar;
-                          });
+                          taskAddBloc.toggleStartCalendar();
                         },
                         child: Container(
                           padding: const EdgeInsets.symmetric(
@@ -903,7 +899,7 @@ class _TaskAddFromState extends State<TaskAddFrom> {
                     ],
                   ),
                 ),
-                if (_showCalendar)
+                if (showStartCalendar)
                   HTCalendar(
                       selectedDate: from,
                       lastDay: until?.subtract(const Duration(days: 1)),
@@ -917,15 +913,8 @@ class _TaskAddFromState extends State<TaskAddFrom> {
   }
 }
 
-class TaskAddUntil extends StatefulWidget {
+class TaskAddUntil extends StatelessWidget {
   const TaskAddUntil({super.key});
-
-  @override
-  State<TaskAddUntil> createState() => _TaskAddUntilState();
-}
-
-class _TaskAddUntilState extends State<TaskAddUntil> {
-  bool _showCalendar = true;
 
   @override
   Widget build(BuildContext context) {
@@ -936,12 +925,17 @@ class _TaskAddUntilState extends State<TaskAddUntil> {
     return Padding(
       padding: HTEdgeInsets.horizontal24,
       child: StreamBuilder<List>(
-          stream: Rx.combineLatestList(
-              [taskAddBloc.until, taskAddBloc.from, taskAddBloc.isRepeat]),
+          stream: Rx.combineLatestList([
+            taskAddBloc.until,
+            taskAddBloc.from,
+            taskAddBloc.isRepeat,
+            taskAddBloc.showEndCalendar
+          ]),
           builder: (context, snapshot) {
             DateTime? until = snapshot.data?[0];
             DateTime from = snapshot.data?[1] ?? today;
             bool isRepeat = snapshot.data?[2] ?? true;
+            bool showEndCalendar = snapshot.data?[3] ?? false;
 
             DateTime firstDate = from.add(const Duration(days: 1));
 
@@ -969,10 +963,7 @@ class _TaskAddUntilState extends State<TaskAddUntil> {
                       if (until != null)
                         GestureDetector(
                           onTap: () {
-                            HapticFeedback.lightImpact();
-                            setState(() {
-                              _showCalendar = !_showCalendar;
-                            });
+                            taskAddBloc.toggleEndCalendar();
                           },
                           child: Container(
                             padding: const EdgeInsets.symmetric(
@@ -995,6 +986,9 @@ class _TaskAddUntilState extends State<TaskAddUntil> {
                           activeColor: htGreys(context).black,
                           onChanged: (value) {
                             if (value) {
+                              taskAddBloc.setShowEndCalendar(true);
+                              taskAddBloc.scrollToEndCalendar();
+
                               taskAddBloc.setUntil(
                                   firstDate.add(const Duration(days: 7)));
 
@@ -1008,7 +1002,7 @@ class _TaskAddUntilState extends State<TaskAddUntil> {
                     ],
                   ),
                 ),
-                if (_showCalendar && until != null)
+                if (showEndCalendar && until != null)
                   HTCalendar(
                       selectedDate:
                           until.isAfter(firstDate) ? until : firstDate,

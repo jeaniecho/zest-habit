@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:habit_app/blocs/app_bloc.dart';
 import 'package:habit_app/models/task_model.dart';
 import 'package:habit_app/utils/disposable.dart';
@@ -68,8 +69,19 @@ class TaskAddBloc extends Disposable {
   Function(bool) get setShowColorTooltip => _showColorTooltip.add;
   bool get showColorTooltipValue => _showColorTooltip.value;
 
+  final BehaviorSubject<bool> _showStartCalendar =
+      BehaviorSubject.seeded(false);
+  Stream<bool> get showStartCalendar => _showStartCalendar.stream;
+  Function(bool) get setShowStartCalendar => _showStartCalendar.add;
+
+  final BehaviorSubject<bool> _showEndCalendar = BehaviorSubject.seeded(true);
+  Stream<bool> get showEndCalendar => _showEndCalendar.stream;
+  Function(bool) get setShowEndCalendar => _showEndCalendar.add;
+
   late final TextEditingController titleController;
   late final TextEditingController goalController;
+
+  final ScrollController scrollController = ScrollController();
 
   TaskAddBloc({
     required this.appBloc,
@@ -114,6 +126,9 @@ class TaskAddBloc extends Disposable {
     _selectedColor.close();
     _alarmTime.close();
     _titleError.close();
+    _showColorTooltip.close();
+    _showStartCalendar.close();
+    _showEndCalendar.close();
   }
 
   setIsRepeat(bool repeat) {
@@ -212,5 +227,62 @@ class TaskAddBloc extends Disposable {
     } else {
       setOpenEmoji(true);
     }
+  }
+
+  toggleStartCalendar() {
+    HapticFeedback.lightImpact();
+    if (_showStartCalendar.value) {
+      _showStartCalendar.add(false);
+    } else {
+      _showStartCalendar.add(true);
+      scrollToStartCalendar();
+    }
+  }
+
+  toggleEndCalendar() {
+    HapticFeedback.lightImpact();
+    if (_showEndCalendar.value) {
+      _showEndCalendar.add(false);
+    } else {
+      _showEndCalendar.add(true);
+      scrollToEndCalendar();
+    }
+  }
+
+  scrollToStartCalendar() {
+    double offset = 320;
+
+    if (isRepeatValue) {
+      offset += 240;
+    }
+    if (_repeatType.value == RepeatType.custom) {
+      offset += 24;
+    }
+
+    scrollController.animateTo(
+      offset,
+      duration: const Duration(milliseconds: 250),
+      curve: Curves.easeInOut,
+    );
+  }
+
+  scrollToEndCalendar() {
+    double offset = 400;
+
+    if (isRepeatValue) {
+      offset += 240;
+    }
+    if (_repeatType.value == RepeatType.custom) {
+      offset += 24;
+    }
+    if (_showStartCalendar.value) {
+      offset += 440;
+    }
+
+    scrollController.animateTo(
+      offset,
+      duration: const Duration(milliseconds: 250),
+      curve: Curves.easeInOut,
+    );
   }
 }
