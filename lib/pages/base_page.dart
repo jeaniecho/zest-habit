@@ -9,6 +9,7 @@ import 'package:habit_app/pages/drawer/licenses_page.dart';
 import 'package:habit_app/pages/drawer/mode_page.dart';
 import 'package:habit_app/pages/drawer/privacy_page.dart';
 import 'package:habit_app/pages/drawer/term_page.dart';
+import 'package:habit_app/pages/etc/dev_page.dart';
 import 'package:habit_app/pages/task/task_add_page.dart';
 import 'package:habit_app/router.dart';
 import 'package:habit_app/styles/colors.dart';
@@ -219,6 +220,7 @@ class BaseEndDrawer extends StatelessWidget {
                   },
                   text: 'Mode'),
               const Spacer(),
+              const DevMenu(),
               FutureBuilder<PackageInfo>(
                   future: PackageInfo.fromPlatform(),
                   builder: (context, snapshot) {
@@ -260,6 +262,29 @@ class BaseEndDrawerItem extends StatelessWidget {
           text,
           typoToken: HTTypoToken.bodyLarge,
           color: htGreys(context).black,
+        ),
+      ),
+    );
+  }
+}
+
+class DevMenu extends StatelessWidget {
+  const DevMenu({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: HTEdgeInsets.bottom4,
+      child: ElevatedButton(
+        onPressed: () {
+          rootScaffoldKey.currentState!.closeEndDrawer();
+          context.push(DevPage.routeName);
+        },
+        child: HTText(
+          'Dev Menu',
+          typoToken: HTTypoToken.buttonTextMedium,
+          color: htGreys(context).white,
+          height: 1.25,
         ),
       ),
     );

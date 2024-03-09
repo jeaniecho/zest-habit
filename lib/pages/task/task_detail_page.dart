@@ -12,6 +12,7 @@ import 'package:habit_app/styles/tokens.dart';
 import 'package:habit_app/styles/typos.dart';
 import 'package:habit_app/utils/functions.dart';
 import 'package:habit_app/widgets/ht_appbar.dart';
+import 'package:habit_app/widgets/ht_dialog.dart';
 import 'package:habit_app/widgets/ht_text.dart';
 import 'package:habit_app/widgets/ht_toggle.dart';
 import 'package:intl/intl.dart';
@@ -51,40 +52,6 @@ class TaskDetailAction extends StatelessWidget {
     bool isOld = taskDetailBloc.task.until != null &&
         taskDetailBloc.task.until!.isBefore(DateTime.now().getDate());
 
-    showDeleteDialog() {
-      showCupertinoModalPopup(
-          context: context,
-          builder: (context) => CupertinoAlertDialog(
-                title: const Text('Delete your task?'),
-                content: const Text(
-                    'Removing this task clears all habit tracking data.'),
-                actions: <CupertinoDialogAction>[
-                  CupertinoDialogAction(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Text(
-                      'Cancel',
-                      style: TextStyle(color: CupertinoColors.activeBlue),
-                    ),
-                  ),
-                  CupertinoDialogAction(
-                      isDefaultAction: true,
-                      isDestructiveAction: true,
-                      onPressed: () {
-                        Navigator.pop(context);
-
-                        appBloc
-                            .deleteTask(taskDetailBloc.taskObjValue)
-                            .then((value) {
-                          context.pop();
-                        });
-                      },
-                      child: const Text('Delete')),
-                ],
-              ));
-    }
-
     return PullDownButton(
         offset: const Offset(4, 4),
         routeTheme: const PullDownMenuRouteTheme().copyWith(
@@ -116,7 +83,20 @@ class TaskDetailAction extends StatelessWidget {
                 icon: CupertinoIcons.trash,
                 isDestructive: true,
                 onTap: () {
-                  showDeleteDialog();
+                  HTDialog.showConfirmDialog(
+                    context,
+                    title: 'Delete your task?',
+                    content:
+                        'Removing this task clears all habit tracking data.',
+                    action: () {
+                      appBloc
+                          .deleteTask(taskDetailBloc.taskObjValue)
+                          .then((value) {
+                        context.pop();
+                      });
+                    },
+                    buttonText: 'Delete',
+                  );
                 },
               ),
             ],

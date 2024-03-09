@@ -1,6 +1,7 @@
 // ignore_for_file: depend_on_referenced_packages
 
-import 'package:flutter/foundation.dart';
+import 'dart:developer';
+
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:habit_app/models/task_model.dart';
@@ -117,13 +118,13 @@ class HTNotification {
     }
   }
 
-  static Future<void> cancelNotification(int id, List<int>? repeatAt) async {
-    if (repeatAt != null && repeatAt.isNotEmpty) {
+  static Future<void> cancelNotification(int id, List<int> repeatAt) async {
+    if (repeatAt.isNotEmpty) {
       for (int i in repeatAt) {
         await plugin.cancel(id * 10 + i);
       }
     } else {
-      await plugin.cancel(id);
+      await plugin.cancel(id * 10);
     }
   }
 
@@ -131,11 +132,13 @@ class HTNotification {
     await plugin.cancelAll();
   }
 
-  static viewNotifiations() async {
-    if (kDebugMode) {
-      print(await plugin.getActiveNotifications());
-      print((await plugin.pendingNotificationRequests()).map((e) => e.title));
-    }
+  static Future<List<ActiveNotification>> getActiveNotifications() async {
+    return await plugin.getActiveNotifications();
+  }
+
+  static Future<List<PendingNotificationRequest>>
+      getPendingNotifications() async {
+    return await plugin.pendingNotificationRequests();
   }
 }
 
