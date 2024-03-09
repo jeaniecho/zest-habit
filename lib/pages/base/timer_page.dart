@@ -367,20 +367,7 @@ class FixedTimerText extends StatelessWidget {
 
           return GestureDetector(
             onTap: () {
-              HTToastBar(
-                name: 'adjust',
-                autoDismiss: true,
-                snackbarDuration: const Duration(seconds: 3),
-                position: HTSnackbarPosition.top,
-                builder: (context) => HTToastCard(
-                  title: HTText(
-                    '⛔️ Adjust time after timer ends.',
-                    typoToken: HTTypoToken.bodyMedium,
-                    color: htGreys(context).white,
-                  ),
-                  color: htGreys(context).grey080,
-                ),
-              ).show(shellNavKey.currentContext!);
+              timerBloc.showAdjustLater();
             },
             child: SizedBox(
               height: timerStringHeight,
