@@ -10,6 +10,7 @@ import 'package:habit_app/pages/drawer/mode_page.dart';
 import 'package:habit_app/pages/drawer/privacy_page.dart';
 import 'package:habit_app/pages/drawer/term_page.dart';
 import 'package:habit_app/pages/etc/dev_page.dart';
+import 'package:habit_app/pages/etc/subscription_page.dart';
 import 'package:habit_app/pages/task/task_detail_page.dart';
 import 'package:provider/provider.dart';
 
@@ -80,6 +81,12 @@ final router = GoRouter(
       path: DevPage.routeName,
       builder: (context, state) {
         return const DevPage();
+      },
+    ),
+    GoRoute(
+      path: SubscriptionPage.routeName,
+      builder: (context, state) {
+        return const SubscriptionPage();
       },
     ),
   ],

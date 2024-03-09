@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:habit_app/IAP/iap_service.dart';
 import 'package:habit_app/blocs/app_bloc.dart';
 import 'package:habit_app/blocs/base/task_bloc.dart';
@@ -64,13 +65,17 @@ class MyApp extends StatelessWidget {
             Settings settings = snapshot.data ?? Settings();
             bool isDarkMode = settings.isDarkMode;
 
-            return MaterialApp.router(
-              routerConfig: router,
-              debugShowCheckedModeBanner: false,
-              theme: HTThemes.lightTheme,
-              darkTheme: HTThemes.darkTheme,
-              themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
-              scaffoldMessengerKey: snackbarKey,
+            return ScreenUtilInit(
+              designSize: const Size(428, 926),
+              minTextAdapt: true,
+              child: MaterialApp.router(
+                routerConfig: router,
+                debugShowCheckedModeBanner: false,
+                theme: HTThemes.lightTheme,
+                darkTheme: HTThemes.darkTheme,
+                themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
+                scaffoldMessengerKey: snackbarKey,
+              ),
             );
           }),
     );

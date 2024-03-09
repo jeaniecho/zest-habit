@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:go_router/go_router.dart';
+import 'package:habit_app/IAP/iap_service.dart';
 import 'package:habit_app/blocs/app_bloc.dart';
 import 'package:habit_app/blocs/task/task_add_bloc.dart';
+import 'package:habit_app/models/settings_model.dart';
 import 'package:habit_app/pages/base/task_page.dart';
 import 'package:habit_app/pages/base/timer_page.dart';
 import 'package:habit_app/pages/drawer/licenses_page.dart';
@@ -10,140 +13,164 @@ import 'package:habit_app/pages/drawer/mode_page.dart';
 import 'package:habit_app/pages/drawer/privacy_page.dart';
 import 'package:habit_app/pages/drawer/term_page.dart';
 import 'package:habit_app/pages/etc/dev_page.dart';
+import 'package:habit_app/pages/etc/subscription_page.dart';
 import 'package:habit_app/pages/task/task_add_page.dart';
 import 'package:habit_app/router.dart';
 import 'package:habit_app/styles/colors.dart';
 import 'package:habit_app/styles/tokens.dart';
 import 'package:habit_app/styles/typos.dart';
+import 'package:habit_app/utils/page_routes.dart';
 import 'package:habit_app/widgets/ht_text.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
+import 'package:rxdart/rxdart.dart';
 
-class BasePage extends StatelessWidget {
+class BasePage extends StatefulWidget {
   final Widget child;
   const BasePage({required this.child, super.key});
 
   static const routeName = '/base';
 
   @override
+  State<BasePage> createState() => _BasePageState();
+}
+
+class _BasePageState extends State<BasePage> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      if (!context.read<IAPService>().isPro()) {
+        Navigator.push(context, HTPageRoutes.slideUp(const SubscriptionPage()));
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     AppBloc appBloc = context.read<AppBloc>();
 
-    return StreamBuilder<int>(
-        stream: appBloc.bottomIndex,
+    return StreamBuilder<List>(
+        stream: Rx.combineLatestList([appBloc.bottomIndex, appBloc.settings]),
         builder: (context, snapshot) {
-          int bottomIndex = snapshot.data ?? 0;
+          int bottomIndex = snapshot.data?[0] ?? 0;
+          Settings settings = snapshot.data?[1] ?? Settings();
 
-          return Scaffold(
-            key: rootScaffoldKey,
-            body: SafeArea(
-              child: child,
-            ),
-            bottomNavigationBar: SafeArea(
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-                decoration: BoxDecoration(
-                  border: Border(
-                    top: BorderSide(
-                      color: htGreys(context).grey010,
-                      width: 1,
-                    ),
-                  ),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      onTap: () {
-                        while (context.canPop()) {
-                          context.pop();
-                        }
-
-                        if (appBloc.bottomIndexValue != 0) {
-                          context.replace(TaskPage.routeName);
-                          appBloc.setBottomIndex(0);
-                        }
-                      },
-                      child: SizedBox(
-                        width: 88,
-                        height: 52,
-                        child: Icon(
-                          Icons.calendar_today_rounded,
-                          size: 22,
-                          color: bottomIndex == 0
-                              ? htGreys(context).black
-                              : htGreys(context).grey040,
-                        ),
+          return AnnotatedRegion<SystemUiOverlayStyle>(
+            value: settings.isDarkMode
+                ? SystemUiOverlayStyle.light
+                : SystemUiOverlayStyle.dark,
+            child: Scaffold(
+              key: rootScaffoldKey,
+              body: SafeArea(
+                child: widget.child,
+              ),
+              bottomNavigationBar: SafeArea(
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                  decoration: BoxDecoration(
+                    border: Border(
+                      top: BorderSide(
+                        color: htGreys(context).grey010,
+                        width: 1,
                       ),
                     ),
-                    GestureDetector(
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      GestureDetector(
                         behavior: HitTestBehavior.opaque,
                         onTap: () {
-                          showModalBottomSheet(
-                              context: context,
-                              isScrollControlled: true,
-                              backgroundColor: HTColors.clear,
-                              barrierColor:
-                                  htGreys(context).black.withOpacity(0.3),
-                              useSafeArea: true,
-                              builder: (context) {
-                                return Provider(
-                                    create: (context) => TaskAddBloc(
-                                        appBloc: context.read<AppBloc>()),
-                                    dispose: (context, value) =>
-                                        value.dispose(),
-                                    child: const TaskAddWidget());
-                              });
+                          while (context.canPop()) {
+                            context.pop();
+                          }
+
+                          if (appBloc.bottomIndexValue != 0) {
+                            context.replace(TaskPage.routeName);
+                            appBloc.setBottomIndex(0);
+                          }
                         },
                         child: SizedBox(
                           width: 88,
-                          child: Container(
-                            width: 48,
-                            height: 48,
-                            decoration: BoxDecoration(
-                              color: htGreys(context).black,
-                              shape: BoxShape.circle,
-                            ),
-                            child: Center(
-                              child: Icon(
-                                Icons.add_rounded,
-                                size: 24,
-                                color: htGreys(context).white,
-                              ),
-                            ),
+                          height: 52,
+                          child: Icon(
+                            Icons.calendar_today_rounded,
+                            size: 22,
+                            color: bottomIndex == 0
+                                ? htGreys(context).black
+                                : htGreys(context).grey040,
                           ),
-                        )),
-                    GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      onTap: () {
-                        while (context.canPop()) {
-                          context.pop();
-                        }
-
-                        if (appBloc.bottomIndexValue != 1) {
-                          context.replace(TimerPage.routeName);
-                          appBloc.setBottomIndex(1);
-                        }
-                      },
-                      child: SizedBox(
-                        width: 88,
-                        height: 52,
-                        child: Icon(
-                          Icons.timer_outlined,
-                          size: 24,
-                          color: bottomIndex == 1
-                              ? htGreys(context).black
-                              : htGreys(context).grey040,
                         ),
                       ),
-                    ),
-                  ],
+                      GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: () {
+                            showModalBottomSheet(
+                                context: context,
+                                isScrollControlled: true,
+                                backgroundColor: HTColors.clear,
+                                barrierColor:
+                                    htGreys(context).black.withOpacity(0.3),
+                                useSafeArea: true,
+                                builder: (context) {
+                                  return Provider(
+                                      create: (context) => TaskAddBloc(
+                                          appBloc: context.read<AppBloc>()),
+                                      dispose: (context, value) =>
+                                          value.dispose(),
+                                      child: const TaskAddWidget());
+                                });
+                          },
+                          child: SizedBox(
+                            width: 88,
+                            child: Container(
+                              width: 48,
+                              height: 48,
+                              decoration: BoxDecoration(
+                                color: htGreys(context).black,
+                                shape: BoxShape.circle,
+                              ),
+                              child: Center(
+                                child: Icon(
+                                  Icons.add_rounded,
+                                  size: 24,
+                                  color: htGreys(context).white,
+                                ),
+                              ),
+                            ),
+                          )),
+                      GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () {
+                          while (context.canPop()) {
+                            context.pop();
+                          }
+
+                          if (appBloc.bottomIndexValue != 1) {
+                            context.replace(TimerPage.routeName);
+                            appBloc.setBottomIndex(1);
+                          }
+                        },
+                        child: SizedBox(
+                          width: 88,
+                          height: 52,
+                          child: Icon(
+                            Icons.timer_outlined,
+                            size: 24,
+                            color: bottomIndex == 1
+                                ? htGreys(context).black
+                                : htGreys(context).grey040,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
+              endDrawer: const BaseEndDrawer(),
             ),
-            endDrawer: const BaseEndDrawer(),
           );
         });
   }

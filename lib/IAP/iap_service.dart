@@ -14,6 +14,8 @@ class IAPService {
   static bool kAutoConsume = true;
   static String kConsumableId = 'consumable';
   static String kUpgradeId = 'upgrade';
+  static String kEarlybirdMonthlyId = 'dev.jeanie.habitApp.earlybird.monthly';
+  static String kEarlybirdYearlyId = 'dev.jeanie.habitApp.earlybird.yearly';
   static String kMonthlySubscriptionId = 'dev.jeanie.habitApp.monthly';
   static String kYearlySubscriptionId = 'dev.jeanie.habitApp.yearly';
   static List<String> kProductIds = [
@@ -21,6 +23,10 @@ class IAPService {
     kUpgradeId,
     kMonthlySubscriptionId,
     kYearlySubscriptionId,
+  ];
+  static List<String> kSubscriptionIds = [
+    kYearlySubscriptionId,
+    kMonthlySubscriptionId,
   ];
 
   final InAppPurchase _inAppPurchase = InAppPurchase.instance;
@@ -33,6 +39,7 @@ class IAPService {
   final BehaviorSubject<List<ProductDetails>> _products =
       BehaviorSubject.seeded([]);
   Stream<List<ProductDetails>> get products => _products.stream;
+  List<ProductDetails> get productsValue => _products.value;
 
   final BehaviorSubject<List<PurchaseDetails>> _purchases =
       BehaviorSubject.seeded([]);
@@ -125,6 +132,14 @@ class IAPService {
     _consumables.add(consumables);
     _purchasePending.add(false);
     _loading.add(false);
+  }
+
+  bool isPro() {
+    return _purchases.value
+        .where((element) =>
+            element.productID == kMonthlySubscriptionId ||
+            element.productID == kYearlySubscriptionId)
+        .isNotEmpty;
   }
 
   Future<bool> verifyPurchase(PurchaseDetails purchaseDetails) {
