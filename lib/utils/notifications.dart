@@ -3,6 +3,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
+import 'package:habit_app/models/task_model.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
@@ -56,17 +57,11 @@ class HTNotification {
     );
   }
 
-  static Future<void> scheduleNotification({
-    required List<int> repeatDays,
-    required int id,
-    required String title,
-    required String body,
-    required DateTime dateTime,
-  }) async {
+  static Future<void> scheduleNotification(Task task) async {
     tz.initializeTimeZones();
     tz.setLocalLocation(
         tz.getLocation(await FlutterTimezone.getLocalTimezone()));
-    final tz.TZDateTime scheduledDate = toTZDateTime(dateTime);
+    final tz.TZDateTime scheduledDate = toTZDateTime(task.alarmTime!);
 
     const NotificationDetails notificationDetails = NotificationDetails(
       iOS: DarwinNotificationDetails(
@@ -77,12 +72,14 @@ class HTNotification {
       ),
     );
 
+    List<int> repeatDays = task.repeatAt ?? [];
+
     if (repeatDays.length == 7) {
       // everyday
       await plugin.zonedSchedule(
-        id,
-        title,
-        body,
+        task.id * 10,
+        (task.emoji == null ? '' : '${task.emoji!} ') + task.title,
+        'Reminding you to complete this task!',
         scheduledDate,
         notificationDetails,
         uiLocalNotificationDateInterpretation:
@@ -92,9 +89,9 @@ class HTNotification {
     } else if (repeatDays.isEmpty) {
       // one time
       await plugin.zonedSchedule(
-        id,
-        title,
-        body,
+        task.id * 10,
+        (task.emoji == null ? '' : '${task.emoji!} ') + task.title,
+        'Reminding you to complete this task!',
         scheduledDate,
         notificationDetails,
         uiLocalNotificationDateInterpretation:
@@ -107,9 +104,9 @@ class HTNotification {
 
       for (tz.TZDateTime date in dates) {
         await plugin.zonedSchedule(
-          id * 10 + date.weekday,
-          title,
-          body,
+          task.id * 10 + date.weekday,
+          (task.emoji == null ? '' : '${task.emoji!} ') + task.title,
+          'Reminding you to complete this task!',
           date,
           notificationDetails,
           uiLocalNotificationDateInterpretation:

@@ -171,13 +171,7 @@ class TaskAddBloc extends Disposable {
     Task newTask = getNewTask();
 
     if (newTask.alarmTime != null) {
-      await HTNotification.scheduleNotification(
-        repeatDays: newTask.repeatAt ?? [],
-        id: newTask.id,
-        title: newTask.title,
-        body: 'Reminding you to complete this task!',
-        dateTime: newTask.alarmTime!,
-      );
+      await HTNotification.scheduleNotification(newTask);
     }
 
     return await appBloc.addTask(newTask);
@@ -206,13 +200,7 @@ class TaskAddBloc extends Disposable {
       if (newTask.alarmTime == null) {
         await HTNotification.cancelNotification(newTask.id, task!.repeatAt!);
       } else {
-        await HTNotification.scheduleNotification(
-          repeatDays: newTask.repeatAt ?? [],
-          id: newTask.id,
-          title: newTask.title,
-          body: 'Reminding you to complete this task!',
-          dateTime: newTask.alarmTime!,
-        );
+        await HTNotification.scheduleNotification(newTask);
       }
 
       return await appBloc.updateTask(newTask);
