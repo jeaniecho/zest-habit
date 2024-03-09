@@ -4,6 +4,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:habit_app/models/settings_model.dart';
 import 'package:habit_app/models/task_model.dart';
 import 'package:habit_app/utils/functions.dart';
+import 'package:habit_app/utils/notifications.dart';
 import 'package:isar/isar.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -83,6 +84,8 @@ class AppBloc {
   }
 
   Future deleteTask(Task task) async {
+    await HTNotification.cancelNotification(task);
+
     await isar.writeTxn(() async {
       await isar.tasks.delete(task.id);
     });

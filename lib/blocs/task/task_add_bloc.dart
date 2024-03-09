@@ -198,8 +198,7 @@ class TaskAddBloc extends Disposable {
       Task newTask = getUpdatedTask(task!);
 
       if (newTask.alarmTime == null) {
-        await HTNotification.cancelNotification(
-            newTask.id, task?.repeatAt ?? []);
+        await HTNotification.cancelNotification(newTask);
       } else {
         await HTNotification.scheduleNotification(newTask);
       }

@@ -1,7 +1,5 @@
 // ignore_for_file: depend_on_referenced_packages
 
-import 'dart:developer';
-
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:habit_app/models/task_model.dart';
@@ -118,13 +116,13 @@ class HTNotification {
     }
   }
 
-  static Future<void> cancelNotification(int id, List<int> repeatAt) async {
-    if (repeatAt.isNotEmpty) {
-      for (int i in repeatAt) {
-        await plugin.cancel(id * 10 + i);
+  static Future<void> cancelNotification(Task task) async {
+    if (task.repeatAt != null && task.repeatAt!.isNotEmpty) {
+      for (int i in task.repeatAt!) {
+        await plugin.cancel(task.id * 10 + i);
       }
-    } else {
-      await plugin.cancel(id * 10);
+    } else if (task.alarmTime != null) {
+      await plugin.cancel(task.id * 10);
     }
   }
 
