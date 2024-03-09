@@ -49,13 +49,11 @@ class AppBloc {
   setDarkMode(bool value, BuildContext context) async {
     Settings newSettings = _settings.value.copyWith(isDarkMode: value);
 
-    _settings.add(newSettings);
-
     await isar.writeTxn(() async {
       await isar.settings.put(newSettings);
     });
 
-    // await getSettings();
+    await getSettings();
   }
 
   Future<List<Task>> getTasks() async {

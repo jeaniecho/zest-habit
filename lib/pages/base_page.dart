@@ -85,7 +85,7 @@ class BasePage extends StatelessWidget {
                               isScrollControlled: true,
                               backgroundColor: HTColors.clear,
                               barrierColor:
-                                  htGreys(context).black.withOpacity(0.1),
+                                  htGreys(context).black.withOpacity(0.3),
                               useSafeArea: true,
                               builder: (context) {
                                 return Provider(

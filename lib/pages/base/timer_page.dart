@@ -92,6 +92,7 @@ class TimerTask extends StatelessWidget {
                         useRootNavigator: true,
                         isScrollControlled: true,
                         backgroundColor: HTColors.clear,
+                        barrierColor: htGreys(context).black.withOpacity(0.3),
                         useSafeArea: true,
                         builder: (context) {
                           return const TimerTaskPicker();
