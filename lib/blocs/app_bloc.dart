@@ -174,4 +174,12 @@ class AppBloc {
 
     await getSettings();
   }
+
+  int activeTaskCount() {
+    return _tasks.value
+        .where((element) =>
+            element.until == null ||
+            element.until!.isAfter(DateTime.now().getDate()))
+        .length;
+  }
 }

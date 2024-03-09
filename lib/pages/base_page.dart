@@ -19,7 +19,9 @@ import 'package:habit_app/router.dart';
 import 'package:habit_app/styles/colors.dart';
 import 'package:habit_app/styles/tokens.dart';
 import 'package:habit_app/styles/typos.dart';
+import 'package:habit_app/utils/functions.dart';
 import 'package:habit_app/utils/page_routes.dart';
+import 'package:habit_app/widgets/ht_dialog.dart';
 import 'package:habit_app/widgets/ht_text.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
@@ -51,10 +53,12 @@ class _BasePageState extends State<BasePage> {
     AppBloc appBloc = context.read<AppBloc>();
 
     return StreamBuilder<List>(
-        stream: Rx.combineLatestList([appBloc.bottomIndex, appBloc.settings]),
+        stream: Rx.combineLatestList(
+            [appBloc.bottomIndex, appBloc.settings, appBloc.isPro]),
         builder: (context, snapshot) {
           int bottomIndex = snapshot.data?[0] ?? 0;
           Settings settings = snapshot.data?[1] ?? Settings();
+          bool isPro = snapshot.data?[2] ?? false;
 
           return AnnotatedRegion<SystemUiOverlayStyle>(
             value: settings.isDarkMode
@@ -107,21 +111,39 @@ class _BasePageState extends State<BasePage> {
                       GestureDetector(
                           behavior: HitTestBehavior.opaque,
                           onTap: () {
-                            showModalBottomSheet(
-                                context: context,
-                                isScrollControlled: true,
-                                backgroundColor: HTColors.clear,
-                                barrierColor:
-                                    htGreys(context).black.withOpacity(0.3),
-                                useSafeArea: true,
-                                builder: (context) {
-                                  return Provider(
-                                      create: (context) => TaskAddBloc(
-                                          appBloc: context.read<AppBloc>()),
-                                      dispose: (context, value) =>
-                                          value.dispose(),
-                                      child: const TaskAddWidget());
-                                });
+                            if (appBloc.activeTaskCount() < taskLimit ||
+                                isPro) {
+                              showModalBottomSheet(
+                                  context: context,
+                                  isScrollControlled: true,
+                                  backgroundColor: HTColors.clear,
+                                  barrierColor:
+                                      htGreys(context).black.withOpacity(0.3),
+                                  useSafeArea: true,
+                                  builder: (context) {
+                                    return Provider(
+                                        create: (context) => TaskAddBloc(
+                                            appBloc: context.read<AppBloc>()),
+                                        dispose: (context, value) =>
+                                            value.dispose(),
+                                        child: const TaskAddWidget());
+                                  });
+                            } else {
+                              HTDialog.showConfirmDialog(
+                                context,
+                                title: 'Unlimited Task with PRO',
+                                content:
+                                    'To add more task, you need PRO plan.\nStart with free trial plan!',
+                                action: () {
+                                  Navigator.push(
+                                      rootNavKey.currentContext!,
+                                      HTPageRoutes.slideUp(
+                                          const SubscriptionPage()));
+                                },
+                                buttonText: 'Try PRO',
+                                isDestructive: false,
+                              );
+                            }
                           },
                           child: SizedBox(
                             width: 88,

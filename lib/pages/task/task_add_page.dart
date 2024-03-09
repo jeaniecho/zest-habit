@@ -4,7 +4,9 @@ import 'package:go_router/go_router.dart';
 import 'package:habit_app/blocs/app_bloc.dart';
 import 'package:habit_app/blocs/task/task_add_bloc.dart';
 import 'package:habit_app/models/settings_model.dart';
+import 'package:habit_app/pages/etc/subscription_page.dart';
 import 'package:habit_app/pages/task/task_detail_page.dart';
+import 'package:habit_app/router.dart';
 import 'package:habit_app/styles/colors.dart';
 import 'package:habit_app/styles/tokens.dart';
 import 'package:habit_app/styles/typos.dart';
@@ -12,9 +14,11 @@ import 'package:habit_app/utils/emojis.dart';
 import 'package:habit_app/utils/enums.dart';
 import 'package:habit_app/utils/functions.dart';
 import 'package:habit_app/utils/notifications.dart';
+import 'package:habit_app/utils/page_routes.dart';
 import 'package:habit_app/utils/painters.dart';
 import 'package:habit_app/widgets/ht_bottom_modal.dart';
 import 'package:habit_app/widgets/ht_calendar.dart';
+import 'package:habit_app/widgets/ht_dialog.dart';
 import 'package:habit_app/widgets/ht_radio.dart';
 import 'package:habit_app/widgets/ht_text.dart';
 import 'package:intl/intl.dart';
@@ -100,82 +104,99 @@ class TaskAddAlarm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     TaskAddBloc taskAddBloc = context.read<TaskAddBloc>();
+    AppBloc appBloc = context.read<AppBloc>();
 
-    return StreamBuilder<DateTime?>(
-        stream: taskAddBloc.alarmTime,
+    return StreamBuilder<List>(
+        stream: Rx.combineLatestList([taskAddBloc.alarmTime, appBloc.isPro]),
         builder: (context, snapshot) {
-          DateTime? alarmTime = snapshot.data;
+          DateTime? alarmTime = snapshot.data?[0];
+          bool isPro = snapshot.data?[1] ?? false;
 
           return GestureDetector(
             onTap: () {
-              HTNotification.requestNotificationPermission();
-              // HTNotification.showNotification();
+              if (isPro) {
+                HTNotification.requestNotificationPermission();
+                // HTNotification.showNotification();
 
-              DateTime initialDateTime =
-                  alarmTime ?? DateTime.now().copyWith(minute: 0);
+                DateTime initialDateTime =
+                    alarmTime ?? DateTime.now().copyWith(minute: 0);
 
-              taskAddBloc.setAlarmTime(initialDateTime);
+                taskAddBloc.setAlarmTime(initialDateTime);
 
-              showCupertinoModalPopup(
-                  context: context,
-                  builder: (context) => Container(
-                        padding: HTEdgeInsets.top16,
-                        margin: EdgeInsets.only(
-                          bottom: MediaQuery.of(context).viewInsets.bottom,
-                        ),
-                        color: htGreys(context).white,
-                        child: SafeArea(
-                          top: false,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Padding(
-                                padding: HTEdgeInsets.horizontal16,
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    TextButton(
-                                        onPressed: () {
-                                          taskAddBloc.setAlarmTime(null);
-                                          Navigator.pop(context);
-                                        },
-                                        child: HTText(
-                                          'Turn Off',
-                                          typoToken:
-                                              HTTypoToken.buttonTextMedium,
-                                          color: htGreys(context).grey060,
-                                          height: 1.25,
-                                        )),
-                                    ElevatedButton(
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                        child: HTText(
-                                          'Done',
-                                          typoToken:
-                                              HTTypoToken.buttonTextMedium,
-                                          color: htGreys(context).white,
-                                          height: 1.25,
-                                        )),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(
-                                height: 200,
-                                child: CupertinoDatePicker(
-                                  initialDateTime: initialDateTime,
-                                  mode: CupertinoDatePickerMode.time,
-                                  use24hFormat: false,
-                                  onDateTimeChanged: (dateTime) {
-                                    taskAddBloc.setAlarmTime(dateTime);
-                                  },
-                                ),
-                              ),
-                            ],
+                showCupertinoModalPopup(
+                    context: context,
+                    builder: (context) => Container(
+                          padding: HTEdgeInsets.top16,
+                          margin: EdgeInsets.only(
+                            bottom: MediaQuery.of(context).viewInsets.bottom,
                           ),
-                        ),
-                      ));
+                          color: htGreys(context).white,
+                          child: SafeArea(
+                            top: false,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Padding(
+                                  padding: HTEdgeInsets.horizontal16,
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      TextButton(
+                                          onPressed: () {
+                                            taskAddBloc.setAlarmTime(null);
+                                            Navigator.pop(context);
+                                          },
+                                          child: HTText(
+                                            'Turn Off',
+                                            typoToken:
+                                                HTTypoToken.buttonTextMedium,
+                                            color: htGreys(context).grey060,
+                                            height: 1.25,
+                                          )),
+                                      ElevatedButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: HTText(
+                                            'Done',
+                                            typoToken:
+                                                HTTypoToken.buttonTextMedium,
+                                            color: htGreys(context).white,
+                                            height: 1.25,
+                                          )),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 200,
+                                  child: CupertinoDatePicker(
+                                    initialDateTime: initialDateTime,
+                                    mode: CupertinoDatePickerMode.time,
+                                    use24hFormat: false,
+                                    onDateTimeChanged: (dateTime) {
+                                      taskAddBloc.setAlarmTime(dateTime);
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ));
+              } else {
+                HTDialog.showConfirmDialog(
+                  context,
+                  title: 'Set Alarm with PRO',
+                  content:
+                      'To set alarm, you need PRO plan.\nStart with free trial plan!',
+                  action: () {
+                    Navigator.push(rootNavKey.currentContext!,
+                        HTPageRoutes.slideUp(const SubscriptionPage()));
+                  },
+                  buttonText: 'Try PRO',
+                  isDestructive: false,
+                );
+              }
             },
             child: Container(
               height: 48,

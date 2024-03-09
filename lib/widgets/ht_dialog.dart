@@ -9,6 +9,7 @@ class HTDialog {
     required String content,
     required Function action,
     required String buttonText,
+    bool isDestructive = true,
   }) {
     showCupertinoModalPopup(
         context: context,
@@ -20,18 +21,23 @@ class HTDialog {
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: const Text(
-                    'Cancel',
-                    style: TextStyle(color: CupertinoColors.activeBlue),
-                  ),
+                  textStyle: TextStyle(
+                      color: !isDestructive
+                          ? CupertinoColors.black
+                          : CupertinoColors.activeBlue),
+                  child: const Text('Cancel'),
                 ),
                 CupertinoDialogAction(
                     isDefaultAction: true,
-                    isDestructiveAction: true,
+                    isDestructiveAction: isDestructive,
                     onPressed: () {
                       Navigator.pop(context);
                       action();
                     },
+                    textStyle: TextStyle(
+                        color: !isDestructive
+                            ? CupertinoColors.activeBlue
+                            : CupertinoColors.destructiveRed),
                     child: Text(buttonText)),
               ],
             ));

@@ -47,7 +47,7 @@ class TaskBody extends StatelessWidget {
       stream: Rx.combineLatestList([taskBloc.tabIndex, appBloc.isPro]),
       builder: (context, snapshot) {
         int tabIndex = snapshot.data?[0] ?? 0;
-        bool isPro = snapshot.data?[1] ?? false;
+        bool isPro = snapshot.data?[1] ?? true;
 
         if (tabIndex == 0) {
           return Expanded(

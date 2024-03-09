@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:habit_app/blocs/app_bloc.dart';
 import 'package:habit_app/blocs/base/timer_bloc.dart';
 import 'package:habit_app/models/task_model.dart';
+import 'package:habit_app/pages/etc/subscription_page.dart';
 import 'package:habit_app/router.dart';
 import 'package:habit_app/styles/colors.dart';
 import 'package:habit_app/styles/tokens.dart';
 import 'package:habit_app/styles/typos.dart';
 import 'package:habit_app/utils/enums.dart';
 import 'package:habit_app/utils/functions.dart';
+import 'package:habit_app/utils/page_routes.dart';
 import 'package:habit_app/widgets/ht_bottom_modal.dart';
+import 'package:habit_app/widgets/ht_dialog.dart';
 import 'package:habit_app/widgets/ht_scale.dart';
 import 'package:habit_app/widgets/ht_text.dart';
 import 'package:provider/provider.dart';
@@ -175,6 +179,7 @@ class TimerWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     TimerBloc timerBloc = context.read<TimerBloc>();
+    AppBloc appBloc = context.read<AppBloc>();
 
     double timerSize = 320;
     // double timerSize = MediaQuery.sizeOf(context).width * 0.75;
@@ -184,10 +189,12 @@ class TimerWidget extends StatelessWidget {
         child: Padding(
           padding: HTEdgeInsets.horizontal24,
           child: StreamBuilder<List>(
-              stream: Rx.combineLatestList([timerBloc.start, timerBloc.curr]),
+              stream: Rx.combineLatestList(
+                  [timerBloc.start, timerBloc.curr, appBloc.isPro]),
               builder: (context, snapshot) {
                 Duration? start = snapshot.data?[0];
                 Duration? curr = snapshot.data?[1];
+                bool isPro = snapshot.data?[2] ?? false;
 
                 bool isTimerOn =
                     curr != null && !curr.isNegative && start != curr;
@@ -250,7 +257,9 @@ class TimerWidget extends StatelessWidget {
                             child: Center(
                               child: isTimerOn
                                   ? const FixedTimerText()
-                                  : EditableTimerText(timerSize: timerSize),
+                                  : isPro
+                                      ? EditableTimerText(timerSize: timerSize)
+                                      : const NoneProTimerText(),
                             ),
                           )
                         ],
@@ -417,6 +426,79 @@ class FixedTimerText extends StatelessWidget {
             ),
           );
         });
+  }
+}
+
+class NoneProTimerText extends StatelessWidget {
+  const NoneProTimerText({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    TimerBloc timerBloc = context.read<TimerBloc>();
+
+    return GestureDetector(
+      onTap: () {
+        HTDialog.showConfirmDialog(
+          context,
+          title: 'Edit Time with PRO',
+          content:
+              'To adjsut time, you need PRO plan.\nStart with free trial plan!',
+          action: () {
+            Navigator.push(rootNavKey.currentContext!,
+                HTPageRoutes.slideUp(const SubscriptionPage()));
+          },
+          buttonText: 'Try PRO',
+          isDestructive: false,
+        );
+      },
+      child: SizedBox(
+        height: timerStringHeight,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(
+                width: timeStringWidth,
+                child: HTText(
+                  timerBloc.hourValue,
+                  typoToken: HTTypoToken.bodyHuge,
+                  color: htGreys(context).black,
+                  height: 1.25,
+                  textAlign: TextAlign.center,
+                )),
+            HTText(
+              ':',
+              typoToken: HTTypoToken.bodyHuge,
+              color: htGreys(context).black,
+              height: 1,
+            ),
+            SizedBox(
+                width: timeStringWidth,
+                child: HTText(
+                  timerBloc.minuteValue,
+                  typoToken: HTTypoToken.bodyHuge,
+                  color: htGreys(context).black,
+                  height: 1.25,
+                  textAlign: TextAlign.center,
+                )),
+            HTText(
+              ':',
+              typoToken: HTTypoToken.bodyHuge,
+              color: htGreys(context).black,
+              height: 1,
+            ),
+            SizedBox(
+                width: timeStringWidth,
+                child: HTText(
+                  timerBloc.secondValue,
+                  typoToken: HTTypoToken.bodyHuge,
+                  color: htGreys(context).black,
+                  height: 1.25,
+                  textAlign: TextAlign.center,
+                )),
+          ],
+        ),
+      ),
+    );
   }
 }
 
