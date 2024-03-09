@@ -1,12 +1,12 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:habit_app/IAP/iap_service.dart';
 import 'package:habit_app/blocs/app_bloc.dart';
 import 'package:habit_app/blocs/base/task_bloc.dart';
 import 'package:habit_app/blocs/base/timer_bloc.dart';
 import 'package:habit_app/models/settings_model.dart';
 import 'package:habit_app/models/task_model.dart';
 import 'package:habit_app/router.dart';
-import 'package:habit_app/styles/colors.dart';
 import 'package:habit_app/styles/themes.dart';
 import 'package:habit_app/utils/notifications.dart';
 import 'package:isar/isar.dart';
@@ -16,6 +16,8 @@ import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Isar
   final dir = await getApplicationDocumentsDirectory();
   Isar isar = await Isar.open(
     [
@@ -25,11 +27,13 @@ void main() async {
     directory: dir.path,
   );
 
-  HTNotification.init();
-
+  // Firebase
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  // Local Notification
+  HTNotification.init();
 
   runApp(MyApp(isar: isar));
 }
@@ -41,22 +45,18 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     AppBloc appBloc = AppBloc(isar: isar);
-
-    double deviceWidth = MediaQuery.sizeOf(context).width;
-    double deviceHeight = MediaQuery.sizeOf(context).height;
+    IAPService iapService = IAPService();
+    TaskBloc taskBloc = TaskBloc(
+        appBloc: appBloc, deviceWidth: MediaQuery.sizeOf(context).width);
+    TimerBloc timerBloc = TimerBloc(
+        appBloc: appBloc, deviceHeight: MediaQuery.sizeOf(context).height);
 
     return MultiProvider(
       providers: [
         Provider(create: (context) => appBloc),
-        Provider(
-          create: (context) =>
-              TaskBloc(appBloc: appBloc, deviceWidth: deviceWidth),
-        ),
-        Provider(
-            create: (context) => TimerBloc(
-                  appBloc: appBloc,
-                  deviceHeight: deviceHeight,
-                )),
+        Provider(create: (context) => iapService),
+        Provider(create: (context) => taskBloc),
+        Provider(create: (context) => timerBloc),
       ],
       child: StreamBuilder<Settings>(
           stream: appBloc.settings,
@@ -67,22 +67,8 @@ class MyApp extends StatelessWidget {
             return MaterialApp.router(
               routerConfig: router,
               debugShowCheckedModeBanner: false,
-              theme: HTThemes.lightTheme.copyWith(extensions: [HTGreys()]),
-              darkTheme: HTThemes.darkTheme.copyWith(extensions: [
-                HTGreys().copyWith(
-                  white: const Color(0xFF000000),
-                  black: const Color(0xFFFFFFFF),
-                  grey010: const Color(0xFF151515),
-                  grey020: const Color(0xFF272F3E),
-                  grey030: const Color(0xFF394150),
-                  grey040: const Color(0xFF4D5562),
-                  grey050: const Color(0xFF6C727F),
-                  grey060: const Color(0xFFA0A6B1),
-                  grey070: const Color(0xFFD3D6DB),
-                  grey080: const Color(0xFFE5E7EB),
-                  grey090: const Color(0xFFF4F5F7),
-                )
-              ]),
+              theme: HTThemes.lightTheme,
+              darkTheme: HTThemes.darkTheme,
               themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
               scaffoldMessengerKey: snackbarKey,
             );
