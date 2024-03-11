@@ -168,13 +168,13 @@ class TaskAddBloc extends Disposable {
   }
 
   Future<Task> addTask() async {
-    Task newTask = getNewTask();
+    Task newTask = await appBloc.addTask(getNewTask());
 
     if (newTask.alarmTime != null) {
       await HTNotification.scheduleNotification(newTask);
     }
 
-    return await appBloc.addTask(newTask);
+    return newTask;
   }
 
   Task getUpdatedTask(Task task) {

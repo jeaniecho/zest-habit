@@ -117,12 +117,16 @@ class HTNotification {
   }
 
   static Future<void> cancelNotification(Task task) async {
-    if (task.repeatAt != null && task.repeatAt!.isNotEmpty) {
-      for (int i in task.repeatAt!) {
-        await plugin.cancel(task.id * 10 + i);
+    if (task.alarmTime != null) {
+      if (task.repeatAt != null &&
+          task.repeatAt!.isNotEmpty &&
+          task.repeatAt!.length < 7) {
+        for (int i in task.repeatAt!) {
+          await plugin.cancel(task.id * 10 + i);
+        }
+      } else {
+        await plugin.cancel(task.id * 10);
       }
-    } else if (task.alarmTime != null) {
-      await plugin.cancel(task.id * 10);
     }
   }
 

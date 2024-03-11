@@ -44,7 +44,13 @@ class AppBloc {
     _isPro = BehaviorSubject.seeded(iapService.purchasesValue.isNotEmpty);
 
     getSettings();
-    getTasks();
+    getTasks().then((value) {
+      if (_isPro.value) {
+        setupNotifications();
+      } else {
+        HTNotification.cancelAllNotifications();
+      }
+    });
   }
 
   Future<Settings> getSettings() async {
@@ -187,5 +193,20 @@ class AppBloc {
             element.until == null ||
             element.until!.isAfter(DateTime.now().getDate()))
         .length;
+  }
+
+  setupNotifications() {
+    List<Task> tasks = _tasks.value;
+    List<Task> activeTasks = tasks
+        .where((element) =>
+            element.until == null ||
+            !element.until!.isBefore(DateTime.now().getDate()))
+        .toList();
+
+    HTNotification.cancelAllNotifications().then((value) async {
+      for (Task task in activeTasks) {
+        await HTNotification.scheduleNotification(task);
+      }
+    });
   }
 }
