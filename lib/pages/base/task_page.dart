@@ -26,12 +26,25 @@ class TaskPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
-      children: [
-        TaskAppbar(),
-        TaskBody(),
-      ],
-    );
+    AppBloc appBloc = context.read<AppBloc>();
+
+    return StreamBuilder<bool>(
+        stream: appBloc.isPro,
+        builder: (context, snapshot) {
+          bool isPro = snapshot.data ?? true;
+
+          return Stack(
+            children: [
+              const Column(
+                children: [
+                  TaskAppbar(),
+                  TaskBody(),
+                ],
+              ),
+              if (!isPro) const SubscribePopup(),
+            ],
+          );
+        });
   }
 }
 
@@ -41,25 +54,18 @@ class TaskBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     TaskBloc taskBloc = context.read<TaskBloc>();
-    AppBloc appBloc = context.read<AppBloc>();
 
     return StreamBuilder<List>(
-      stream: Rx.combineLatestList([taskBloc.tabIndex, appBloc.isPro]),
+      stream: Rx.combineLatestList([taskBloc.tabIndex]),
       builder: (context, snapshot) {
         int tabIndex = snapshot.data?[0] ?? 0;
-        bool isPro = snapshot.data?[1] ?? true;
 
         if (tabIndex == 0) {
-          return Expanded(
-            child: Stack(
+          return const Expanded(
+            child: Column(
               children: [
-                const Column(
-                  children: [
-                    DailyDates(),
-                    DailyTaskList(),
-                  ],
-                ),
-                if (!isPro) const SubscribePopup(),
+                DailyDates(),
+                DailyTaskList(),
               ],
             ),
           );
@@ -433,14 +439,15 @@ class AllTaskList extends StatelessWidget {
     return Expanded(
       child: Container(
         color: htGreys(context).grey010,
-        child: StreamBuilder<List<Task>>(
-            stream: appBloc.tasks,
+        child: StreamBuilder<List>(
+            stream: Rx.combineLatestList([appBloc.tasks, appBloc.isPro]),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return const Center(child: CircularProgressIndicator());
               }
 
-              List<Task> tasks = snapshot.data ?? [];
+              List<Task> tasks = snapshot.data?[0] ?? [];
+              bool isPro = snapshot.data?[1] ?? true;
 
               if (tasks.isEmpty) {
                 return const EmptyTaskList();
@@ -461,7 +468,8 @@ class AllTaskList extends StatelessWidget {
 
               return SingleChildScrollView(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 20)
+                        .copyWith(bottom: isPro ? 0 : 142),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -504,13 +512,18 @@ class DailyTaskList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     TaskBloc dailyBloc = context.read<TaskBloc>();
+    AppBloc appBloc = context.read<AppBloc>();
 
     return Expanded(
       child: Container(
         color: htGreys(context).grey010,
         child: StreamBuilder<List>(
-            stream: Rx.combineLatestList(
-                [dailyBloc.currTasks, dailyBloc.dateIndex, dailyBloc.dates]),
+            stream: Rx.combineLatestList([
+              dailyBloc.currTasks,
+              dailyBloc.dateIndex,
+              dailyBloc.dates,
+              appBloc.isPro
+            ]),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return const Center(child: CircularProgressIndicator());
@@ -519,6 +532,7 @@ class DailyTaskList extends StatelessWidget {
               List<Task> currTasks = snapshot.data?[0] ?? [];
               int dateIndex = snapshot.data?[1] ?? 0;
               List<DateTime> dates = snapshot.data?[2] ?? dailyBloc.getDates();
+              bool isPro = snapshot.data?[3] ?? true;
 
               DateTime currDate = dates[dateIndex];
               List<Task> doneTasks = currTasks
@@ -531,7 +545,8 @@ class DailyTaskList extends StatelessWidget {
 
               return SingleChildScrollView(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 20)
+                        .copyWith(bottom: isPro ? 0 : 142),
                 child: Column(
                   children: [
                     Padding(
@@ -554,23 +569,24 @@ class DailyTaskList extends StatelessWidget {
                     ),
                     HTSpacers.height8,
                     ListView.separated(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemBuilder: (context, index) {
-                          Task task = currTasks[index];
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        Task task = currTasks[index];
 
-                          DateTime today = DateTime.now().getDate();
+                        DateTime today = DateTime.now().getDate();
 
-                          return TaskBox(
-                            task: task,
-                            disabled: !isSameDay(today, currDate) &&
-                                today.isBefore(currDate.getDate()),
-                          );
-                        },
-                        separatorBuilder: (context, index) {
-                          return HTSpacers.height8;
-                        },
-                        itemCount: currTasks.length)
+                        return TaskBox(
+                          task: task,
+                          disabled: !isSameDay(today, currDate) &&
+                              today.isBefore(currDate.getDate()),
+                        );
+                      },
+                      separatorBuilder: (context, index) {
+                        return HTSpacers.height8;
+                      },
+                      itemCount: currTasks.length,
+                    )
                   ],
                 ),
               );
