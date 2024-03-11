@@ -136,11 +136,7 @@ class IAPService {
   }
 
   bool isPro() {
-    return _purchases.value
-        .where((element) =>
-            element.productID == kMonthlySubscriptionId ||
-            element.productID == kYearlySubscriptionId)
-        .isNotEmpty;
+    return _purchases.value.isNotEmpty;
   }
 
   Future<bool> verifyPurchase(PurchaseDetails purchaseDetails) {

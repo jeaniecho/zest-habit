@@ -1,8 +1,11 @@
 // ignore_for_file: depend_on_referenced_packages
 
+import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:habit_app/models/task_model.dart';
+import 'package:habit_app/widgets/ht_dialog.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
@@ -27,15 +30,29 @@ class HTNotification {
     await plugin.initialize(initSettings);
   }
 
-  static requestNotificationPermission() {
-    plugin
-        .resolvePlatformSpecificImplementation<
-            IOSFlutterLocalNotificationsPlugin>()
-        ?.requestPermissions(
-          alert: true,
-          badge: true,
-          sound: true,
-        );
+  static requestNotificationPermission(BuildContext context) {
+    Permission.notification.status.then((status) async {
+      if (status.isPermanentlyDenied) {
+        HTDialog.showConfirmDialog(context,
+            title: 'Allow Notifications',
+            content:
+                'To receive task alarms, please enable Notifications in Settings.',
+            action: () async {
+          await openAppSettings();
+        }, buttonText: 'Settings', isDestructive: false);
+      } else if (status.isDenied) {
+        await Permission.notification.request();
+      } else {
+        plugin
+            .resolvePlatformSpecificImplementation<
+                IOSFlutterLocalNotificationsPlugin>()
+            ?.requestPermissions(
+              alert: true,
+              badge: true,
+              sound: true,
+            );
+      }
+    });
   }
 
   static Future<void> showNotification() async {

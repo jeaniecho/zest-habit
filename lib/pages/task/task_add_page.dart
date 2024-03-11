@@ -115,7 +115,7 @@ class TaskAddAlarm extends StatelessWidget {
           return GestureDetector(
             onTap: () {
               if (isPro) {
-                HTNotification.requestNotificationPermission();
+                HTNotification.requestNotificationPermission(context);
                 // HTNotification.showNotification();
 
                 DateTime initialDateTime =

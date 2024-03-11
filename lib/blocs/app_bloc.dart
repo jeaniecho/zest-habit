@@ -38,10 +38,9 @@ class AppBloc {
   late final BehaviorSubject<bool> _isPro;
   // Stream<bool> get isPro => purchases.map((purchases) => purchases.isNotEmpty);
   Stream<bool> get isPro => _isPro.stream;
-  Function(bool) get setIsPro => _isPro.add;
 
   AppBloc({required this.isar, required this.iapService}) {
-    _isPro = BehaviorSubject.seeded(iapService.purchasesValue.isNotEmpty);
+    _isPro = BehaviorSubject.seeded(true);
 
     getSettings();
     getTasks().then((value) {
@@ -51,6 +50,16 @@ class AppBloc {
         HTNotification.cancelAllNotifications();
       }
     });
+  }
+
+  setIsPro(bool value) {
+    _isPro.add(value);
+
+    if (value) {
+      setupNotifications();
+    } else {
+      HTNotification.cancelAllNotifications();
+    }
   }
 
   Future<Settings> getSettings() async {
