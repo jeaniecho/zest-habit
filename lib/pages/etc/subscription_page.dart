@@ -216,9 +216,9 @@ class SubscriptionProductBox extends StatelessWidget {
         (details.rawPrice / (index == 0 ? 12 : 4)).toStringAsFixed(2);
     String dividedIn = (index == 0 ? 'month' : 'week');
 
-    double originalPrice = index == 0 ? 150 : 12;
+    double originalPrice = index == 0 ? 95.88 : 7.99;
     int discount =
-        (((originalPrice - details.rawPrice) / originalPrice) * 100).round();
+        (((originalPrice - details.rawPrice) / originalPrice) * 100).floor();
 
     String currency = details.price.split(RegExp(r'\d+')).first;
 

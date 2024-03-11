@@ -21,12 +21,12 @@ class IAPService {
   static List<String> kProductIds = [
     kConsumableId,
     kUpgradeId,
-    kMonthlySubscriptionId,
-    kYearlySubscriptionId,
+    kEarlybirdMonthlyId,
+    kEarlybirdYearlyId,
   ];
   static List<String> kSubscriptionIds = [
-    kYearlySubscriptionId,
-    kMonthlySubscriptionId,
+    kEarlybirdMonthlyId,
+    kEarlybirdYearlyId,
   ];
 
   final InAppPurchase _inAppPurchase = InAppPurchase.instance;
