@@ -26,18 +26,59 @@ class TermPage extends StatelessWidget {
             ),
             HTSpacers.height8,
             HTText(
-              '''What is Lorem Ipsum?
-Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
-Why do we use it?
-It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
+              '''
+Welcome to Zest Habit! These Terms of Use ("Terms") govern your access to and use of the Zest Habit application ("App"). By accessing or using the App, you agree to be bound by these Terms.
 
-Where does it come from?
-Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.
-The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from "de Finibus Bonorum et Malorum" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.
-Where can I get some?
-There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc.''',
+1. Acceptance of Terms
+By downloading, installing, accessing, or using the App, you agree to be bound by these Terms. If you do not agree to these Terms, you may not access or use the App.
+
+2. Use of the App
+2.1. Zest Habit is a habit tracking application designed to help users track their tasks and habits. Users can add tasks, check them off as completed, use timers while performing tasks, and set notifications.
+
+2.2. The App stores task data locally on the user's device. Zest does not collect or store any personal information of users.
+
+2.3. The free version of the App ("Free Version") includes limited functionality. Users of the Free Version are restricted to:
+- Adding up to 3 tasks.
+- Setting the timer time to a fixed duration of 25 minutes.
+- Inability to set notifications for tasks.
+
+2.4. Zest Pro is a premium version of the App ("Zest Pro") that offers additional features and functionalities. Zest Pro users have access to:
+- Unlimited task additions.
+- Customizable timer durations.
+- Ability to schedule notifications for tasks.
+
+3. Zest Pro Subscription
+3.1. Users may opt to subscribe to Zest Pro by purchasing a subscription through the App.
+
+3.2. Subscription fees may apply and are subject to change at Zest's discretion.
+
+3.3. Payment for Zest Pro subscriptions will be charged to the user's iTunes or Google Play account at confirmation of purchase.
+
+3.4. Subscriptions automatically renew unless auto-renew is turned off at least 24 hours before the end of the current subscription period.
+
+3.5. Users can manage their subscriptions and turn off auto-renewal by going to their account settings after purchase.
+
+4. Intellectual Property
+4.1. The App, including all content, features, and functionality, is owned by Zest and is protected by copyright, trademark, and other intellectual property laws.
+
+4.2. Users may not modify, reproduce, distribute, or create derivative works based on the App without Zest's prior written consent.
+
+5. Limitation of Liability
+5.1. Zest shall not be liable for any direct, indirect, incidental, special, consequential, or punitive damages arising out of or in connection with the use or inability to use the App.
+
+5.2. Zest does not warrant that the App will be error-free or uninterrupted.
+
+6. Modification of Terms
+Zest reserves the right to modify or amend these Terms at any time. Users will be notified of any changes to these Terms within the App. Continued use of the App after such modifications constitutes acceptance of the revised Terms.
+
+7. Contact Us
+If you have any questions or concerns about these Terms, please contact us at yeajeanie@gmail.com.
+
+By accessing or using the App, you acknowledge that you have read, understood, and agree to be bound by these Terms of Use.
+''',
               typoToken: HTTypoToken.bodySmall,
               color: htGreys(context).grey080,
+              maxLines: 1000,
             )
           ],
         ),

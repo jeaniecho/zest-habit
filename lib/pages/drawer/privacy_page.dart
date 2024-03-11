@@ -26,18 +26,38 @@ class PrivacyPage extends StatelessWidget {
             ),
             HTSpacers.height8,
             HTText(
-              '''What is Lorem Ipsum?
-Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
-Why do we use it?
-It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
+              '''
+This Privacy Policy governs the manner in which Zest Technologies ("Zest," "we," "us," or "our") collects, uses, maintains, and discloses information collected from users ("User" or "you") of the Zest Habit application ("App"). This Privacy Policy applies to the App and all products and services offered by Zest.
 
-Where does it come from?
-Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.
-The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from "de Finibus Bonorum et Malorum" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.
-Where can I get some?
-There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc.''',
+1. Information Collection and Use
+
+1.1. Personal Information: Zest does not collect or store any personal information from users of the App. The App only stores task data locally on the user's device.
+
+1.2. Non-Personal Information: The App may collect non-personal information such as device information, usage patterns, and technical data for the purpose of improving the App's performance and user experience.
+
+2. Information Sharing
+
+2.1. Third-Party Services: The App may utilize third-party services, such as analytics tools, to collect non-personal information for the purposes stated above. These third-party services may have their own privacy policies governing the collection and use of information.
+
+2.2. Legal Compliance: Zest may disclose user information if required to do so by law or in response to valid legal requests, such as court orders or subpoenas.
+
+3. Data Security
+
+3.1. Zest takes reasonable measures to protect user data stored within the App. However, no method of transmission over the internet or electronic storage is 100% secure, and therefore, we cannot guarantee absolute security of user data.
+
+4. Changes to this Privacy Policy
+
+4.1. Zest reserves the right to update or revise this Privacy Policy at any time. Any changes to this Privacy Policy will be communicated within the App. Your continued use of the App after such changes constitutes acceptance of the revised Privacy Policy.
+
+5. Contact Us
+
+If you have any questions or concerns about this Privacy Policy or the privacy practices of the App, please contact us at yeajeanie@gmail.com.
+
+By using the Zest Habit App, you acknowledge that you have read, understood, and agree to be bound by this Privacy Policy.
+''',
               typoToken: HTTypoToken.bodySmall,
               color: htGreys(context).grey080,
+              maxLines: 1000,
             )
           ],
         ),
