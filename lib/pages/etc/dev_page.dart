@@ -1,5 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:habit_app/blocs/app_bloc.dart';
 import 'package:habit_app/iap/iap_service.dart';
 import 'package:habit_app/styles/colors.dart';
 import 'package:habit_app/styles/tokens.dart';
@@ -33,6 +35,7 @@ class DevPage extends StatelessWidget {
             ViewNotiButton(),
             CancelNotiButton(),
             ViewIAPProducts(),
+            ProToggle(),
           ],
         ),
       ),
@@ -144,6 +147,41 @@ class CancelNotiButton extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class ProToggle extends StatelessWidget {
+  const ProToggle({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    AppBloc appBloc = context.read<AppBloc>();
+
+    return StreamBuilder<bool>(
+        stream: appBloc.isPro,
+        builder: (context, snapshot) {
+          bool isPro = snapshot.data ?? false;
+
+          return Padding(
+            padding: HTEdgeInsets.all24,
+            child: Row(
+              children: [
+                HTText(
+                  'Zest Pro',
+                  typoToken: HTTypoToken.headlineXSmall,
+                  color: htGreys(context).black,
+                  height: 1,
+                ),
+                const Spacer(),
+                CupertinoSwitch(
+                  value: isPro,
+                  onChanged: (value) => appBloc.setIsPro(value),
+                  activeColor: htGreys(context).black,
+                ),
+              ],
+            ),
+          );
+        });
   }
 }
 

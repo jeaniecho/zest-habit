@@ -34,9 +34,15 @@ class AppBloc {
   Task? get timerTaskValue => _timerTask.value;
 
   Stream<List> get purchases => iapService.purchases;
-  Stream<bool> get isPro => purchases.map((purchases) => purchases.isNotEmpty);
+
+  late final BehaviorSubject<bool> _isPro;
+  // Stream<bool> get isPro => purchases.map((purchases) => purchases.isNotEmpty);
+  Stream<bool> get isPro => _isPro.stream;
+  Function(bool) get setIsPro => _isPro.add;
 
   AppBloc({required this.isar, required this.iapService}) {
+    _isPro = BehaviorSubject.seeded(iapService.purchasesValue.isNotEmpty);
+
     getSettings();
     getTasks();
   }

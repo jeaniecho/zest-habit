@@ -44,6 +44,7 @@ class IAPService {
   final BehaviorSubject<List<PurchaseDetails>> _purchases =
       BehaviorSubject.seeded([]);
   Stream<List<PurchaseDetails>> get purchases => _purchases.stream;
+  List<PurchaseDetails> get purchasesValue => _purchases.value;
 
   final BehaviorSubject<List<String>> _consumables = BehaviorSubject.seeded([]);
   Stream<List<String>> get consumables => _consumables.stream;
