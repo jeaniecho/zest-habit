@@ -18,7 +18,6 @@ import 'package:habit_app/widgets/ht_text.dart';
 import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
 
-double timeStringWidth = 64;
 double timerStringHeight = 72;
 
 class TimerPage extends StatelessWidget {
@@ -382,45 +381,42 @@ class FixedTimerText extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  SizedBox(
-                      width: timeStringWidth,
+                  IntrinsicWidth(
                       child: HTText(
-                        timeList[0],
-                        typoToken: HTTypoToken.bodyHuge,
-                        color: htGreys(context).black,
-                        height: 1.25,
-                        textAlign: TextAlign.center,
-                      )),
+                    timeList[0],
+                    typoToken: HTTypoToken.bodyHuge,
+                    color: htGreys(context).black,
+                    height: 1.25,
+                    textAlign: TextAlign.center,
+                  )),
                   HTText(
                     ':',
                     typoToken: HTTypoToken.bodyHuge,
                     color: htGreys(context).black,
                     height: 1,
                   ),
-                  SizedBox(
-                      width: timeStringWidth,
+                  IntrinsicWidth(
                       child: HTText(
-                        timeList[1],
-                        typoToken: HTTypoToken.bodyHuge,
-                        color: htGreys(context).black,
-                        height: 1.25,
-                        textAlign: TextAlign.center,
-                      )),
+                    timeList[1],
+                    typoToken: HTTypoToken.bodyHuge,
+                    color: htGreys(context).black,
+                    height: 1.25,
+                    textAlign: TextAlign.center,
+                  )),
                   HTText(
                     ':',
                     typoToken: HTTypoToken.bodyHuge,
                     color: htGreys(context).black,
                     height: 1,
                   ),
-                  SizedBox(
-                      width: timeStringWidth,
+                  IntrinsicWidth(
                       child: HTText(
-                        timeList[2],
-                        typoToken: HTTypoToken.bodyHuge,
-                        color: htGreys(context).black,
-                        height: 1.25,
-                        textAlign: TextAlign.center,
-                      )),
+                    timeList[2],
+                    typoToken: HTTypoToken.bodyHuge,
+                    color: htGreys(context).black,
+                    height: 1.25,
+                    textAlign: TextAlign.center,
+                  )),
                 ],
               ),
             ),
@@ -456,45 +452,42 @@ class NoneProTimerText extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            SizedBox(
-                width: timeStringWidth,
+            IntrinsicWidth(
                 child: HTText(
-                  timerBloc.hourValue,
-                  typoToken: HTTypoToken.bodyHuge,
-                  color: htGreys(context).black,
-                  height: 1.25,
-                  textAlign: TextAlign.center,
-                )),
+              timerBloc.hourValue,
+              typoToken: HTTypoToken.bodyHuge,
+              color: htGreys(context).black,
+              height: 1.25,
+              textAlign: TextAlign.center,
+            )),
             HTText(
               ':',
               typoToken: HTTypoToken.bodyHuge,
               color: htGreys(context).black,
               height: 1,
             ),
-            SizedBox(
-                width: timeStringWidth,
+            IntrinsicWidth(
                 child: HTText(
-                  timerBloc.minuteValue,
-                  typoToken: HTTypoToken.bodyHuge,
-                  color: htGreys(context).black,
-                  height: 1.25,
-                  textAlign: TextAlign.center,
-                )),
+              timerBloc.minuteValue,
+              typoToken: HTTypoToken.bodyHuge,
+              color: htGreys(context).black,
+              height: 1.25,
+              textAlign: TextAlign.center,
+            )),
             HTText(
               ':',
               typoToken: HTTypoToken.bodyHuge,
               color: htGreys(context).black,
               height: 1,
             ),
-            SizedBox(
-                width: timeStringWidth,
+            IntrinsicWidth(
                 child: HTText(
-                  timerBloc.secondValue,
-                  typoToken: HTTypoToken.bodyHuge,
-                  color: htGreys(context).black,
-                  height: 1.25,
-                  textAlign: TextAlign.center,
-                )),
+              timerBloc.secondValue,
+              typoToken: HTTypoToken.bodyHuge,
+              color: htGreys(context).black,
+              height: 1.25,
+              textAlign: TextAlign.center,
+            )),
           ],
         ),
       ),
@@ -561,132 +554,129 @@ class EditableTimerText extends StatelessWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    SizedBox(
-                        width: timeStringWidth,
+                    IntrinsicWidth(
                         child: TextField(
-                          controller: hourController,
-                          onTap: () {
-                            hourController.selection = TextSelection(
-                                baseOffset: 0,
-                                extentOffset: hourController.text.length);
-                          },
-                          onTapOutside: (event) {
-                            hourController.text = timerBloc.hourValue;
-                            timerBloc.setHasStringError(false);
-                            FocusScope.of(context).unfocus();
-                          },
-                          onChanged: (value) {
-                            String hourString = value;
+                      controller: hourController,
+                      onTap: () {
+                        hourController.selection = TextSelection(
+                            baseOffset: 0,
+                            extentOffset: hourController.text.length);
+                      },
+                      onTapOutside: (event) {
+                        hourController.text = timerBloc.hourValue;
+                        timerBloc.setHasStringError(false);
+                        FocusScope.of(context).unfocus();
+                      },
+                      onChanged: (value) {
+                        String hourString = value;
 
-                            if (value.length > 2) {
-                              timerBloc.showTimerExceed();
-                              timerBloc.setHasStringError(true);
+                        if (value.length > 2) {
+                          timerBloc.showTimerExceed();
+                          timerBloc.setHasStringError(true);
 
-                              hourString = value.substring(0, 2);
-                              hourController.text = hourString;
-                            } else {
-                              timerBloc.setHasStringError(false);
-                            }
+                          hourString = value.substring(0, 2);
+                          hourController.text = hourString;
+                        } else {
+                          timerBloc.setHasStringError(false);
+                        }
 
-                            String checked = timerBloc.timeStringCheck(
-                                hourString, TimeType.hour);
-                            timerBloc.setHour(checked);
-                          },
-                          keyboardType: TextInputType.number,
-                          maxLength: 3,
-                          style: timerStyle,
-                          textAlign: TextAlign.center,
-                          decoration: timerDecoration,
-                          cursorHeight: 40,
-                        )),
+                        String checked = timerBloc.timeStringCheck(
+                            hourString, TimeType.hour);
+                        timerBloc.setHour(checked);
+                      },
+                      keyboardType: TextInputType.number,
+                      maxLength: 3,
+                      style: timerStyle,
+                      textAlign: TextAlign.center,
+                      decoration: timerDecoration,
+                      cursorHeight: 40,
+                    )),
                     HTText(
                       ':',
                       typoToken: HTTypoToken.bodyHuge,
                       color: htGreys(context).black,
                       height: 1,
                     ),
-                    SizedBox(
-                        width: timeStringWidth,
+                    IntrinsicWidth(
                         child: TextField(
-                          controller: minuteController,
-                          onTap: () {
-                            minuteController.selection = TextSelection(
-                                baseOffset: 0,
-                                extentOffset: minuteController.text.length);
-                          },
-                          onTapOutside: (event) {
-                            minuteController.text = timerBloc.minuteValue;
-                            timerBloc.setHasStringError(false);
-                            FocusScope.of(context).unfocus();
-                          },
-                          onChanged: (value) {
-                            String minuteString = value;
+                      controller: minuteController,
+                      onTap: () {
+                        minuteController.selection = TextSelection(
+                            baseOffset: 0,
+                            extentOffset: minuteController.text.length);
+                      },
+                      onTapOutside: (event) {
+                        minuteController.text = timerBloc.minuteValue;
+                        timerBloc.setHasStringError(false);
+                        FocusScope.of(context).unfocus();
+                      },
+                      onChanged: (value) {
+                        String minuteString = value;
 
-                            if (value.length > 2) {
-                              timerBloc.showTimerExceed();
-                              timerBloc.setHasStringError(true);
+                        if (value.length > 2) {
+                          timerBloc.showTimerExceed();
+                          timerBloc.setHasStringError(true);
 
-                              minuteString = value.substring(0, 2);
-                              minuteController.text = minuteString;
-                            } else {
-                              timerBloc.setHasStringError(false);
-                            }
+                          minuteString = value.substring(0, 2);
+                          minuteController.text = minuteString;
+                        } else {
+                          timerBloc.setHasStringError(false);
+                        }
 
-                            String checked = timerBloc.timeStringCheck(
-                                minuteString, TimeType.minute);
-                            timerBloc.setMinute(checked);
-                          },
-                          keyboardType: TextInputType.number,
-                          maxLength: 3,
-                          textAlign: TextAlign.center,
-                          style: timerStyle,
-                          decoration: timerDecoration,
-                          cursorHeight: 40,
-                        )),
+                        String checked = timerBloc.timeStringCheck(
+                            minuteString, TimeType.minute);
+                        timerBloc.setMinute(checked);
+                      },
+                      keyboardType: TextInputType.number,
+                      maxLength: 3,
+                      textAlign: TextAlign.center,
+                      style: timerStyle,
+                      decoration: timerDecoration,
+                      cursorHeight: 40,
+                    )),
                     HTText(
                       ':',
                       typoToken: HTTypoToken.bodyHuge,
                       color: htGreys(context).black,
                       height: 1,
                     ),
-                    SizedBox(
-                        width: timeStringWidth,
+                    IntrinsicWidth(
                         child: TextField(
-                          controller: secondController,
-                          onTap: () {
-                            secondController.selection = TextSelection(
-                                baseOffset: 0,
-                                extentOffset: secondController.text.length);
-                          },
-                          onTapOutside: (event) {
-                            secondController.text = timerBloc.secondValue;
-                            timerBloc.setHasStringError(false);
-                            FocusScope.of(context).unfocus();
-                          },
-                          onChanged: (value) {
-                            String secondString = value;
+                      controller: secondController,
+                      onTap: () {
+                        secondController.selection = TextSelection(
+                            baseOffset: 0,
+                            extentOffset: secondController.text.length);
+                      },
+                      onTapOutside: (event) {
+                        secondController.text = timerBloc.secondValue;
+                        timerBloc.setHasStringError(false);
+                        FocusScope.of(context).unfocus();
+                      },
+                      onChanged: (value) {
+                        String secondString = value;
 
-                            if (value.length > 2) {
-                              timerBloc.showTimerExceed();
-                              timerBloc.setHasStringError(true);
+                        if (value.length > 2) {
+                          timerBloc.showTimerExceed();
+                          timerBloc.setHasStringError(true);
 
-                              secondString = value.substring(0, 2);
-                              secondController.text = secondString;
-                            } else {
-                              timerBloc.setHasStringError(false);
-                            }
+                          secondString = value.substring(0, 2);
+                          secondController.text = secondString;
+                        } else {
+                          timerBloc.setHasStringError(false);
+                        }
 
-                            String checked = timerBloc.timeStringCheck(
-                                secondString, TimeType.second);
-                            timerBloc.setSecond(checked);
-                          },
-                          keyboardType: TextInputType.number,
-                          maxLength: 3,
-                          style: timerStyle,
-                          textAlign: TextAlign.center,
-                          decoration: timerDecoration,
-                          cursorHeight: 40,
-                        )),
+                        String checked = timerBloc.timeStringCheck(
+                            secondString, TimeType.second);
+                        timerBloc.setSecond(checked);
+                      },
+                      keyboardType: TextInputType.number,
+                      maxLength: 3,
+                      style: timerStyle,
+                      textAlign: TextAlign.center,
+                      decoration: timerDecoration,
+                      cursorHeight: 40,
+                    )),
                   ],
                 ),
               ),
