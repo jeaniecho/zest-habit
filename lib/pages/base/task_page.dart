@@ -469,7 +469,7 @@ class AllTaskList extends StatelessWidget {
               return SingleChildScrollView(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 24, vertical: 20)
-                        .copyWith(bottom: isPro ? 0 : 142),
+                        .copyWith(bottom: isPro ? 20 : 142),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -546,7 +546,7 @@ class DailyTaskList extends StatelessWidget {
               return SingleChildScrollView(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 24, vertical: 20)
-                        .copyWith(bottom: isPro ? 0 : 142),
+                        .copyWith(bottom: isPro ? 20 : 142),
                 child: Column(
                   children: [
                     Padding(
