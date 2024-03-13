@@ -74,6 +74,10 @@ class HTNotification {
   }
 
   static Future<void> scheduleNotification(Task task) async {
+    if (task.alarmTime == null) {
+      return;
+    }
+
     tz.initializeTimeZones();
     tz.setLocalLocation(
         tz.getLocation(await FlutterTimezone.getLocalTimezone()));

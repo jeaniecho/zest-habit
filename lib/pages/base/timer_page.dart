@@ -511,6 +511,8 @@ class EditableTimerText extends StatelessWidget {
       focusedBorder: InputBorder.none,
       fillColor: HTColors.clear,
       counterText: '',
+      isCollapsed: true,
+      isDense: true,
     );
 
     TextEditingController hourController =

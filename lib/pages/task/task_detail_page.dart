@@ -755,7 +755,8 @@ class TaskMonthlyCalendar extends StatelessWidget {
                       bool repeatToday =
                           repeatAt.contains(currWeekday + firstDayOfWeek);
 
-                      int dateInCalendar = index - fillDays + firstDayOfWeek;
+                      int dateInCalendar =
+                          index + 1 - fillDays + firstDayOfWeek;
 
                       bool inSameMonth = htIsSameMonth(currMonth, now);
 
