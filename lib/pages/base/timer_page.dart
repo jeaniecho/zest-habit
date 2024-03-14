@@ -815,33 +815,33 @@ class TimerTaskItem extends StatelessWidget {
                     child: Icon(
                       Icons.emoji_emotions_rounded,
                       color: htGreys(context).grey030,
-                      size: 24,
+                      size: 20,
                     ),
                   )
                 : HTText(
                     task.emoji!,
-                    typoToken: HTTypoToken.headlineSmall,
+                    typoToken: HTTypoToken.subtitleXLarge,
                     color: htGreys(context).black,
                     height: 1.25,
                   ),
             HTText(
               task.title,
-              typoToken: HTTypoToken.headlineSmall,
+              typoToken: HTTypoToken.headlineXSmall,
               color: htGreys(context).black,
             ),
             Padding(
-              padding: HTEdgeInsets.top4,
+              padding: HTEdgeInsets.top2,
               child: Row(
                 children: [
                   if (task.until != null)
                     HTText(
                       '${htUntilToText(task.until)} ㆍ ',
-                      typoToken: HTTypoToken.captionSmall,
+                      typoToken: HTTypoToken.captionXSmall,
                       color: htGreys(context).grey040,
                     ),
                   HTText(
                     htRepeatAtToText(task.repeatAt),
-                    typoToken: HTTypoToken.captionSmall,
+                    typoToken: HTTypoToken.captionXSmall,
                     color: htGreys(context).grey040,
                   ),
                 ],
