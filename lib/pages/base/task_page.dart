@@ -179,13 +179,13 @@ class DailyDates extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TaskBloc dailyBloc = context.read<TaskBloc>();
+    TaskBloc taskBloc = context.read<TaskBloc>();
 
     return StreamBuilder<List>(
-        stream: Rx.combineLatestList([dailyBloc.dateIndex, dailyBloc.dates]),
+        stream: Rx.combineLatestList([taskBloc.dateIndex, taskBloc.dates]),
         builder: (context, snapshot) {
           int dateIndex = snapshot.data?[0] ?? 0;
-          List<DateTime> dates = snapshot.data?[1] ?? dailyBloc.getDates();
+          List<DateTime> dates = snapshot.data?[1] ?? taskBloc.getDates();
 
           DateTime today = DateTime.now().getDate();
 
@@ -205,13 +205,18 @@ class DailyDates extends StatelessWidget {
             child: Stack(
               children: [
                 ListView.separated(
-                    controller: dailyBloc.dateScrollController,
+                    controller: taskBloc.dateScrollController,
                     scrollDirection: Axis.horizontal,
                     padding: HTEdgeInsets.horizontal16,
                     shrinkWrap: true,
                     itemBuilder: (context, index) {
                       DateTime date = dates[index];
                       bool isSelected = index == dateIndex;
+
+                      double donePercentage = 0;
+                      if (today.isAfter(date)) {
+                        donePercentage = taskBloc.getDonePercentage(date);
+                      }
 
                       return Row(
                         children: [
@@ -242,7 +247,7 @@ class DailyDates extends StatelessWidget {
                             ),
                           GestureDetector(
                             onTap: () {
-                              dailyBloc.setDateIndex(index);
+                              taskBloc.setDateIndex(index);
                             },
                             child: Stack(
                               children: [
@@ -274,15 +279,30 @@ class DailyDates extends StatelessWidget {
                                     ],
                                   ),
                                 ),
-                                if (isSameDay(today, date) ||
-                                    today.isAfter(date))
-                                  SizedBox(
-                                    width: dateSize,
-                                    height: dateSize,
-                                    child: CircularProgressIndicator(
-                                      value: 0.65,
-                                      color: htGreys(context).grey020,
-                                      strokeWidth: 1,
+                                SizedBox(
+                                  width: dateSize,
+                                  height: dateSize,
+                                  child: CircularProgressIndicator(
+                                    value: donePercentage,
+                                    color: donePercentage == 1
+                                        ? htGreys(context).grey050
+                                        : htGreys(context).grey030,
+                                    strokeWidth: 1,
+                                  ),
+                                ),
+                                if (isSameDay(today, date))
+                                  Positioned.fill(
+                                    bottom: 5,
+                                    child: Align(
+                                      alignment: Alignment.bottomCenter,
+                                      child: Container(
+                                        width: 4,
+                                        height: 4,
+                                        decoration: const BoxDecoration(
+                                          color: HTColors.red,
+                                          shape: BoxShape.circle,
+                                        ),
+                                      ),
                                     ),
                                   ),
                               ],
@@ -296,7 +316,7 @@ class DailyDates extends StatelessWidget {
                     },
                     itemCount: dates.length),
                 StreamBuilder<int>(
-                    stream: dailyBloc.notToday,
+                    stream: taskBloc.notToday,
                     builder: (context, snapshot) {
                       int notToday = snapshot.data ?? 0;
 
@@ -311,7 +331,7 @@ class DailyDates extends StatelessWidget {
                           color: htGreys(context).white,
                           child: GestureDetector(
                             onTap: () {
-                              dailyBloc.scrollToToday();
+                              taskBloc.scrollToToday();
                             },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -339,7 +359,7 @@ class DailyDates extends StatelessWidget {
                       );
                     }),
                 StreamBuilder<int>(
-                    stream: dailyBloc.notToday,
+                    stream: taskBloc.notToday,
                     builder: (context, snapshot) {
                       int notToday = snapshot.data ?? 0;
 
@@ -354,7 +374,7 @@ class DailyDates extends StatelessWidget {
                           color: htGreys(context).white,
                           child: GestureDetector(
                             onTap: () {
-                              dailyBloc.scrollToToday();
+                              taskBloc.scrollToToday();
                             },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,

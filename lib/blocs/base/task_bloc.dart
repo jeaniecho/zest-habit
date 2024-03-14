@@ -5,7 +5,7 @@ import 'package:habit_app/utils/disposable.dart';
 import 'package:habit_app/utils/functions.dart';
 import 'package:rxdart/rxdart.dart';
 
-const int prevDates = 30;
+const int prevDates = 15;
 const double dateWidth = 52 + 12;
 
 class TaskBloc extends Disposable {
@@ -71,7 +71,7 @@ class TaskBloc extends Disposable {
     DateTime lastMonth = today.subtract(const Duration(days: prevDates));
 
     List<DateTime> items = List<DateTime>.generate(
-        60,
+        prevDates * 2,
         (i) => DateTime.utc(
               lastMonth.year,
               lastMonth.month,
@@ -113,5 +113,23 @@ class TaskBloc extends Disposable {
         duration: const Duration(milliseconds: 350),
         curve: Curves.ease);
     setDateIndex(prevDates);
+  }
+
+  double getDonePercentage(DateTime date) {
+    List<Task> tasks = appBloc.tasksValue;
+
+    List<Task> currTasks = tasks.where((element) {
+      return (!element.from.getDate().isAfter(date)) &&
+          (element.until == null ||
+              (!element.until!.getDate().isBefore(date))) &&
+          (((element.repeatAt == null || element.repeatAt!.isEmpty) &&
+                  htIsSameDay(element.from, date)) ||
+              element.repeatAt!.contains(date.weekday));
+    }).toList();
+
+    int done =
+        currTasks.where((element) => htIsDone(date, element.doneAt)).length;
+
+    return done / currTasks.length;
   }
 }
