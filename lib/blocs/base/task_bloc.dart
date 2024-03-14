@@ -127,6 +127,10 @@ class TaskBloc extends Disposable {
               element.repeatAt!.contains(date.weekday));
     }).toList();
 
+    if (currTasks.isEmpty) {
+      return 0;
+    }
+
     int done =
         currTasks.where((element) => htIsDone(date, element.doneAt)).length;
 
