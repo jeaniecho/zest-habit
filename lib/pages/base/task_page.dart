@@ -187,6 +187,8 @@ class DailyDates extends StatelessWidget {
           int dateIndex = snapshot.data?[0] ?? 0;
           List<DateTime> dates = snapshot.data?[1] ?? dailyBloc.getDates();
 
+          DateTime today = DateTime.now().getDate();
+
           double dateSize = 52;
           double totalHeight = dateSize + 16;
 
@@ -242,40 +244,48 @@ class DailyDates extends StatelessWidget {
                             onTap: () {
                               dailyBloc.setDateIndex(index);
                             },
-                            child: Container(
-                              width: dateSize,
-                              height: dateSize,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border:
-                                    htIsSameDay(DateTime.now().getDate(), date)
-                                        ? Border.all(
-                                            color: isSelected
-                                                ? htGreys(context).black
-                                                : htGreys(context).grey020)
-                                        : null,
-                                color: isSelected
-                                    ? htGreys(context).black
-                                    : htGreys(context).white,
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  HTText(
-                                    htWeekdayToText(date.weekday),
-                                    typoToken: HTTypoToken.captionXXSmall,
-                                    color: htGreys(context).grey030,
-                                  ),
-                                  HTSpacers.height1,
-                                  HTText(
-                                    date.day.toString(),
-                                    typoToken: HTTypoToken.subtitleMedium,
+                            child: Stack(
+                              children: [
+                                Container(
+                                  width: dateSize,
+                                  height: dateSize,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
                                     color: isSelected
-                                        ? htGreys(context).white
-                                        : htGreys(context).black,
+                                        ? htGreys(context).black
+                                        : htGreys(context).white,
                                   ),
-                                ],
-                              ),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      HTText(
+                                        htWeekdayToText(date.weekday),
+                                        typoToken: HTTypoToken.captionXXSmall,
+                                        color: htGreys(context).grey030,
+                                      ),
+                                      HTSpacers.height1,
+                                      HTText(
+                                        date.day.toString(),
+                                        typoToken: HTTypoToken.subtitleMedium,
+                                        color: isSelected
+                                            ? htGreys(context).white
+                                            : htGreys(context).black,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                if (isSameDay(today, date) ||
+                                    today.isAfter(date))
+                                  SizedBox(
+                                    width: dateSize,
+                                    height: dateSize,
+                                    child: CircularProgressIndicator(
+                                      value: 0.65,
+                                      color: htGreys(context).grey020,
+                                      strokeWidth: 1,
+                                    ),
+                                  ),
+                              ],
                             ),
                           ),
                         ],
@@ -511,7 +521,7 @@ class DailyTaskList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TaskBloc dailyBloc = context.read<TaskBloc>();
+    TaskBloc taskBloc = context.read<TaskBloc>();
     AppBloc appBloc = context.read<AppBloc>();
 
     return Expanded(
@@ -519,9 +529,9 @@ class DailyTaskList extends StatelessWidget {
         color: htGreys(context).grey010,
         child: StreamBuilder<List>(
             stream: Rx.combineLatestList([
-              dailyBloc.currTasks,
-              dailyBloc.dateIndex,
-              dailyBloc.dates,
+              taskBloc.currTasks,
+              taskBloc.dateIndex,
+              taskBloc.dates,
               appBloc.isPro
             ]),
             builder: (context, snapshot) {
@@ -531,7 +541,7 @@ class DailyTaskList extends StatelessWidget {
 
               List<Task> currTasks = snapshot.data?[0] ?? [];
               int dateIndex = snapshot.data?[1] ?? 0;
-              List<DateTime> dates = snapshot.data?[2] ?? dailyBloc.getDates();
+              List<DateTime> dates = snapshot.data?[2] ?? taskBloc.getDates();
               bool isPro = snapshot.data?[3] ?? true;
 
               DateTime currDate = dates[dateIndex];

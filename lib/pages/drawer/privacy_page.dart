@@ -27,7 +27,7 @@ class PrivacyPage extends StatelessWidget {
             HTSpacers.height8,
             HTText(
               '''
-This Privacy Policy governs the manner in which Zest Technologies ("Zest," "we," "us," or "our") collects, uses, maintains, and discloses information collected from users ("User" or "you") of the Zest Habit application ("App"). This Privacy Policy applies to the App and all products and services offered by Zest.
+This Privacy Policy governs the manner in which Zest ("Zest," "we," "us," or "our") collects, uses, maintains, and discloses information collected from users ("User" or "you") of the Zest Habit application ("App"). This Privacy Policy applies to the App and all products and services offered by Zest.
 
 1. Information Collection and Use
 
