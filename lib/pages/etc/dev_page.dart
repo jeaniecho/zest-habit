@@ -34,6 +34,7 @@ class DevPage extends StatelessWidget {
           children: [
             ViewNotiButton(),
             CancelNotiButton(),
+            ResetOnboarding(),
             ViewIAPProducts(),
             ProToggle(),
           ],
@@ -182,6 +183,38 @@ class ProToggle extends StatelessWidget {
             ),
           );
         });
+  }
+}
+
+class ResetOnboarding extends StatelessWidget {
+  const ResetOnboarding({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: HTEdgeInsets.horizontal24,
+      child: ElevatedButton(
+        onPressed: () {
+          HTDialog.showConfirmDialog(
+            context,
+            title: 'Reset Onboarding',
+            content:
+                'This will bring you back to onboarding page on next launch.',
+            action: () {
+              context.read<AppService>().updateOnboardingStatus(false);
+            },
+            buttonText: 'Proceed',
+            isDestructive: false,
+          );
+        },
+        child: HTText(
+          'Reset Onboarding',
+          typoToken: HTTypoToken.buttonTextMedium,
+          color: htGreys(context).white,
+          height: 1.25,
+        ),
+      ),
+    );
   }
 }
 
