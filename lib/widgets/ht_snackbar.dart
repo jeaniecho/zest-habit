@@ -80,16 +80,16 @@ class HTToastBar {
       ),
     );
 
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _toastBars.add(this);
-      overlayState.insert(info.entry);
+    // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    _toastBars.add(this);
+    overlayState.insert(info.entry);
 
-      if (checkSame(name, info.key) > 0) {
-        Future.delayed(const Duration(milliseconds: 100), () {
-          removeSame(name, info.key);
-        });
-      }
-    });
+    if (checkSame(name, info.key) > 0) {
+      Future.delayed(const Duration(milliseconds: 100), () {
+        removeSame(name, info.key);
+      });
+    }
+    // });
   }
 
   /// Remove all the snackbar in the context

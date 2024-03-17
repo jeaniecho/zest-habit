@@ -1,15 +1,19 @@
+import 'package:habit_app/blocs/app_service.dart';
 import 'package:habit_app/models/onboarding_task_model.dart';
+import 'package:habit_app/models/task_model.dart';
 import 'package:habit_app/router.dart';
 import 'package:habit_app/styles/colors.dart';
 import 'package:habit_app/styles/typos.dart';
 import 'package:habit_app/utils/disposable.dart';
+import 'package:habit_app/utils/enums.dart';
+import 'package:habit_app/utils/functions.dart';
 import 'package:habit_app/widgets/ht_snackbar.dart';
 import 'package:habit_app/widgets/ht_text.dart';
 import 'package:rxdart/rxdart.dart';
 
 final List<OnboardingTask> onboardingTasks = [
   // Popular
-  OnboardingTask(index: 0, emoji: '📕', title: 'Read Books'),
+  OnboardingTask(index: 0, emoji: '📕', title: 'Read Book'),
   OnboardingTask(index: 1, emoji: '️🏋️‍♀', title: 'Workout'),
   OnboardingTask(index: 2, emoji: '💧', title: 'Drink Water'),
   OnboardingTask(index: 3, emoji: '📓', title: 'Write Journal'),
@@ -51,10 +55,14 @@ final List<OnboardingTask> onboardingTasks = [
 ];
 
 class OnboardingTaskBloc extends Disposable {
+  final AppService appService;
+
   final BehaviorSubject<List<int>> _selectedTasks = BehaviorSubject.seeded([]);
   Stream<List<int>> get selectedTasks => _selectedTasks.stream;
 
-  OnboardingTaskBloc();
+  OnboardingTaskBloc({
+    required this.appService,
+  });
 
   @override
   void dispose() {
@@ -84,5 +92,26 @@ class OnboardingTaskBloc extends Disposable {
         color: htGreys(context).grey080,
       ),
     ).show(rootNavKey.currentContext!);
+  }
+
+  Future<void> addTasks() async {
+    List<OnboardingTask> tasks = _selectedTasks.value
+        .map((e) => onboardingTasks.firstWhere((element) => element.index == e))
+        .toList();
+
+    for (OnboardingTask task in tasks) {
+      await appService.addTask(
+        Task(
+          from: DateTime.now().getDate(),
+          emoji: task.emoji,
+          title: task.title,
+          repeatAt: RepeatType.everyday.days,
+          goal: '',
+          desc: '',
+        ),
+      );
+    }
+
+    return;
   }
 }

@@ -90,7 +90,7 @@ class OnboardingPage extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10.h)),
                   ),
                   onPressed: () {
-                    context.go(OnboardingTaskPage.routeName);
+                    context.pushReplacement(OnboardingTaskPage.routeName);
                   },
                   child: const HTText(
                     'Get Started',

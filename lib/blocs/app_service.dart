@@ -40,7 +40,7 @@ class AppService {
   Stream<bool> get isPro => _isPro.stream;
 
   AppService({required this.isar, required this.iapService}) {
-    _isPro = BehaviorSubject.seeded(true);
+    _isPro = BehaviorSubject.seeded(false);
 
     getSettings();
     getTasks().then((value) {
@@ -188,6 +188,17 @@ class AppService {
     Settings settings = _settings.value;
     settings =
         settings.copyWith(createdTaskCount: settings.createdTaskCount + 1);
+
+    await isar.writeTxn(() async {
+      await isar.settings.put(settings);
+    });
+
+    await getSettings();
+  }
+
+  Future updateOnboardingStatus(bool value) async {
+    Settings settings = _settings.value;
+    settings = settings.copyWith(completedOnboarding: value);
 
     await isar.writeTxn(() async {
       await isar.settings.put(settings);

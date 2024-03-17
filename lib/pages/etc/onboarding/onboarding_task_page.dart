@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:habit_app/blocs/app_service.dart';
 import 'package:habit_app/blocs/etc/onboarding/onboarding_task_bloc.dart';
 import 'package:habit_app/models/onboarding_task_model.dart';
 import 'package:habit_app/models/settings_model.dart';
+import 'package:habit_app/pages/base/task_page.dart';
 import 'package:habit_app/styles/colors.dart';
 import 'package:habit_app/styles/tokens.dart';
 import 'package:habit_app/styles/typos.dart';
@@ -33,49 +35,55 @@ class OnboardingTaskPage extends StatelessWidget {
             child: Scaffold(
               backgroundColor: htGreys(context).grey010,
               body: SafeArea(
-                bottom: false,
-                child: SingleChildScrollView(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      HTText(
-                        'What habit\nwould you like to start?',
-                        typoToken: HTTypoToken.headlineLarge,
-                        color: htGreys(context).black,
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: SingleChildScrollView(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 24, vertical: 32),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            HTText(
+                              'What habit\nwould you like to start?',
+                              typoToken: HTTypoToken.headlineLarge,
+                              color: htGreys(context).black,
+                            ),
+                            HTSpacers.height8,
+                            HTText(
+                              isPro
+                                  ? 'Please choose up to 10 habits'
+                                  : 'Please choose 1 or 2 habits',
+                              typoToken: HTTypoToken.buttonTextMedium,
+                              color: htGreys(context).grey050,
+                            ),
+                            HTSpacers.height32,
+                            OnboardingTaskCategoryList(
+                              title: 'Popular',
+                              taskList: onboardingTasks.sublist(0, 6),
+                            ),
+                            OnboardingTaskCategoryList(
+                              title: 'Health & Sports',
+                              taskList: onboardingTasks.sublist(6, 13),
+                            ),
+                            OnboardingTaskCategoryList(
+                              title: 'Work Management',
+                              taskList: onboardingTasks.sublist(13, 17),
+                            ),
+                            OnboardingTaskCategoryList(
+                              title: 'Language',
+                              taskList: onboardingTasks.sublist(17, 23),
+                            ),
+                            OnboardingTaskCategoryList(
+                              title: 'Better Life',
+                              taskList: onboardingTasks.sublist(23, 30),
+                            ),
+                          ],
+                        ),
                       ),
-                      HTSpacers.height8,
-                      HTText(
-                        isPro
-                            ? 'Please choose up to 10 habits'
-                            : 'Please choose 1 or 2 habits',
-                        typoToken: HTTypoToken.buttonTextMedium,
-                        color: htGreys(context).grey050,
-                      ),
-                      HTSpacers.height32,
-                      OnboardingTaskCategoryList(
-                        title: 'Popular',
-                        taskList: onboardingTasks.sublist(0, 6),
-                      ),
-                      OnboardingTaskCategoryList(
-                        title: 'Health & Sports',
-                        taskList: onboardingTasks.sublist(6, 13),
-                      ),
-                      OnboardingTaskCategoryList(
-                        title: 'Work Management',
-                        taskList: onboardingTasks.sublist(13, 17),
-                      ),
-                      OnboardingTaskCategoryList(
-                        title: 'Language',
-                        taskList: onboardingTasks.sublist(17, 23),
-                      ),
-                      OnboardingTaskCategoryList(
-                        title: 'Better Life',
-                        taskList: onboardingTasks.sublist(23, 30),
-                      ),
-                    ],
-                  ),
+                    ),
+                    const OnboardingTaskStartButton(),
+                  ],
                 ),
               ),
             ),
@@ -95,8 +103,6 @@ class OnboardingTaskCategoryList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    OnboardingTaskBloc bloc = context.watch<OnboardingTaskBloc>();
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -105,27 +111,20 @@ class OnboardingTaskCategoryList extends StatelessWidget {
           typoToken: HTTypoToken.headlineMedium,
           color: htGreys(context).black,
         ),
-        StreamBuilder<List<int>>(
-            stream: bloc.selectedTasks,
-            builder: (context, snapshot) {
-              List<int> selectedTasks = snapshot.data ?? [];
+        ListView.separated(
+          shrinkWrap: true,
+          padding: HTEdgeInsets.vertical16,
+          physics: const NeverScrollableScrollPhysics(),
+          itemBuilder: (context, index) {
+            OnboardingTask task = taskList[index];
 
-              return ListView.separated(
-                shrinkWrap: true,
-                padding: HTEdgeInsets.vertical16,
-                physics: const NeverScrollableScrollPhysics(),
-                itemBuilder: (context, index) {
-                  OnboardingTask task = taskList[index];
-                  bool isSelected = selectedTasks.contains(task.index);
-
-                  return OnboardingTaskBox(task: task);
-                },
-                separatorBuilder: (context, index) {
-                  return HTSpacers.height8;
-                },
-                itemCount: taskList.length,
-              );
-            }),
+            return OnboardingTaskBox(task: task);
+          },
+          separatorBuilder: (context, index) {
+            return HTSpacers.height8;
+          },
+          itemCount: taskList.length,
+        ),
         HTSpacers.height32,
       ],
     );
@@ -203,6 +202,50 @@ class OnboardingTaskBox extends StatelessWidget {
                 ],
               ),
             ),
+          );
+        });
+  }
+}
+
+class OnboardingTaskStartButton extends StatelessWidget {
+  const OnboardingTaskStartButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    OnboardingTaskBloc bloc = context.read<OnboardingTaskBloc>();
+
+    return StreamBuilder<List<int>>(
+        stream: bloc.selectedTasks,
+        builder: (context, snapshot) {
+          List<int> selectedTasks = snapshot.data ?? [];
+
+          bool canStart = selectedTasks.isNotEmpty;
+
+          return Container(
+            width: double.infinity,
+            padding: HTEdgeInsets.h24v16,
+            child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: canStart
+                        ? htGreys(context).black
+                        : htGreys(context).grey030,
+                    padding: HTEdgeInsets.vertical16,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: HTBorderRadius.circular10)),
+                onPressed: () {
+                  if (canStart) {
+                    bloc.addTasks().then((value) {
+                      bloc.appService.updateOnboardingStatus(true);
+                      context.pushReplacement(TaskPage.routeName);
+                    });
+                  }
+                },
+                child: HTText(
+                  'Start Now',
+                  typoToken: HTTypoToken.subtitleXLarge,
+                  color: htGreys(context).white,
+                  height: 1.25,
+                )),
           );
         });
   }
