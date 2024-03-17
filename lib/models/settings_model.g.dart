@@ -17,18 +17,23 @@ const SettingsSchema = CollectionSchema(
   name: r'Settings',
   id: -8656046621518759136,
   properties: {
-    r'createdTaskCount': PropertySchema(
+    r'completedOnboarding': PropertySchema(
       id: 0,
+      name: r'completedOnboarding',
+      type: IsarType.bool,
+    ),
+    r'createdTaskCount': PropertySchema(
+      id: 1,
       name: r'createdTaskCount',
       type: IsarType.long,
     ),
     r'isDarkMode': PropertySchema(
-      id: 1,
+      id: 2,
       name: r'isDarkMode',
       type: IsarType.bool,
     ),
     r'isNotificationOn': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'isNotificationOn',
       type: IsarType.bool,
     )
@@ -62,9 +67,10 @@ void _settingsSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeLong(offsets[0], object.createdTaskCount);
-  writer.writeBool(offsets[1], object.isDarkMode);
-  writer.writeBool(offsets[2], object.isNotificationOn);
+  writer.writeBool(offsets[0], object.completedOnboarding);
+  writer.writeLong(offsets[1], object.createdTaskCount);
+  writer.writeBool(offsets[2], object.isDarkMode);
+  writer.writeBool(offsets[3], object.isNotificationOn);
 }
 
 Settings _settingsDeserialize(
@@ -74,10 +80,11 @@ Settings _settingsDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = Settings(
-    createdTaskCount: reader.readLongOrNull(offsets[0]) ?? 0,
+    completedOnboarding: reader.readBoolOrNull(offsets[0]) ?? false,
+    createdTaskCount: reader.readLongOrNull(offsets[1]) ?? 0,
     id: id,
-    isDarkMode: reader.readBoolOrNull(offsets[1]) ?? false,
-    isNotificationOn: reader.readBoolOrNull(offsets[2]) ?? false,
+    isDarkMode: reader.readBoolOrNull(offsets[2]) ?? false,
+    isNotificationOn: reader.readBoolOrNull(offsets[3]) ?? false,
   );
   return object;
 }
@@ -90,10 +97,12 @@ P _settingsDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readLongOrNull(offset) ?? 0) as P;
-    case 1:
       return (reader.readBoolOrNull(offset) ?? false) as P;
+    case 1:
+      return (reader.readLongOrNull(offset) ?? 0) as P;
     case 2:
+      return (reader.readBoolOrNull(offset) ?? false) as P;
+    case 3:
       return (reader.readBoolOrNull(offset) ?? false) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -189,6 +198,16 @@ extension SettingsQueryWhere on QueryBuilder<Settings, Settings, QWhereClause> {
 
 extension SettingsQueryFilter
     on QueryBuilder<Settings, Settings, QFilterCondition> {
+  QueryBuilder<Settings, Settings, QAfterFilterCondition>
+      completedOnboardingEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'completedOnboarding',
+        value: value,
+      ));
+    });
+  }
+
   QueryBuilder<Settings, Settings, QAfterFilterCondition>
       createdTaskCountEqualTo(int value) {
     return QueryBuilder.apply(this, (query) {
@@ -325,6 +344,19 @@ extension SettingsQueryLinks
     on QueryBuilder<Settings, Settings, QFilterCondition> {}
 
 extension SettingsQuerySortBy on QueryBuilder<Settings, Settings, QSortBy> {
+  QueryBuilder<Settings, Settings, QAfterSortBy> sortByCompletedOnboarding() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'completedOnboarding', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Settings, Settings, QAfterSortBy>
+      sortByCompletedOnboardingDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'completedOnboarding', Sort.desc);
+    });
+  }
+
   QueryBuilder<Settings, Settings, QAfterSortBy> sortByCreatedTaskCount() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'createdTaskCount', Sort.asc);
@@ -364,6 +396,19 @@ extension SettingsQuerySortBy on QueryBuilder<Settings, Settings, QSortBy> {
 
 extension SettingsQuerySortThenBy
     on QueryBuilder<Settings, Settings, QSortThenBy> {
+  QueryBuilder<Settings, Settings, QAfterSortBy> thenByCompletedOnboarding() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'completedOnboarding', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Settings, Settings, QAfterSortBy>
+      thenByCompletedOnboardingDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'completedOnboarding', Sort.desc);
+    });
+  }
+
   QueryBuilder<Settings, Settings, QAfterSortBy> thenByCreatedTaskCount() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'createdTaskCount', Sort.asc);
@@ -415,6 +460,12 @@ extension SettingsQuerySortThenBy
 
 extension SettingsQueryWhereDistinct
     on QueryBuilder<Settings, Settings, QDistinct> {
+  QueryBuilder<Settings, Settings, QDistinct> distinctByCompletedOnboarding() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'completedOnboarding');
+    });
+  }
+
   QueryBuilder<Settings, Settings, QDistinct> distinctByCreatedTaskCount() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'createdTaskCount');
@@ -439,6 +490,12 @@ extension SettingsQueryProperty
   QueryBuilder<Settings, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
+    });
+  }
+
+  QueryBuilder<Settings, bool, QQueryOperations> completedOnboardingProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'completedOnboarding');
     });
   }
 

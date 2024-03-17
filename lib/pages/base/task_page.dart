@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
-import 'package:habit_app/blocs/app_bloc.dart';
+import 'package:habit_app/blocs/app_service.dart';
 import 'package:habit_app/blocs/base/task_bloc.dart';
 import 'package:habit_app/models/task_model.dart';
 import 'package:habit_app/pages/etc/subscription_page.dart';

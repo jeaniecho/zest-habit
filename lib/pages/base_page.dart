@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:go_router/go_router.dart';
+import 'package:habit_app/blocs/etc/subscription_bloc.dart';
 import 'package:habit_app/iap/iap_service.dart';
-import 'package:habit_app/blocs/app_bloc.dart';
+import 'package:habit_app/blocs/app_service.dart';
 import 'package:habit_app/blocs/task/task_add_bloc.dart';
 import 'package:habit_app/models/settings_model.dart';
 import 'package:habit_app/pages/base/task_page.dart';
@@ -43,7 +44,13 @@ class _BasePageState extends State<BasePage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       if (!context.read<IAPService>().isPro()) {
-        Navigator.push(context, HTPageRoutes.slideUp(const SubscriptionPage()));
+        Navigator.push(
+            context,
+            HTPageRoutes.slideUp(Provider(
+              create: (context) => SubscriptionBloc(),
+              dispose: (context, value) => value.dispose(),
+              child: const SubscriptionPage(),
+            )));
       }
     });
   }
