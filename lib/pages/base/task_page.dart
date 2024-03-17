@@ -214,7 +214,7 @@ class DailyDates extends StatelessWidget {
                       bool isSelected = index == dateIndex;
 
                       double donePercentage = 0;
-                      if (today.isAfter(date)) {
+                      if (isSameDay(today, date) || today.isAfter(date)) {
                         donePercentage = bloc.getDonePercentage(date);
                       }
 
