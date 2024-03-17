@@ -14,7 +14,7 @@ class ModePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AppBloc appBloc = context.read<AppBloc>();
+    AppService appService = context.read<AppService>();
 
     return Scaffold(
       backgroundColor: htGreys(context).grey010,
@@ -24,7 +24,7 @@ class ModePage extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: StreamBuilder<Settings>(
-            stream: appBloc.settings,
+            stream: appService.settings,
             builder: (context, snapshot) {
               Settings settings = snapshot.data ?? Settings();
               bool isDarkMode = settings.isDarkMode;
@@ -43,7 +43,7 @@ class ModePage extends StatelessWidget {
                           groupValue: false,
                           text: 'Light',
                           onTap: () {
-                            appBloc.setDarkMode(false, context);
+                            appService.setDarkMode(false, context);
                           },
                         ),
                         HTSpacers.height8,
@@ -52,7 +52,7 @@ class ModePage extends StatelessWidget {
                           groupValue: true,
                           text: 'Dark',
                           onTap: () {
-                            appBloc.setDarkMode(true, context);
+                            appService.setDarkMode(true, context);
                           },
                         ),
                       ],

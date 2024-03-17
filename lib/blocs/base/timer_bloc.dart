@@ -54,9 +54,9 @@ class TimerBloc extends Disposable {
   Function(String) get setSecond => _second.add;
   String get secondValue => _second.value;
 
-  Stream<Task?> get selectedTask => appBloc.timerTask;
-  Function(Task?) get setSelectedTask => appBloc.setTimerTask;
-  Task? get selectedTaskValue => appBloc.timerTaskValue;
+  Stream<Task?> get selectedTask => appService.timerTask;
+  Function(Task?) get setSelectedTask => appService.setTimerTask;
+  Task? get selectedTaskValue => appService.timerTaskValue;
 
   final BehaviorSubject<bool> _hasStringError = BehaviorSubject.seeded(false);
   Stream<bool> get hasStringError => _hasStringError.stream;
@@ -65,13 +65,13 @@ class TimerBloc extends Disposable {
 
   late CountdownTimer timer;
 
-  final AppBloc appBloc;
+  final AppService appService;
   final double deviceHeight;
 
   bool timerEnded = false;
 
   TimerBloc({
-    required this.appBloc,
+    required this.appService,
     required this.deviceHeight,
   });
 
@@ -217,8 +217,8 @@ class TimerBloc extends Disposable {
       if (selectedTaskValue != null) {
         DateTime now = DateTime.now().getDate();
 
-        appBloc.setTimerTaskDone(selectedTaskValue!, now);
-        appBloc.setTimerTask(null);
+        appService.setTimerTaskDone(selectedTaskValue!, now);
+        appService.setTimerTask(null);
       }
 
       Future.delayed(const Duration(seconds: 1), () {
@@ -248,7 +248,7 @@ class TimerBloc extends Disposable {
   }
 
   List<Task> getTodayTasks() {
-    List<Task> tasks = appBloc.tasksValue;
+    List<Task> tasks = appService.tasksValue;
 
     DateTime date = DateTime.now().getDate();
     List<Task> todayTasks = tasks.where((element) {

@@ -9,7 +9,7 @@ const int prevDates = 15;
 const double dateWidth = 52 + 12;
 
 class TaskBloc extends Disposable {
-  final AppBloc appBloc;
+  final AppService appService;
   final double deviceWidth;
 
   final BehaviorSubject<List<DateTime>> _dates = BehaviorSubject.seeded([]);
@@ -32,7 +32,7 @@ class TaskBloc extends Disposable {
   late final ScrollController dateScrollController;
   late final double dateScrollOffset;
 
-  TaskBloc({required this.appBloc, required this.deviceWidth}) {
+  TaskBloc({required this.appService, required this.deviceWidth}) {
     getDates();
     dateScrollOffset =
         (dateWidth * prevDates - ((deviceWidth - 84) / 2)).toDouble();
@@ -40,7 +40,7 @@ class TaskBloc extends Disposable {
     dateScrollController =
         ScrollController(initialScrollOffset: dateScrollOffset);
 
-    appBloc.tasks.listen((tasks) {
+    appService.tasks.listen((tasks) {
       getCurrTasks(tasks, _dates.value[_dateIndex.value]);
     });
 
@@ -86,7 +86,7 @@ class TaskBloc extends Disposable {
     _dateIndex.add(index);
 
     DateTime currDate = _dates.value[index];
-    getCurrTasks(appBloc.tasksValue, currDate);
+    getCurrTasks(appService.tasksValue, currDate);
   }
 
   List<Task> getCurrTasks(List<Task> tasks, DateTime currDate) {
@@ -116,7 +116,7 @@ class TaskBloc extends Disposable {
   }
 
   double getDonePercentage(DateTime date) {
-    List<Task> tasks = appBloc.tasksValue;
+    List<Task> tasks = appService.tasksValue;
 
     List<Task> currTasks = tasks.where((element) {
       return (!element.from.getDate().isAfter(date)) &&

@@ -9,7 +9,7 @@ import 'package:habit_app/utils/notifications.dart';
 import 'package:isar/isar.dart';
 import 'package:rxdart/rxdart.dart';
 
-class AppBloc {
+class AppService {
   final Isar isar;
   final IAPService iapService;
 
@@ -39,7 +39,7 @@ class AppBloc {
   // Stream<bool> get isPro => purchases.map((purchases) => purchases.isNotEmpty);
   Stream<bool> get isPro => _isPro.stream;
 
-  AppBloc({required this.isar, required this.iapService}) {
+  AppService({required this.isar, required this.iapService}) {
     _isPro = BehaviorSubject.seeded(true);
 
     getSettings();

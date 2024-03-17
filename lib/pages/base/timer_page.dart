@@ -75,10 +75,10 @@ class TimerTask extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TimerBloc timerBloc = context.read<TimerBloc>();
+    TimerBloc bloc = context.read<TimerBloc>();
 
     return StreamBuilder<List>(
-        stream: Rx.combineLatestList([timerBloc.start, timerBloc.curr]),
+        stream: Rx.combineLatestList([bloc.start, bloc.curr]),
         builder: (context, snapshot) {
           Duration? start = snapshot.data?[0];
           Duration? curr = snapshot.data?[1];
@@ -107,7 +107,7 @@ class TimerTask extends StatelessWidget {
                 borderRadius: HTBorderRadius.circular10,
               ),
               child: StreamBuilder<Task?>(
-                  stream: timerBloc.selectedTask,
+                  stream: bloc.selectedTask,
                   builder: (context, snapshot) {
                     Task? selectedTask = snapshot.data;
 
@@ -145,7 +145,7 @@ class TimerTask extends StatelessWidget {
                               child: GestureDetector(
                                 onTap: () {
                                   HapticFeedback.lightImpact();
-                                  timerBloc.setSelectedTask(null);
+                                  bloc.setSelectedTask(null);
                                 },
                                 child: Container(
                                   width: 18,
@@ -177,8 +177,8 @@ class TimerWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TimerBloc timerBloc = context.read<TimerBloc>();
-    AppBloc appBloc = context.read<AppBloc>();
+    TimerBloc bloc = context.read<TimerBloc>();
+    AppService appService = context.read<AppService>();
 
     double timerSize = 320;
     // double timerSize = MediaQuery.sizeOf(context).width * 0.75;
@@ -189,7 +189,7 @@ class TimerWidget extends StatelessWidget {
           padding: HTEdgeInsets.horizontal24,
           child: StreamBuilder<List>(
               stream: Rx.combineLatestList(
-                  [timerBloc.start, timerBloc.curr, appBloc.isPro]),
+                  [bloc.start, bloc.curr, appService.isPro]),
               builder: (context, snapshot) {
                 Duration? start = snapshot.data?[0];
                 Duration? curr = snapshot.data?[1];
@@ -284,9 +284,9 @@ class TimerWidget extends StatelessWidget {
                           child: IconButton(
                             onPressed: () {
                               if (isTimerOn) {
-                                timerBloc.stopTimer();
+                                bloc.stopTimer();
                               } else {
-                                timerBloc.startTimer();
+                                bloc.startTimer();
                               }
                             },
                             icon: Icon(
@@ -302,7 +302,7 @@ class TimerWidget extends StatelessWidget {
                         ),
                         if (isTimerOn)
                           StreamBuilder<bool>(
-                              stream: timerBloc.isTimerPaused,
+                              stream: bloc.isTimerPaused,
                               builder: (context, snapshot) {
                                 bool isTimerPaused = snapshot.data ?? false;
 
@@ -320,9 +320,9 @@ class TimerWidget extends StatelessWidget {
                                   child: IconButton(
                                     onPressed: () {
                                       if (isTimerPaused) {
-                                        timerBloc.resumeTimer();
+                                        bloc.resumeTimer();
                                       } else {
-                                        timerBloc.pauseTimer();
+                                        bloc.pauseTimer();
                                       }
                                     },
                                     icon: Icon(
@@ -351,13 +351,13 @@ class FixedTimerText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TimerBloc timerBloc = context.read<TimerBloc>();
+    TimerBloc bloc = context.read<TimerBloc>();
 
     return StreamBuilder<List>(
         stream: Rx.combineLatestList([
-          timerBloc.curr,
-          timerBloc.pausedTime,
-          timerBloc.isTimerPaused,
+          bloc.curr,
+          bloc.pausedTime,
+          bloc.isTimerPaused,
         ]),
         builder: (context, snapshot) {
           Duration curr =
@@ -374,7 +374,7 @@ class FixedTimerText extends StatelessWidget {
 
           return GestureDetector(
             onTap: () {
-              timerBloc.showAdjustLater();
+              bloc.showAdjustLater();
             },
             child: SizedBox(
               height: timerStringHeight,
@@ -430,7 +430,7 @@ class NoneProTimerText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TimerBloc timerBloc = context.read<TimerBloc>();
+    TimerBloc bloc = context.read<TimerBloc>();
 
     return GestureDetector(
       onTap: () {
@@ -454,7 +454,7 @@ class NoneProTimerText extends StatelessWidget {
           children: [
             IntrinsicWidth(
                 child: HTText(
-              timerBloc.hourValue,
+              bloc.hourValue,
               typoToken: HTTypoToken.bodyHuge,
               color: htGreys(context).black,
               height: 1.25,
@@ -468,7 +468,7 @@ class NoneProTimerText extends StatelessWidget {
             ),
             IntrinsicWidth(
                 child: HTText(
-              timerBloc.minuteValue,
+              bloc.minuteValue,
               typoToken: HTTypoToken.bodyHuge,
               color: htGreys(context).black,
               height: 1.25,
@@ -482,7 +482,7 @@ class NoneProTimerText extends StatelessWidget {
             ),
             IntrinsicWidth(
                 child: HTText(
-              timerBloc.secondValue,
+              bloc.secondValue,
               typoToken: HTTypoToken.bodyHuge,
               color: htGreys(context).black,
               height: 1.25,
@@ -501,7 +501,7 @@ class EditableTimerText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TimerBloc timerBloc = context.read<TimerBloc>();
+    TimerBloc bloc = context.read<TimerBloc>();
 
     TextStyle timerStyle =
         HTTypoToken.bodyHuge.textStyle.copyWith(height: 1.25);
@@ -516,27 +516,26 @@ class EditableTimerText extends StatelessWidget {
     );
 
     TextEditingController hourController =
-        TextEditingController(text: timerBloc.hourValue);
+        TextEditingController(text: bloc.hourValue);
     hourController.selection = TextSelection.fromPosition(
         TextPosition(offset: hourController.text.length));
 
     TextEditingController minuteController =
-        TextEditingController(text: timerBloc.minuteValue);
+        TextEditingController(text: bloc.minuteValue);
     minuteController.selection = TextSelection.fromPosition(
         TextPosition(offset: minuteController.text.length));
 
     TextEditingController secondController =
-        TextEditingController(text: timerBloc.secondValue);
+        TextEditingController(text: bloc.secondValue);
     secondController.selection = TextSelection.fromPosition(
         TextPosition(offset: secondController.text.length));
 
     return Focus(
       onFocusChange: (value) {
-        timerBloc.setIsFocused(value);
+        bloc.setIsFocused(value);
       },
       child: StreamBuilder<List>(
-          stream: Rx.combineLatestList(
-              [timerBloc.isFocused, timerBloc.hasStringError]),
+          stream: Rx.combineLatestList([bloc.isFocused, bloc.hasStringError]),
           builder: (context, snapshot) {
             bool isFocused = snapshot.data?[0] ?? false;
             bool hasStringError = snapshot.data?[1] ?? false;
@@ -565,26 +564,26 @@ class EditableTimerText extends StatelessWidget {
                             extentOffset: hourController.text.length);
                       },
                       onTapOutside: (event) {
-                        hourController.text = timerBloc.hourValue;
-                        timerBloc.setHasStringError(false);
+                        hourController.text = bloc.hourValue;
+                        bloc.setHasStringError(false);
                         FocusScope.of(context).unfocus();
                       },
                       onChanged: (value) {
                         String hourString = value;
 
                         if (value.length > 2) {
-                          timerBloc.showTimerExceed();
-                          timerBloc.setHasStringError(true);
+                          bloc.showTimerExceed();
+                          bloc.setHasStringError(true);
 
                           hourString = value.substring(0, 2);
                           hourController.text = hourString;
                         } else {
-                          timerBloc.setHasStringError(false);
+                          bloc.setHasStringError(false);
                         }
 
-                        String checked = timerBloc.timeStringCheck(
-                            hourString, TimeType.hour);
-                        timerBloc.setHour(checked);
+                        String checked =
+                            bloc.timeStringCheck(hourString, TimeType.hour);
+                        bloc.setHour(checked);
                       },
                       keyboardType: TextInputType.number,
                       maxLength: 3,
@@ -608,26 +607,26 @@ class EditableTimerText extends StatelessWidget {
                             extentOffset: minuteController.text.length);
                       },
                       onTapOutside: (event) {
-                        minuteController.text = timerBloc.minuteValue;
-                        timerBloc.setHasStringError(false);
+                        minuteController.text = bloc.minuteValue;
+                        bloc.setHasStringError(false);
                         FocusScope.of(context).unfocus();
                       },
                       onChanged: (value) {
                         String minuteString = value;
 
                         if (value.length > 2) {
-                          timerBloc.showTimerExceed();
-                          timerBloc.setHasStringError(true);
+                          bloc.showTimerExceed();
+                          bloc.setHasStringError(true);
 
                           minuteString = value.substring(0, 2);
                           minuteController.text = minuteString;
                         } else {
-                          timerBloc.setHasStringError(false);
+                          bloc.setHasStringError(false);
                         }
 
-                        String checked = timerBloc.timeStringCheck(
-                            minuteString, TimeType.minute);
-                        timerBloc.setMinute(checked);
+                        String checked =
+                            bloc.timeStringCheck(minuteString, TimeType.minute);
+                        bloc.setMinute(checked);
                       },
                       keyboardType: TextInputType.number,
                       maxLength: 3,
@@ -651,26 +650,26 @@ class EditableTimerText extends StatelessWidget {
                             extentOffset: secondController.text.length);
                       },
                       onTapOutside: (event) {
-                        secondController.text = timerBloc.secondValue;
-                        timerBloc.setHasStringError(false);
+                        secondController.text = bloc.secondValue;
+                        bloc.setHasStringError(false);
                         FocusScope.of(context).unfocus();
                       },
                       onChanged: (value) {
                         String secondString = value;
 
                         if (value.length > 2) {
-                          timerBloc.showTimerExceed();
-                          timerBloc.setHasStringError(true);
+                          bloc.showTimerExceed();
+                          bloc.setHasStringError(true);
 
                           secondString = value.substring(0, 2);
                           secondController.text = secondString;
                         } else {
-                          timerBloc.setHasStringError(false);
+                          bloc.setHasStringError(false);
                         }
 
-                        String checked = timerBloc.timeStringCheck(
-                            secondString, TimeType.second);
-                        timerBloc.setSecond(checked);
+                        String checked =
+                            bloc.timeStringCheck(secondString, TimeType.second);
+                        bloc.setSecond(checked);
                       },
                       keyboardType: TextInputType.number,
                       maxLength: 3,
@@ -732,9 +731,9 @@ class TimerTaskList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TimerBloc timerBloc = context.read<TimerBloc>();
+    TimerBloc bloc = context.read<TimerBloc>();
 
-    List<Task> tasks = timerBloc.getTodayTasks();
+    List<Task> tasks = bloc.getTodayTasks();
 
     if (tasks.isEmpty) {
       return Expanded(
@@ -792,11 +791,11 @@ class TimerTaskItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TimerBloc timerBloc = context.read<TimerBloc>();
+    TimerBloc bloc = context.read<TimerBloc>();
 
     return HTScale(
       onTap: () {
-        timerBloc.setSelectedTask(task);
+        bloc.setSelectedTask(task);
         Navigator.pop(context);
       },
       child: Container(

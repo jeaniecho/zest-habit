@@ -50,11 +50,11 @@ class _BasePageState extends State<BasePage> {
 
   @override
   Widget build(BuildContext context) {
-    AppBloc appBloc = context.read<AppBloc>();
+    AppService appService = context.read<AppService>();
 
     return StreamBuilder<List>(
         stream: Rx.combineLatestList(
-            [appBloc.bottomIndex, appBloc.settings, appBloc.isPro]),
+            [appService.bottomIndex, appService.settings, appService.isPro]),
         builder: (context, snapshot) {
           int bottomIndex = snapshot.data?[0] ?? 0;
           Settings settings = snapshot.data?[1] ?? Settings();
@@ -91,9 +91,9 @@ class _BasePageState extends State<BasePage> {
                             context.pop();
                           }
 
-                          if (appBloc.bottomIndexValue != 0) {
+                          if (appService.bottomIndexValue != 0) {
                             context.replace(TaskPage.routeName);
-                            appBloc.setBottomIndex(0);
+                            appService.setBottomIndex(0);
                           }
                         },
                         child: SizedBox(
@@ -111,7 +111,7 @@ class _BasePageState extends State<BasePage> {
                       GestureDetector(
                           behavior: HitTestBehavior.opaque,
                           onTap: () {
-                            if (appBloc.activeTaskCount() < taskLimit ||
+                            if (appService.activeTaskCount() < taskLimit ||
                                 isPro) {
                               showModalBottomSheet(
                                   context: context,
@@ -123,7 +123,8 @@ class _BasePageState extends State<BasePage> {
                                   builder: (context) {
                                     return Provider(
                                         create: (context) => TaskAddBloc(
-                                            appBloc: context.read<AppBloc>()),
+                                            appService:
+                                                context.read<AppService>()),
                                         dispose: (context, value) =>
                                             value.dispose(),
                                         child: const TaskAddWidget());
@@ -170,9 +171,9 @@ class _BasePageState extends State<BasePage> {
                             context.pop();
                           }
 
-                          if (appBloc.bottomIndexValue != 1) {
+                          if (appService.bottomIndexValue != 1) {
                             context.replace(TimerPage.routeName);
-                            appBloc.setBottomIndex(1);
+                            appService.setBottomIndex(1);
                           }
                         },
                         child: SizedBox(

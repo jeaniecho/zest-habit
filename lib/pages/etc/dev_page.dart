@@ -155,10 +155,10 @@ class ProToggle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AppBloc appBloc = context.read<AppBloc>();
+    AppService appService = context.read<AppService>();
 
     return StreamBuilder<bool>(
-        stream: appBloc.isPro,
+        stream: appService.isPro,
         builder: (context, snapshot) {
           bool isPro = snapshot.data ?? false;
 
@@ -175,7 +175,7 @@ class ProToggle extends StatelessWidget {
                 const Spacer(),
                 CupertinoSwitch(
                   value: isPro,
-                  onChanged: (value) => appBloc.setIsPro(value),
+                  onChanged: (value) => appService.setIsPro(value),
                   activeColor: htGreys(context).black,
                 ),
               ],

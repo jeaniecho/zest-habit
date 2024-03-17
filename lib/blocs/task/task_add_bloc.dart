@@ -9,7 +9,7 @@ import 'package:habit_app/utils/notifications.dart';
 import 'package:rxdart/rxdart.dart';
 
 class TaskAddBloc extends Disposable {
-  final AppBloc appBloc;
+  final AppService appService;
   final Task? task;
 
   final BehaviorSubject<String> _title = BehaviorSubject.seeded('');
@@ -84,7 +84,7 @@ class TaskAddBloc extends Disposable {
   final ScrollController scrollController = ScrollController();
 
   TaskAddBloc({
-    required this.appBloc,
+    required this.appService,
     this.task,
   }) {
     if (task != null) {
@@ -107,7 +107,7 @@ class TaskAddBloc extends Disposable {
     titleController = TextEditingController(text: task?.title);
     goalController = TextEditingController(text: task?.goal);
 
-    if (appBloc.settingsValue.createdTaskCount == 0) {
+    if (appService.settingsValue.createdTaskCount == 0) {
       _showColorTooltip.add(true);
     }
   }
@@ -168,7 +168,7 @@ class TaskAddBloc extends Disposable {
   }
 
   Future<Task> addTask() async {
-    Task newTask = await appBloc.addTask(getNewTask());
+    Task newTask = await appService.addTask(getNewTask());
 
     if (newTask.alarmTime != null) {
       await HTNotification.scheduleNotification(newTask);
@@ -203,7 +203,7 @@ class TaskAddBloc extends Disposable {
         await HTNotification.scheduleNotification(newTask);
       }
 
-      return await appBloc.updateTask(newTask);
+      return await appService.updateTask(newTask);
     }
 
     return null;

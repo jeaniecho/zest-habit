@@ -39,7 +39,7 @@ class TaskAddBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TaskAddBloc taskAddBloc = context.read<TaskAddBloc>();
+    TaskAddBloc bloc = context.read<TaskAddBloc>();
 
     return Stack(
       children: [
@@ -49,7 +49,7 @@ class TaskAddBody extends StatelessWidget {
             const TaskAddClose(),
             Expanded(
               child: SingleChildScrollView(
-                controller: taskAddBloc.scrollController,
+                controller: bloc.scrollController,
                 padding: HTEdgeInsets.vertical16,
                 child: const Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -83,7 +83,7 @@ class TaskAddBody extends StatelessWidget {
           ],
         ),
         StreamBuilder<bool>(
-            stream: taskAddBloc.openEmoji,
+            stream: bloc.openEmoji,
             builder: (context, snapshot) {
               bool openEmoji = snapshot.data ?? false;
 
@@ -103,11 +103,11 @@ class TaskAddAlarm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TaskAddBloc taskAddBloc = context.read<TaskAddBloc>();
-    AppBloc appBloc = context.read<AppBloc>();
+    TaskAddBloc bloc = context.read<TaskAddBloc>();
+    AppService appService = context.read<AppService>();
 
     return StreamBuilder<List>(
-        stream: Rx.combineLatestList([taskAddBloc.alarmTime, appBloc.isPro]),
+        stream: Rx.combineLatestList([bloc.alarmTime, appService.isPro]),
         builder: (context, snapshot) {
           DateTime? alarmTime = snapshot.data?[0];
           bool isPro = snapshot.data?[1] ?? false;
@@ -121,7 +121,7 @@ class TaskAddAlarm extends StatelessWidget {
                 DateTime initialDateTime =
                     alarmTime ?? DateTime.now().copyWith(minute: 0);
 
-                taskAddBloc.setAlarmTime(initialDateTime);
+                bloc.setAlarmTime(initialDateTime);
 
                 showCupertinoModalPopup(
                     context: context,
@@ -144,7 +144,7 @@ class TaskAddAlarm extends StatelessWidget {
                                     children: [
                                       TextButton(
                                           onPressed: () {
-                                            taskAddBloc.setAlarmTime(null);
+                                            bloc.setAlarmTime(null);
                                             Navigator.pop(context);
                                           },
                                           child: HTText(
@@ -175,7 +175,7 @@ class TaskAddAlarm extends StatelessWidget {
                                     mode: CupertinoDatePickerMode.time,
                                     use24hFormat: false,
                                     onDateTimeChanged: (dateTime) {
-                                      taskAddBloc.setAlarmTime(dateTime);
+                                      bloc.setAlarmTime(dateTime);
                                     },
                                   ),
                                 ),
@@ -241,11 +241,11 @@ class TaskAddEmoji extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TaskAddBloc taskAddBloc = context.read<TaskAddBloc>();
+    TaskAddBloc bloc = context.read<TaskAddBloc>();
 
     return GestureDetector(
       onTap: () {
-        taskAddBloc.toggleOpenEmoji();
+        bloc.toggleOpenEmoji();
       },
       child: Container(
         width: 48,
@@ -255,7 +255,7 @@ class TaskAddEmoji extends StatelessWidget {
           borderRadius: HTBorderRadius.circular10,
         ),
         child: StreamBuilder<String>(
-            stream: taskAddBloc.emoji,
+            stream: bloc.emoji,
             builder: (context, snapshot) {
               String emoji = snapshot.data ?? '';
 
@@ -283,7 +283,7 @@ class TaskAddEmojiPicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TaskAddBloc taskAddBloc = context.read<TaskAddBloc>();
+    TaskAddBloc bloc = context.read<TaskAddBloc>();
 
     return Positioned(
       top: 128,
@@ -336,8 +336,8 @@ class TaskAddEmojiPicker extends StatelessWidget {
                         if (index == 0) {
                           return GestureDetector(
                             onTap: () {
-                              taskAddBloc.setEmoji('');
-                              taskAddBloc.setOpenEmoji(false);
+                              bloc.setEmoji('');
+                              bloc.setOpenEmoji(false);
                             },
                             child: SizedBox(
                               width: emojiSize,
@@ -358,8 +358,8 @@ class TaskAddEmojiPicker extends StatelessWidget {
 
                         return GestureDetector(
                           onTap: () {
-                            taskAddBloc.setEmoji(allEmojis[newIndex]);
-                            taskAddBloc.setOpenEmoji(false);
+                            bloc.setEmoji(allEmojis[newIndex]);
+                            bloc.setOpenEmoji(false);
                           },
                           child: SizedBox(
                             width: emojiSize,
@@ -431,7 +431,7 @@ class _TaskAddTitleState extends State<TaskAddTitle> {
 
   @override
   Widget build(BuildContext context) {
-    TaskAddBloc taskAddBloc = context.read<TaskAddBloc>();
+    TaskAddBloc bloc = context.read<TaskAddBloc>();
 
     return Padding(
       padding: HTEdgeInsets.horizontal24,
@@ -442,11 +442,11 @@ class _TaskAddTitleState extends State<TaskAddTitle> {
             child: Stack(
               children: [
                 TextField(
-                  controller: taskAddBloc.titleController,
+                  controller: bloc.titleController,
                   onChanged: (value) {
-                    taskAddBloc.setTitle(value);
+                    bloc.setTitle(value);
                     if (value.trim().isNotEmpty) {
-                      taskAddBloc.setTitleError(false);
+                      bloc.setTitleError(false);
                     }
                   },
                   onTapOutside: (event) => FocusScope.of(context).unfocus(),
@@ -468,7 +468,7 @@ class _TaskAddTitleState extends State<TaskAddTitle> {
                     child: Align(
                       alignment: Alignment.centerRight,
                       child: StreamBuilder<String>(
-                          stream: taskAddBloc.title,
+                          stream: bloc.title,
                           builder: (context, snapshot) {
                             String title = snapshot.data ?? '';
 
@@ -490,7 +490,7 @@ class _TaskAddTitleState extends State<TaskAddTitle> {
             },
           ),
           StreamBuilder<bool>(
-              stream: taskAddBloc.titleError,
+              stream: bloc.titleError,
               builder: (context, snapshot) {
                 bool titleError = snapshot.data ?? false;
 
@@ -522,7 +522,7 @@ class _TaskAddGoalState extends State<TaskAddGoal> {
 
   @override
   Widget build(BuildContext context) {
-    TaskAddBloc taskAddBloc = context.read<TaskAddBloc>();
+    TaskAddBloc bloc = context.read<TaskAddBloc>();
 
     return Padding(
       padding: HTEdgeInsets.horizontal24,
@@ -530,8 +530,8 @@ class _TaskAddGoalState extends State<TaskAddGoal> {
         child: Stack(
           children: [
             TextField(
-              controller: taskAddBloc.goalController,
-              onChanged: (value) => taskAddBloc.setGoal(value),
+              controller: bloc.goalController,
+              onChanged: (value) => bloc.setGoal(value),
               onTapOutside: (event) => FocusScope.of(context).unfocus(),
               style: HTTypoToken.bodyMedium.textStyle
                   .copyWith(color: htGreys(context).black),
@@ -552,7 +552,7 @@ class _TaskAddGoalState extends State<TaskAddGoal> {
                 bottom: 12,
                 right: 12,
                 child: StreamBuilder<String>(
-                    stream: taskAddBloc.goal,
+                    stream: bloc.goal,
                     builder: (context, snapshot) {
                       String goal = snapshot.data ?? '';
 
@@ -570,8 +570,8 @@ class _TaskAddGoalState extends State<TaskAddGoal> {
             _hasFocus = value;
           });
 
-          if (value && taskAddBloc.showColorTooltipValue) {
-            taskAddBloc.setShowColorTooltip(false);
+          if (value && bloc.showColorTooltipValue) {
+            bloc.setShowColorTooltip(false);
           }
         },
       ),
@@ -584,22 +584,19 @@ class TaskAddColor extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TaskAddBloc taskAddBloc = context.read<TaskAddBloc>();
-    AppBloc appBloc = context.read<AppBloc>();
+    TaskAddBloc bloc = context.read<TaskAddBloc>();
+    AppService appService = context.read<AppService>();
 
     ScrollController scrollController = ScrollController();
     scrollController.addListener(() {
-      if (taskAddBloc.showColorTooltipValue) {
-        taskAddBloc.setShowColorTooltip(false);
+      if (bloc.showColorTooltipValue) {
+        bloc.setShowColorTooltip(false);
       }
     });
 
     return StreamBuilder<List>(
-        stream: Rx.combineLatestList([
-          taskAddBloc.selectedColor,
-          appBloc.settings,
-          taskAddBloc.showColorTooltip
-        ]),
+        stream: Rx.combineLatestList(
+            [bloc.selectedColor, appService.settings, bloc.showColorTooltip]),
         builder: (context, snapshot) {
           int selectedColor = snapshot.data?[0] ?? 0xFF000000;
           Settings settings = snapshot.data?[1] ?? Settings();
@@ -624,10 +621,10 @@ class TaskAddColor extends StatelessWidget {
 
                     return GestureDetector(
                       onTap: () {
-                        taskAddBloc.setSelectedColor(currColor);
+                        bloc.setSelectedColor(currColor);
 
-                        if (taskAddBloc.showColorTooltipValue) {
-                          taskAddBloc.setShowColorTooltip(false);
+                        if (bloc.showColorTooltipValue) {
+                          bloc.setShowColorTooltip(false);
                         }
                       },
                       child: AnimatedContainer(
@@ -717,12 +714,12 @@ class TaskAddRepeatAt extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TaskAddBloc taskAddBloc = context.read<TaskAddBloc>();
+    TaskAddBloc bloc = context.read<TaskAddBloc>();
 
     return Padding(
       padding: HTEdgeInsets.horizontal24,
       child: StreamBuilder<bool>(
-          stream: taskAddBloc.isRepeat,
+          stream: bloc.isRepeat,
           builder: (context, snapshot) {
             bool isRepeat = snapshot.data ?? false;
 
@@ -743,14 +740,14 @@ class TaskAddRepeatAt extends StatelessWidget {
                       CupertinoSwitch(
                           value: isRepeat,
                           activeColor: htGreys(context).black,
-                          onChanged: (value) => taskAddBloc.setIsRepeat(value)),
+                          onChanged: (value) => bloc.setIsRepeat(value)),
                     ],
                   ),
                 ),
                 if (isRepeat)
                   StreamBuilder<List>(
                       stream: Rx.combineLatestList(
-                          [taskAddBloc.repeatAt, taskAddBloc.repeatType]),
+                          [bloc.repeatAt, bloc.repeatType]),
                       builder: (context, snapshot) {
                         List<int> repeatAt = snapshot.data?[0] ?? [];
                         RepeatType repeatType =
@@ -790,7 +787,7 @@ class TaskAddRepeatAt extends StatelessWidget {
 
                                           return GestureDetector(
                                             onTap: () {
-                                              taskAddBloc.toggleRepeatAt(
+                                              bloc.toggleRepeatAt(
                                                   dayNums[index]);
                                             },
                                             child: Container(
@@ -847,7 +844,7 @@ class TaskAddRepeatRadio extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TaskAddBloc taskAddBloc = context.read<TaskAddBloc>();
+    TaskAddBloc bloc = context.read<TaskAddBloc>();
 
     return HTRadio(
         value: repeatType,
@@ -855,8 +852,8 @@ class TaskAddRepeatRadio extends StatelessWidget {
         text: repeatType.text,
         padding: HTEdgeInsets.vertical8,
         onTap: () {
-          taskAddBloc.setRepeatType(repeatType);
-          taskAddBloc.setRepeatAt(repeatType.days);
+          bloc.setRepeatType(repeatType);
+          bloc.setRepeatAt(repeatType.days);
         });
   }
 }
@@ -866,15 +863,15 @@ class TaskAddFrom extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TaskAddBloc taskAddBloc = context.read<TaskAddBloc>();
+    TaskAddBloc bloc = context.read<TaskAddBloc>();
 
     return Padding(
       padding: HTEdgeInsets.horizontal24,
       child: StreamBuilder<List>(
           stream: Rx.combineLatestList([
-            taskAddBloc.from,
-            taskAddBloc.until,
-            taskAddBloc.showStartCalendar,
+            bloc.from,
+            bloc.until,
+            bloc.showStartCalendar,
           ]),
           builder: (context, snapshot) {
             DateTime from = snapshot.data?[0] ?? DateTime.now().getDate();
@@ -896,7 +893,7 @@ class TaskAddFrom extends StatelessWidget {
                       ),
                       GestureDetector(
                         onTap: () {
-                          taskAddBloc.toggleStartCalendar();
+                          bloc.toggleStartCalendar();
                         },
                         child: Container(
                           padding: const EdgeInsets.symmetric(
@@ -924,7 +921,7 @@ class TaskAddFrom extends StatelessWidget {
                       selectedDate: from,
                       lastDay: until?.subtract(const Duration(days: 1)),
                       onSelected: (selectedDay) {
-                        taskAddBloc.setFrom(selectedDay.getDate());
+                        bloc.setFrom(selectedDay.getDate());
                       }),
               ],
             );
@@ -938,19 +935,15 @@ class TaskAddUntil extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TaskAddBloc taskAddBloc = context.read<TaskAddBloc>();
+    TaskAddBloc bloc = context.read<TaskAddBloc>();
 
     DateTime today = DateTime.now().getDate();
 
     return Padding(
       padding: HTEdgeInsets.horizontal24,
       child: StreamBuilder<List>(
-          stream: Rx.combineLatestList([
-            taskAddBloc.until,
-            taskAddBloc.from,
-            taskAddBloc.isRepeat,
-            taskAddBloc.showEndCalendar
-          ]),
+          stream: Rx.combineLatestList(
+              [bloc.until, bloc.from, bloc.isRepeat, bloc.showEndCalendar]),
           builder: (context, snapshot) {
             DateTime? until = snapshot.data?[0];
             DateTime from = snapshot.data?[1] ?? today;
@@ -964,7 +957,7 @@ class TaskAddUntil extends StatelessWidget {
             }
 
             if (until != null && until.isBefore(from)) {
-              taskAddBloc.setUntil(null);
+              bloc.setUntil(null);
             }
 
             return Column(
@@ -983,7 +976,7 @@ class TaskAddUntil extends StatelessWidget {
                       if (until != null)
                         GestureDetector(
                           onTap: () {
-                            taskAddBloc.toggleEndCalendar();
+                            bloc.toggleEndCalendar();
                           },
                           child: Container(
                             padding: const EdgeInsets.symmetric(
@@ -1006,17 +999,17 @@ class TaskAddUntil extends StatelessWidget {
                           activeColor: htGreys(context).black,
                           onChanged: (value) {
                             if (value) {
-                              taskAddBloc.setShowEndCalendar(true);
-                              taskAddBloc.scrollToEndCalendar();
+                              bloc.setShowEndCalendar(true);
+                              bloc.scrollToEndCalendar();
 
-                              taskAddBloc.setUntil(
+                              bloc.setUntil(
                                   firstDate.add(const Duration(days: 7)));
 
-                              if (!taskAddBloc.isRepeatValue) {
-                                taskAddBloc.setIsRepeat(true);
+                              if (!bloc.isRepeatValue) {
+                                bloc.setIsRepeat(true);
                               }
                             } else {
-                              taskAddBloc.setUntil(null);
+                              bloc.setUntil(null);
                             }
                           }),
                     ],
@@ -1028,7 +1021,7 @@ class TaskAddUntil extends StatelessWidget {
                           until.isAfter(firstDate) ? until : firstDate,
                       firstDay: firstDate,
                       onSelected: (selectedDay) {
-                        taskAddBloc.setUntil(selectedDay.getDate());
+                        bloc.setUntil(selectedDay.getDate());
                       }),
               ],
             );
@@ -1042,11 +1035,11 @@ class TaskAddSubmit extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TaskAddBloc taskAddBloc = context.read<TaskAddBloc>();
+    TaskAddBloc bloc = context.read<TaskAddBloc>();
 
     return StreamBuilder<List>(
         stream: Rx.combineLatestList([
-          taskAddBloc.title,
+          bloc.title,
         ]),
         builder: (context, snapshot) {
           String title = snapshot.data?[0] ?? '';
@@ -1068,22 +1061,21 @@ class TaskAddSubmit extends StatelessWidget {
                           borderRadius: HTBorderRadius.circular10)),
                   onPressed: () {
                     if (canSubmit) {
-                      if (taskAddBloc.task != null) {
-                        taskAddBloc.updateTask().then((value) {
+                      if (bloc.task != null) {
+                        bloc.updateTask().then((value) {
                           if (value != null) {
-                            Navigator.pop(
-                                context, taskAddBloc.getUpdatedTask(value));
+                            Navigator.pop(context, bloc.getUpdatedTask(value));
                           }
                         });
                       } else {
-                        taskAddBloc.addTask().then((value) {
+                        bloc.addTask().then((value) {
                           context.push(TaskDetailPage.routeName, extra: value);
                           Navigator.pop(context);
                         });
                       }
                     } else {
                       if (title.isEmpty) {
-                        taskAddBloc.setTitleError(true);
+                        bloc.setTitleError(true);
                       }
                     }
                   },

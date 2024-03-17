@@ -50,21 +50,22 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     IAPService iapService = IAPService();
 
-    AppBloc appBloc = AppBloc(isar: isar, iapService: iapService);
+    AppService appService = AppService(isar: isar, iapService: iapService);
     TaskBloc taskBloc = TaskBloc(
-        appBloc: appBloc, deviceWidth: MediaQuery.sizeOf(context).width);
+        appService: appService, deviceWidth: MediaQuery.sizeOf(context).width);
     TimerBloc timerBloc = TimerBloc(
-        appBloc: appBloc, deviceHeight: MediaQuery.sizeOf(context).height);
+        appService: appService,
+        deviceHeight: MediaQuery.sizeOf(context).height);
 
     return MultiProvider(
       providers: [
-        Provider(create: (context) => appBloc),
+        Provider(create: (context) => appService),
         Provider(create: (context) => iapService),
         Provider(create: (context) => taskBloc),
         Provider(create: (context) => timerBloc),
       ],
       child: StreamBuilder<Settings>(
-          stream: appBloc.settings,
+          stream: appService.settings,
           builder: (context, snapshot) {
             Settings settings = snapshot.data ?? Settings();
             bool isDarkMode = settings.isDarkMode;

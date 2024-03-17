@@ -128,7 +128,7 @@ class TaskDetailBloc extends Disposable {
         builder: (context) {
           return Provider(
               create: (context) => TaskAddBloc(
-                  appBloc: context.read<AppBloc>(), task: taskObjValue),
+                  appService: context.read<AppService>(), task: taskObjValue),
               dispose: (context, value) => value.dispose(),
               child: const TaskAddWidget());
         }).then((task) {

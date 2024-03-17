@@ -26,10 +26,10 @@ class TaskPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AppBloc appBloc = context.read<AppBloc>();
+    AppService appService = context.read<AppService>();
 
     return StreamBuilder<bool>(
-        stream: appBloc.isPro,
+        stream: appService.isPro,
         builder: (context, snapshot) {
           bool isPro = snapshot.data ?? true;
 
@@ -53,10 +53,10 @@ class TaskBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TaskBloc taskBloc = context.read<TaskBloc>();
+    TaskBloc bloc = context.read<TaskBloc>();
 
     return StreamBuilder<List>(
-      stream: Rx.combineLatestList([taskBloc.tabIndex]),
+      stream: Rx.combineLatestList([bloc.tabIndex]),
       builder: (context, snapshot) {
         int tabIndex = snapshot.data?[0] ?? 0;
 
@@ -82,10 +82,10 @@ class TaskAppbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TaskBloc calendarBloc = context.read<TaskBloc>();
+    TaskBloc bloc = context.read<TaskBloc>();
 
     return StreamBuilder<int>(
-        stream: calendarBloc.tabIndex,
+        stream: bloc.tabIndex,
         builder: (context, snapshot) {
           int tabIndex = snapshot.data ?? 0;
 
@@ -102,7 +102,7 @@ class TaskAppbar extends StatelessWidget {
                         GestureDetector(
                           behavior: HitTestBehavior.opaque,
                           onTap: () {
-                            calendarBloc.setTabIndex(0);
+                            bloc.setTabIndex(0);
                           },
                           child: Padding(
                             padding: const EdgeInsets.only(top: 8, bottom: 4),
@@ -121,7 +121,7 @@ class TaskAppbar extends StatelessWidget {
                         GestureDetector(
                           behavior: HitTestBehavior.opaque,
                           onTap: () {
-                            calendarBloc.setTabIndex(1);
+                            bloc.setTabIndex(1);
                           },
                           child: Padding(
                             padding: const EdgeInsets.only(top: 8, bottom: 4),
@@ -179,13 +179,13 @@ class DailyDates extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TaskBloc taskBloc = context.read<TaskBloc>();
+    TaskBloc bloc = context.read<TaskBloc>();
 
     return StreamBuilder<List>(
-        stream: Rx.combineLatestList([taskBloc.dateIndex, taskBloc.dates]),
+        stream: Rx.combineLatestList([bloc.dateIndex, bloc.dates]),
         builder: (context, snapshot) {
           int dateIndex = snapshot.data?[0] ?? 0;
-          List<DateTime> dates = snapshot.data?[1] ?? taskBloc.getDates();
+          List<DateTime> dates = snapshot.data?[1] ?? bloc.getDates();
 
           DateTime today = DateTime.now().getDate();
 
@@ -205,7 +205,7 @@ class DailyDates extends StatelessWidget {
             child: Stack(
               children: [
                 ListView.separated(
-                    controller: taskBloc.dateScrollController,
+                    controller: bloc.dateScrollController,
                     scrollDirection: Axis.horizontal,
                     padding: HTEdgeInsets.horizontal16,
                     shrinkWrap: true,
@@ -215,7 +215,7 @@ class DailyDates extends StatelessWidget {
 
                       double donePercentage = 0;
                       if (today.isAfter(date)) {
-                        donePercentage = taskBloc.getDonePercentage(date);
+                        donePercentage = bloc.getDonePercentage(date);
                       }
 
                       return Row(
@@ -247,7 +247,7 @@ class DailyDates extends StatelessWidget {
                             ),
                           GestureDetector(
                             onTap: () {
-                              taskBloc.setDateIndex(index);
+                              bloc.setDateIndex(index);
                             },
                             child: Stack(
                               children: [
@@ -316,7 +316,7 @@ class DailyDates extends StatelessWidget {
                     },
                     itemCount: dates.length),
                 StreamBuilder<int>(
-                    stream: taskBloc.notToday,
+                    stream: bloc.notToday,
                     builder: (context, snapshot) {
                       int notToday = snapshot.data ?? 0;
 
@@ -331,7 +331,7 @@ class DailyDates extends StatelessWidget {
                           color: htGreys(context).white,
                           child: GestureDetector(
                             onTap: () {
-                              taskBloc.scrollToToday();
+                              bloc.scrollToToday();
                             },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -359,7 +359,7 @@ class DailyDates extends StatelessWidget {
                       );
                     }),
                 StreamBuilder<int>(
-                    stream: taskBloc.notToday,
+                    stream: bloc.notToday,
                     builder: (context, snapshot) {
                       int notToday = snapshot.data ?? 0;
 
@@ -374,7 +374,7 @@ class DailyDates extends StatelessWidget {
                           color: htGreys(context).white,
                           child: GestureDetector(
                             onTap: () {
-                              taskBloc.scrollToToday();
+                              bloc.scrollToToday();
                             },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -464,13 +464,13 @@ class AllTaskList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AppBloc appBloc = context.read<AppBloc>();
+    AppService appService = context.read<AppService>();
 
     return Expanded(
       child: Container(
         color: htGreys(context).grey010,
         child: StreamBuilder<List>(
-            stream: Rx.combineLatestList([appBloc.tasks, appBloc.isPro]),
+            stream: Rx.combineLatestList([appService.tasks, appService.isPro]),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return const Center(child: CircularProgressIndicator());
@@ -541,19 +541,15 @@ class DailyTaskList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TaskBloc taskBloc = context.read<TaskBloc>();
-    AppBloc appBloc = context.read<AppBloc>();
+    TaskBloc bloc = context.read<TaskBloc>();
+    AppService appService = context.read<AppService>();
 
     return Expanded(
       child: Container(
         color: htGreys(context).grey010,
         child: StreamBuilder<List>(
-            stream: Rx.combineLatestList([
-              taskBloc.currTasks,
-              taskBloc.dateIndex,
-              taskBloc.dates,
-              appBloc.isPro
-            ]),
+            stream: Rx.combineLatestList(
+                [bloc.currTasks, bloc.dateIndex, bloc.dates, appService.isPro]),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return const Center(child: CircularProgressIndicator());
@@ -561,7 +557,7 @@ class DailyTaskList extends StatelessWidget {
 
               List<Task> currTasks = snapshot.data?[0] ?? [];
               int dateIndex = snapshot.data?[1] ?? 0;
-              List<DateTime> dates = snapshot.data?[2] ?? taskBloc.getDates();
+              List<DateTime> dates = snapshot.data?[2] ?? bloc.getDates();
               bool isPro = snapshot.data?[3] ?? true;
 
               DateTime currDate = dates[dateIndex];
@@ -637,8 +633,8 @@ class TaskBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AppBloc appBloc = context.read<AppBloc>();
-    TaskBloc dailyBloc = context.read<TaskBloc>();
+    AppService appService = context.read<AppService>();
+    TaskBloc bloc = context.read<TaskBloc>();
 
     DateTime today = DateTime.now().getDate();
 
@@ -700,20 +696,18 @@ class TaskBox extends StatelessWidget {
             const Spacer(),
             if (!disabled)
               StreamBuilder<List>(
-                  stream: Rx.combineLatestList(
-                      [dailyBloc.dateIndex, dailyBloc.dates]),
+                  stream: Rx.combineLatestList([bloc.dateIndex, bloc.dates]),
                   builder: (context, snapshot) {
                     int dateIndex = snapshot.data?[0] ?? 0;
-                    List<DateTime> dates =
-                        snapshot.data?[1] ?? dailyBloc.getDates();
+                    List<DateTime> dates = snapshot.data?[1] ?? bloc.getDates();
 
                     DateTime date = dates[dateIndex];
-                    bool isDone = appBloc.isDone(task, date);
+                    bool isDone = appService.isDone(task, date);
 
                     return GestureDetector(
                       onTap: () {
                         HapticFeedback.lightImpact();
-                        appBloc.toggleTask(task, date);
+                        appService.toggleTask(task, date);
                       },
                       child: Column(
                         children: [

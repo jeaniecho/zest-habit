@@ -46,11 +46,11 @@ class TaskDetailAction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AppBloc appBloc = context.read<AppBloc>();
-    TaskDetailBloc taskDetailBloc = context.read<TaskDetailBloc>();
+    AppService appService = context.read<AppService>();
+    TaskDetailBloc bloc = context.read<TaskDetailBloc>();
 
-    bool isOld = taskDetailBloc.task.until != null &&
-        taskDetailBloc.task.until!.isBefore(DateTime.now().getDate());
+    bool isOld = bloc.task.until != null &&
+        bloc.task.until!.isBefore(DateTime.now().getDate());
 
     return PullDownButton(
         offset: const Offset(4, 4),
@@ -74,7 +74,7 @@ class TaskDetailAction extends StatelessWidget {
                   title: 'Edit',
                   icon: CupertinoIcons.pen,
                   onTap: () {
-                    taskDetailBloc.showEditModal(context);
+                    bloc.showEditModal(context);
                   },
                 ),
               if (!isOld) const PullDownMenuDivider(),
@@ -89,9 +89,7 @@ class TaskDetailAction extends StatelessWidget {
                     content:
                         'Removing this task clears all habit tracking data.',
                     action: () {
-                      appBloc
-                          .deleteTask(taskDetailBloc.taskObjValue)
-                          .then((value) {
+                      appService.deleteTask(bloc.taskObjValue).then((value) {
                         context.pop();
                       });
                     },
@@ -139,10 +137,10 @@ class TaskEditButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TaskDetailBloc taskDetailBloc = context.read<TaskDetailBloc>();
+    TaskDetailBloc bloc = context.read<TaskDetailBloc>();
 
-    bool isOld = taskDetailBloc.task.until != null &&
-        taskDetailBloc.task.until!.isBefore(DateTime.now().getDate());
+    bool isOld = bloc.task.until != null &&
+        bloc.task.until!.isBefore(DateTime.now().getDate());
     if (isOld) {
       return const SizedBox.shrink();
     }
@@ -150,7 +148,7 @@ class TaskEditButton extends StatelessWidget {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
-        taskDetailBloc.showEditModal(context);
+        bloc.showEditModal(context);
       },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -183,12 +181,12 @@ class TaskDesc extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TaskDetailBloc taskDetailBloc = context.read<TaskDetailBloc>();
+    TaskDetailBloc bloc = context.read<TaskDetailBloc>();
 
     return StreamBuilder<Task>(
-        stream: taskDetailBloc.taskObj,
+        stream: bloc.taskObj,
         builder: (context, snapshot) {
-          Task task = snapshot.data ?? taskDetailBloc.task;
+          Task task = snapshot.data ?? bloc.task;
 
           return Padding(
             padding: HTEdgeInsets.horizontal24,
@@ -253,13 +251,13 @@ class TaskCalendar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TaskDetailBloc taskDetailBloc = context.read<TaskDetailBloc>();
+    TaskDetailBloc bloc = context.read<TaskDetailBloc>();
 
     return Column(
       children: [
         HTSpacers.height32,
         StreamBuilder<bool>(
-            stream: taskDetailBloc.isMonthly,
+            stream: bloc.isMonthly,
             builder: (context, snapshot) {
               bool isMonthly = snapshot.data ?? true;
 
@@ -269,7 +267,7 @@ class TaskCalendar extends StatelessWidget {
         HTAnimatedToggle(
           values: const ['Weekly', 'Monthly'],
           onToggleCallback: (value) {
-            taskDetailBloc.toggleCalendarType();
+            bloc.toggleCalendarType();
           },
         ),
         HTSpacers.height32,
@@ -313,24 +311,24 @@ class TaskWeeklyTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TaskDetailBloc taskDetailBloc = context.read<TaskDetailBloc>();
+    TaskDetailBloc bloc = context.read<TaskDetailBloc>();
 
     return StreamBuilder<Task>(
-        stream: taskDetailBloc.taskObj,
+        stream: bloc.taskObj,
         builder: (context, snapshot) {
-          Task task = snapshot.data ?? taskDetailBloc.task;
+          Task task = snapshot.data ?? bloc.task;
 
           return Column(
             children: [
               StreamBuilder<DateTime>(
-                  stream: taskDetailBloc.currDate,
+                  stream: bloc.currDate,
                   builder: (context, snapshot) {
                     DateTime today = DateTime.now().getDate();
                     DateTime currDate = snapshot.data ?? today;
                     int weekNum = htWeekOfMonth(currDate);
 
-                    bool isOld = taskDetailBloc.task.until != null &&
-                        taskDetailBloc.task.until!.isBefore(today);
+                    bool isOld = bloc.task.until != null &&
+                        bloc.task.until!.isBefore(today);
 
                     bool isBefore = !currDate.isAfter(task.from);
                     bool isLater = !htMostRecentWeekday(currDate).isBefore(
@@ -343,7 +341,7 @@ class TaskWeeklyTitle extends StatelessWidget {
                           behavior: HitTestBehavior.opaque,
                           onTap: () {
                             if (!isBefore) {
-                              taskDetailBloc.changeWeek(-1);
+                              bloc.changeWeek(-1);
                             }
                           },
                           child: Padding(
@@ -368,7 +366,7 @@ class TaskWeeklyTitle extends StatelessWidget {
                           behavior: HitTestBehavior.opaque,
                           onTap: () {
                             if (!isLater) {
-                              taskDetailBloc.changeWeek(1);
+                              bloc.changeWeek(1);
                             }
                           },
                           child: Padding(
@@ -403,23 +401,23 @@ class TaskMonthlyTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TaskDetailBloc taskDetailBloc = context.read<TaskDetailBloc>();
+    TaskDetailBloc bloc = context.read<TaskDetailBloc>();
 
     return StreamBuilder<Task>(
-        stream: taskDetailBloc.taskObj,
+        stream: bloc.taskObj,
         builder: (context, snapshot) {
-          Task task = snapshot.data ?? taskDetailBloc.task;
+          Task task = snapshot.data ?? bloc.task;
 
           return Column(
             children: [
               StreamBuilder<DateTime>(
-                  stream: taskDetailBloc.currDate,
+                  stream: bloc.currDate,
                   builder: (context, snapshot) {
                     DateTime today = DateTime.now().getDate();
                     DateTime currMonth = snapshot.data ?? today;
 
-                    bool isOld = taskDetailBloc.task.until != null &&
-                        taskDetailBloc.task.until!.isBefore(today);
+                    bool isOld = bloc.task.until != null &&
+                        bloc.task.until!.isBefore(today);
 
                     bool isBefore = htIsSameMonth(task.from, currMonth);
                     bool isAfter =
@@ -432,7 +430,7 @@ class TaskMonthlyTitle extends StatelessWidget {
                           behavior: HitTestBehavior.opaque,
                           onTap: () {
                             if (!isBefore) {
-                              taskDetailBloc.changeMonth(-1);
+                              bloc.changeMonth(-1);
                             }
                           },
                           child: Padding(
@@ -457,7 +455,7 @@ class TaskMonthlyTitle extends StatelessWidget {
                           behavior: HitTestBehavior.opaque,
                           onTap: () {
                             if (!isAfter) {
-                              taskDetailBloc.changeMonth(1);
+                              bloc.changeMonth(1);
                             }
                           },
                           child: Padding(
@@ -494,21 +492,21 @@ class TaskWeeklyCalendar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TaskDetailBloc taskDetailBloc = context.read<TaskDetailBloc>();
-    AppBloc appBloc = context.read<AppBloc>();
+    TaskDetailBloc bloc = context.read<TaskDetailBloc>();
+    AppService appService = context.read<AppService>();
 
     return SizedBox(
       height: 86,
       child: StreamBuilder<List>(
           stream: Rx.combineLatestList([
-            taskDetailBloc.currDate,
-            taskDetailBloc.doneDates,
-            taskDetailBloc.taskObj,
-            taskDetailBloc.timerDates,
-            appBloc.settings,
+            bloc.currDate,
+            bloc.doneDates,
+            bloc.taskObj,
+            bloc.timerDates,
+            appService.settings,
           ]),
           builder: (context, snapshot) {
-            Task task = snapshot.data?[2] ?? taskDetailBloc.task;
+            Task task = snapshot.data?[2] ?? bloc.task;
 
             Settings settings = snapshot.data?[4] ?? Settings();
             if (settings.isDarkMode && task.color == 0xFF000000) {
@@ -691,17 +689,14 @@ class TaskMonthlyCalendar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TaskDetailBloc taskDetailBloc = context.read<TaskDetailBloc>();
-    AppBloc appBloc = context.read<AppBloc>();
+    TaskDetailBloc bloc = context.read<TaskDetailBloc>();
+    AppService appService = context.read<AppService>();
 
     return StreamBuilder<List>(
-        stream: Rx.combineLatestList([
-          taskDetailBloc.currDate,
-          taskDetailBloc.taskObj,
-          appBloc.settings
-        ]),
+        stream: Rx.combineLatestList(
+            [bloc.currDate, bloc.taskObj, appService.settings]),
         builder: (context, snapshot) {
-          Task task = snapshot.data?[1] ?? taskDetailBloc.task;
+          Task task = snapshot.data?[1] ?? bloc.task;
 
           Settings settings = snapshot.data?[2] ?? Settings();
           if (settings.isDarkMode && task.color == 0xFF000000) {
@@ -728,8 +723,7 @@ class TaskMonthlyCalendar extends StatelessWidget {
               borderRadius: HTBorderRadius.circular8,
             ),
             child: StreamBuilder<List>(
-                stream: Rx.combineLatestList(
-                    [taskDetailBloc.doneDates, taskDetailBloc.timerDates]),
+                stream: Rx.combineLatestList([bloc.doneDates, bloc.timerDates]),
                 builder: (context, snapshot) {
                   List<int> doneDates = snapshot.data?[0] ?? [];
                   List<int> timerDates = snapshot.data?[1] ?? [];
@@ -867,12 +861,12 @@ class TaskDetailRepeat extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TaskDetailBloc taskDetailBloc = context.read<TaskDetailBloc>();
+    TaskDetailBloc bloc = context.read<TaskDetailBloc>();
 
     return StreamBuilder<Task>(
-        stream: taskDetailBloc.taskObj,
+        stream: bloc.taskObj,
         builder: (context, snapshot) {
-          Task task = snapshot.data ?? taskDetailBloc.task;
+          Task task = snapshot.data ?? bloc.task;
 
           return Padding(
             padding: HTEdgeInsets.horizontal24,
@@ -940,12 +934,12 @@ class TaskDetailAlarm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TaskDetailBloc taskDetailBloc = context.read<TaskDetailBloc>();
+    TaskDetailBloc bloc = context.read<TaskDetailBloc>();
 
     return StreamBuilder<Task>(
-        stream: taskDetailBloc.taskObj,
+        stream: bloc.taskObj,
         builder: (context, snapshot) {
-          Task task = snapshot.data ?? taskDetailBloc.task;
+          Task task = snapshot.data ?? bloc.task;
 
           return Padding(
             padding: HTEdgeInsets.horizontal24,
