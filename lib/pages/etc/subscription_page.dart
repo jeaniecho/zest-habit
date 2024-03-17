@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:habit_app/blocs/etc/subscription_bloc.dart';
 import 'package:habit_app/iap/iap_service.dart';
 import 'package:habit_app/gen/assets.gen.dart';
 import 'package:habit_app/styles/colors.dart';
@@ -8,9 +9,6 @@ import 'package:habit_app/styles/tokens.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
-
-BehaviorSubject<int> _selectedIndex = BehaviorSubject.seeded(1);
-BehaviorSubject<ProductDetails> _selectedProduct = BehaviorSubject();
 
 class SubscriptionPage extends StatelessWidget {
   const SubscriptionPage({super.key});
@@ -137,6 +135,7 @@ class SubscriptionProducts extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     IAPService iapService = context.read<IAPService>();
+    SubscriptionBloc bloc = context.read<SubscriptionBloc>();
 
     return StreamBuilder<List<ProductDetails>>(
         stream: iapService.products,
@@ -153,10 +152,10 @@ class SubscriptionProducts extends StatelessWidget {
                 child: Center(child: CircularProgressIndicator()));
           }
 
-          _selectedProduct.add(subscriptions[1]);
+          bloc.setSelectedProduct(subscriptions[1]);
 
           return StreamBuilder<int>(
-              stream: _selectedIndex.stream,
+              stream: bloc.selectedIndex,
               builder: (context, snapshot) {
                 int selectedIndex = snapshot.data ?? 1;
 
@@ -167,8 +166,8 @@ class SubscriptionProducts extends StatelessWidget {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          _selectedIndex.add(0);
-                          _selectedProduct.add(subscriptions[0]);
+                          bloc.setSelectedIndex(0);
+                          bloc.setSelectedProduct(subscriptions[0]);
                         },
                         child: SubscriptionProductBox(
                           isSelected: selectedIndex == 0,
@@ -180,8 +179,8 @@ class SubscriptionProducts extends StatelessWidget {
                       SizedBox(width: 16.h),
                       GestureDetector(
                         onTap: () {
-                          _selectedIndex.add(1);
-                          _selectedProduct.add(subscriptions[1]);
+                          bloc.setSelectedIndex(1);
+                          bloc.setSelectedProduct(subscriptions[1]);
                         },
                         child: SubscriptionProductBox(
                           isSelected: selectedIndex == 1,
@@ -335,9 +334,11 @@ class SubscriptionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     IAPService iapService = context.read<IAPService>();
+    SubscriptionBloc bloc = context.read<SubscriptionBloc>();
 
     return StreamBuilder<List>(
-        stream: Rx.combineLatestList([_selectedProduct.stream, _selectedIndex]),
+        stream:
+            Rx.combineLatestList([bloc.selectedProduct, bloc.selectedIndex]),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return const SizedBox.shrink();
