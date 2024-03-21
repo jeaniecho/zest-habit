@@ -19,38 +19,28 @@ class OnboardingPage extends StatelessWidget {
   Widget build(BuildContext context) {
     OnboardingBloc bloc = context.read<OnboardingBloc>();
 
-    int imageCount = 4;
-
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light,
       child: Scaffold(
         backgroundColor: HTColors.black,
         body: SafeArea(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Expanded(
-                child: SizedBox(
-                  height: 428.h,
-                  child: PageView.builder(
-                    onPageChanged: (index) => bloc.setImageIndex(index),
-                    itemBuilder: (context, index) {
-                      return Container(
-                        color: HTColors.black,
-                        child: Center(
-                          child: Text(
-                            'Page $index',
-                            style: const TextStyle(color: HTColors.white),
-                          ),
-                        ),
-                      );
-                    },
-                    itemCount: imageCount,
-                  ),
+              SizedBox(
+                height: 428.h,
+                child: PageView.builder(
+                  controller: bloc.imageController,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    return bloc.images[index].image();
+                  },
+                  itemCount: bloc.images.length,
                 ),
               ),
-              HTSpacers.height48,
-              SizedBox(
+              Container(
                 height: 6,
+                margin: HTEdgeInsets.vertical24,
                 child: StreamBuilder<int>(
                     stream: bloc.imageIndex,
                     builder: (context, snapshot) {
@@ -74,32 +64,63 @@ class OnboardingPage extends StatelessWidget {
                         separatorBuilder: (context, index) {
                           return HTSpacers.width8;
                         },
-                        itemCount: imageCount,
+                        itemCount: bloc.images.length,
                       );
                     }),
               ),
               HTSpacers.height24,
-              Container(
+              SizedBox(
                 height: 64,
-                width: double.infinity,
-                padding: HTEdgeInsets.horizontal24,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: HTColors.white,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.h)),
-                  ),
-                  onPressed: () {
-                    context.pushReplacement(OnboardingTaskPage.routeName);
+                child: PageView.builder(
+                  controller: bloc.textController,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    return HTText(
+                      bloc.texts[index],
+                      typoToken: HTTypoToken.headlineSmall,
+                      color: HTColors.white,
+                      textAlign: TextAlign.center,
+                    );
                   },
-                  child: const HTText(
-                    'Get Started',
-                    typoToken: HTTypoToken.subtitleXLarge,
-                    color: HTColors.black,
-                    height: 1.25,
-                  ),
+                  itemCount: bloc.texts.length,
                 ),
               ),
+              HTSpacers.height48,
+              StreamBuilder<int>(
+                  stream: bloc.imageIndex,
+                  builder: (context, snapshot) {
+                    int imageIndex = snapshot.data ?? 0;
+
+                    bool inLastPage = imageIndex >= bloc.images.length - 1;
+
+                    return Container(
+                      height: 64,
+                      width: double.infinity,
+                      padding: HTEdgeInsets.horizontal24,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: HTColors.white,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.h)),
+                        ),
+                        onPressed: () {
+                          if (!inLastPage) {
+                            bloc.setImageIndex(imageIndex + 1);
+                            bloc.movePage(imageIndex + 1);
+                          } else {
+                            context
+                                .pushReplacement(OnboardingTaskPage.routeName);
+                          }
+                        },
+                        child: HTText(
+                          inLastPage ? 'Get Started' : 'Go Ahead',
+                          typoToken: HTTypoToken.subtitleXLarge,
+                          color: HTColors.black,
+                          height: 1.25,
+                        ),
+                      ),
+                    );
+                  }),
               HTSpacers.height24,
             ],
           ),

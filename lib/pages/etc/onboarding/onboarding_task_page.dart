@@ -6,6 +6,7 @@ import 'package:habit_app/blocs/etc/onboarding/onboarding_task_bloc.dart';
 import 'package:habit_app/iap/iap_service.dart';
 import 'package:habit_app/models/onboarding_task_model.dart';
 import 'package:habit_app/models/settings_model.dart';
+import 'package:habit_app/pages/base/task_page.dart';
 import 'package:habit_app/pages/base_page.dart';
 import 'package:habit_app/router.dart';
 import 'package:habit_app/styles/colors.dart';
@@ -254,7 +255,7 @@ class OnboardingTaskStartButton extends StatelessWidget {
                   if (canStart) {
                     bloc.addTasks().then((value) {
                       bloc.appService.updateOnboardingStatus(true);
-                      context.pushReplacement(BasePage.routeName);
+                      context.pushReplacement(TaskPage.routeName);
                     });
                   }
                 },

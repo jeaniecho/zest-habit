@@ -28,6 +28,12 @@ GlobalKey<ScaffoldState> rootScaffoldKey = GlobalKey<ScaffoldState>();
 GlobalKey<ScaffoldMessengerState> snackbarKey =
     GlobalKey<ScaffoldMessengerState>();
 
+final router = GoRouter(
+  navigatorKey: rootNavKey,
+  initialLocation: SplashPage.routeName,
+  routes: routes,
+);
+
 List<RouteBase> routes = [
   ShellRoute(
     navigatorKey: shellNavKey,

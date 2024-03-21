@@ -70,12 +70,6 @@ class MyApp extends StatelessWidget {
             Settings settings = snapshot.data ?? Settings();
             bool isDarkMode = settings.isDarkMode;
 
-            final router = GoRouter(
-              navigatorKey: rootNavKey,
-              initialLocation: SplashPage.routeName,
-              routes: routes,
-            );
-
             return ScreenUtilInit(
               designSize: const Size(428, 926),
               minTextAdapt: true,
