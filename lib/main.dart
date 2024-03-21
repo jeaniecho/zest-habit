@@ -69,7 +69,6 @@ class MyApp extends StatelessWidget {
           builder: (context, snapshot) {
             Settings settings = snapshot.data ?? Settings();
             bool isDarkMode = settings.isDarkMode;
-            bool onboardingDone = settings.completedOnboarding;
 
             final router = GoRouter(
               navigatorKey: rootNavKey,
