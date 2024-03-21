@@ -16,6 +16,7 @@ import 'package:habit_app/pages/drawer/term_page.dart';
 import 'package:habit_app/pages/etc/dev_page.dart';
 import 'package:habit_app/pages/etc/onboarding/onboarding_page.dart';
 import 'package:habit_app/pages/etc/onboarding/onboarding_task_page.dart';
+import 'package:habit_app/pages/etc/splash_page.dart';
 import 'package:habit_app/pages/etc/subscription_page.dart';
 import 'package:habit_app/pages/task/task_detail_page.dart';
 import 'package:habit_app/utils/page_routes.dart';
@@ -106,6 +107,12 @@ List<RouteBase> routes = [
         dispose: (context, value) => value.dispose(),
         child: const OnboardingTaskPage(),
       );
+    },
+  ),
+  GoRoute(
+    path: SplashPage.routeName,
+    builder: (context, state) {
+      return const SplashPage();
     },
   ),
 ];

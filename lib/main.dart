@@ -8,12 +8,12 @@ import 'package:habit_app/blocs/base/task_bloc.dart';
 import 'package:habit_app/blocs/base/timer_bloc.dart';
 import 'package:habit_app/models/settings_model.dart';
 import 'package:habit_app/models/task_model.dart';
-import 'package:habit_app/pages/base/task_page.dart';
-import 'package:habit_app/pages/etc/onboarding/onboarding_page.dart';
+import 'package:habit_app/pages/etc/splash_page.dart';
 import 'package:habit_app/router.dart';
 import 'package:habit_app/styles/themes.dart';
 import 'package:habit_app/utils/notifications.dart';
 import 'package:isar/isar.dart';
+
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
@@ -73,9 +73,7 @@ class MyApp extends StatelessWidget {
 
             final router = GoRouter(
               navigatorKey: rootNavKey,
-              initialLocation: onboardingDone
-                  ? TaskPage.routeName
-                  : OnboardingPage.routeName,
+              initialLocation: SplashPage.routeName,
               routes: routes,
             );
 
