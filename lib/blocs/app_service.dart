@@ -40,7 +40,7 @@ class AppService {
   Stream<bool> get isPro => _isPro.stream;
 
   AppService({required this.isar, required this.iapService}) {
-    _isPro = BehaviorSubject.seeded(false);
+    _isPro = BehaviorSubject.seeded(true);
 
     getSettings();
     getTasks().then((value) {
