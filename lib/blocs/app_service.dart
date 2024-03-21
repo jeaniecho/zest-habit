@@ -38,6 +38,7 @@ class AppService {
   late final BehaviorSubject<bool> _isPro;
   // Stream<bool> get isPro => purchases.map((purchases) => purchases.isNotEmpty);
   Stream<bool> get isPro => _isPro.stream;
+  bool get isProValue => _isPro.value;
 
   AppService({required this.isar, required this.iapService}) {
     _isPro = BehaviorSubject.seeded(true);

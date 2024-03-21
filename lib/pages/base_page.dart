@@ -40,8 +40,10 @@ class _BasePageState extends State<BasePage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      if (!context.read<IAPService>().isPro() &&
-          context.read<AppService>().settingsValue.createdTaskCount >= 3) {
+      if (
+          // !context.read<IAPService>().isPro() &&
+          !context.read<AppService>().isProValue &&
+              context.read<AppService>().settingsValue.createdTaskCount >= 3) {
         pushSubscriptionPage();
       }
     });
