@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:habit_app/blocs/app_service.dart';
 import 'package:habit_app/blocs/task/task_add_bloc.dart';
 import 'package:habit_app/models/settings_model.dart';
-import 'package:habit_app/pages/etc/subscription_page.dart';
 import 'package:habit_app/pages/task/task_detail_page.dart';
 import 'package:habit_app/router.dart';
 import 'package:habit_app/styles/colors.dart';
@@ -14,7 +13,6 @@ import 'package:habit_app/utils/emojis.dart';
 import 'package:habit_app/utils/enums.dart';
 import 'package:habit_app/utils/functions.dart';
 import 'package:habit_app/utils/notifications.dart';
-import 'package:habit_app/utils/page_routes.dart';
 import 'package:habit_app/utils/painters.dart';
 import 'package:habit_app/widgets/ht_bottom_modal.dart';
 import 'package:habit_app/widgets/ht_calendar.dart';
@@ -190,7 +188,7 @@ class TaskAddAlarm extends StatelessWidget {
                   content:
                       'To set alarm, you need PRO plan.\nStart with free trial plan!',
                   action: () {
-                    slideUpSubscriptionPage();
+                    pushSubscriptionPage();
                   },
                   buttonText: 'Try PRO',
                   isDestructive: false,

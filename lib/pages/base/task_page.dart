@@ -3,19 +3,17 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:habit_app/blocs/app_service.dart';
 import 'package:habit_app/blocs/base/task_bloc.dart';
-import 'package:habit_app/blocs/etc/subscription_bloc.dart';
 import 'package:habit_app/models/task_model.dart';
-import 'package:habit_app/pages/etc/subscription_page.dart';
 import 'package:habit_app/pages/task/task_detail_page.dart';
 import 'package:habit_app/router.dart';
 import 'package:habit_app/styles/colors.dart';
 import 'package:habit_app/styles/tokens.dart';
 import 'package:habit_app/styles/typos.dart';
 import 'package:habit_app/utils/functions.dart';
-import 'package:habit_app/utils/page_routes.dart';
 import 'package:habit_app/widgets/ht_scale.dart';
 import 'package:habit_app/widgets/ht_text.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -414,30 +412,16 @@ class EmptyTaskList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return Container(
+      width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
       child: Column(
         children: [
-          Padding(
-            padding: HTEdgeInsets.horizontal8,
-            child: HTText(
-              '0 Task',
-              typoToken: HTTypoToken.captionSmall,
-              color: htGreys(context).grey040,
-            ),
-          ),
           Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Container(
-                  width: 120,
-                  height: 120,
-                  decoration: BoxDecoration(
-                    color: htGreys(context).grey020,
-                    borderRadius: HTBorderRadius.circular12,
-                  ),
-                ),
+                Lottie.asset('assets/lotties/calendar.json', width: 120),
                 HTSpacers.height24,
                 HTText(
                   'Let\'s kickstart with a new task!',
@@ -748,7 +732,7 @@ class SubscribePopup extends StatelessWidget {
         alignment: Alignment.bottomCenter,
         child: GestureDetector(
           onTap: () {
-            slideUpSubscriptionPage();
+            pushSubscriptionPage();
           },
           child: Container(
             height: 96,

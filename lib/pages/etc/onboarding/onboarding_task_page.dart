@@ -3,9 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:habit_app/blocs/app_service.dart';
 import 'package:habit_app/blocs/etc/onboarding/onboarding_task_bloc.dart';
+import 'package:habit_app/iap/iap_service.dart';
 import 'package:habit_app/models/onboarding_task_model.dart';
 import 'package:habit_app/models/settings_model.dart';
-import 'package:habit_app/pages/base/task_page.dart';
+import 'package:habit_app/pages/base_page.dart';
+import 'package:habit_app/router.dart';
 import 'package:habit_app/styles/colors.dart';
 import 'package:habit_app/styles/tokens.dart';
 import 'package:habit_app/styles/typos.dart';
@@ -13,10 +15,26 @@ import 'package:habit_app/widgets/ht_text.dart';
 import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
 
-class OnboardingTaskPage extends StatelessWidget {
+class OnboardingTaskPage extends StatefulWidget {
   const OnboardingTaskPage({super.key});
 
   static const routeName = '/onboarding-task';
+
+  @override
+  State<OnboardingTaskPage> createState() => _OnboardingTaskPageState();
+}
+
+class _OnboardingTaskPageState extends State<OnboardingTaskPage> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      if (!context.read<IAPService>().isPro() &&
+          context.read<AppService>().settingsValue.createdTaskCount >= 3) {
+        pushSubscriptionPage();
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -235,8 +253,8 @@ class OnboardingTaskStartButton extends StatelessWidget {
                 onPressed: () {
                   if (canStart) {
                     bloc.addTasks().then((value) {
-                      context.pushReplacement(TaskPage.routeName);
                       bloc.appService.updateOnboardingStatus(true);
+                      context.pushReplacement(BasePage.routeName);
                     });
                   }
                 },

@@ -18,12 +18,13 @@ import 'package:habit_app/pages/etc/onboarding/onboarding_page.dart';
 import 'package:habit_app/pages/etc/onboarding/onboarding_task_page.dart';
 import 'package:habit_app/pages/etc/subscription_page.dart';
 import 'package:habit_app/pages/task/task_detail_page.dart';
+import 'package:habit_app/utils/page_routes.dart';
 import 'package:provider/provider.dart';
 
-final GlobalKey<NavigatorState> rootNavKey = GlobalKey<NavigatorState>();
-final GlobalKey<NavigatorState> shellNavKey = GlobalKey<NavigatorState>();
-final GlobalKey<ScaffoldState> rootScaffoldKey = GlobalKey<ScaffoldState>();
-final GlobalKey<ScaffoldMessengerState> snackbarKey =
+GlobalKey<NavigatorState> rootNavKey = GlobalKey<NavigatorState>();
+GlobalKey<NavigatorState> shellNavKey = GlobalKey<NavigatorState>();
+GlobalKey<ScaffoldState> rootScaffoldKey = GlobalKey<ScaffoldState>();
+GlobalKey<ScaffoldMessengerState> snackbarKey =
     GlobalKey<ScaffoldMessengerState>();
 
 List<RouteBase> routes = [
@@ -87,16 +88,6 @@ List<RouteBase> routes = [
     },
   ),
   GoRoute(
-    path: SubscriptionPage.routeName,
-    builder: (context, state) {
-      return Provider(
-        create: (context) => SubscriptionBloc(),
-        dispose: (context, value) => value.dispose(),
-        child: const SubscriptionPage(),
-      );
-    },
-  ),
-  GoRoute(
     path: OnboardingPage.routeName,
     builder: (context, state) {
       return Provider(
@@ -118,3 +109,15 @@ List<RouteBase> routes = [
     },
   ),
 ];
+
+pushSubscriptionPage() {
+  if (rootNavKey.currentContext != null) {
+    Navigator.push(
+        rootNavKey.currentContext!,
+        HTPageRoutes.slideUp(Provider(
+          create: (context) => SubscriptionBloc(),
+          dispose: (context, value) => value.dispose(),
+          child: const SubscriptionPage(),
+        )));
+  }
+}

@@ -3,14 +3,12 @@ import 'package:flutter/services.dart';
 import 'package:habit_app/blocs/app_service.dart';
 import 'package:habit_app/blocs/base/timer_bloc.dart';
 import 'package:habit_app/models/task_model.dart';
-import 'package:habit_app/pages/etc/subscription_page.dart';
 import 'package:habit_app/router.dart';
 import 'package:habit_app/styles/colors.dart';
 import 'package:habit_app/styles/tokens.dart';
 import 'package:habit_app/styles/typos.dart';
 import 'package:habit_app/utils/enums.dart';
 import 'package:habit_app/utils/functions.dart';
-import 'package:habit_app/utils/page_routes.dart';
 import 'package:habit_app/widgets/ht_bottom_modal.dart';
 import 'package:habit_app/widgets/ht_dialog.dart';
 import 'package:habit_app/widgets/ht_scale.dart';
@@ -440,7 +438,7 @@ class NoneProTimerText extends StatelessWidget {
           content:
               'To adjsut time, you need PRO plan.\nStart with free trial plan!',
           action: () {
-            slideUpSubscriptionPage();
+            pushSubscriptionPage();
           },
           buttonText: 'Try PRO',
           isDestructive: false,

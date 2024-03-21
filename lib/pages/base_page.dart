@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:go_router/go_router.dart';
-import 'package:habit_app/blocs/etc/subscription_bloc.dart';
 import 'package:habit_app/iap/iap_service.dart';
 import 'package:habit_app/blocs/app_service.dart';
 import 'package:habit_app/blocs/task/task_add_bloc.dart';
@@ -14,14 +13,12 @@ import 'package:habit_app/pages/drawer/mode_page.dart';
 import 'package:habit_app/pages/drawer/privacy_page.dart';
 import 'package:habit_app/pages/drawer/term_page.dart';
 import 'package:habit_app/pages/etc/dev_page.dart';
-import 'package:habit_app/pages/etc/subscription_page.dart';
 import 'package:habit_app/pages/task/task_add_page.dart';
 import 'package:habit_app/router.dart';
 import 'package:habit_app/styles/colors.dart';
 import 'package:habit_app/styles/tokens.dart';
 import 'package:habit_app/styles/typos.dart';
 import 'package:habit_app/utils/functions.dart';
-import 'package:habit_app/utils/page_routes.dart';
 import 'package:habit_app/widgets/ht_dialog.dart';
 import 'package:habit_app/widgets/ht_text.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -44,8 +41,8 @@ class _BasePageState extends State<BasePage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       if (!context.read<IAPService>().isPro() &&
-          context.read<AppService>().settingsValue.completedOnboarding) {
-        slideUpSubscriptionPage();
+          context.read<AppService>().settingsValue.createdTaskCount >= 3) {
+        pushSubscriptionPage();
       }
     });
   }
@@ -138,7 +135,7 @@ class _BasePageState extends State<BasePage> {
                                 content:
                                     'To add more task, you need PRO plan.\nStart with free trial plan!',
                                 action: () {
-                                  slideUpSubscriptionPage();
+                                  pushSubscriptionPage();
                                 },
                                 buttonText: 'Try PRO',
                                 isDestructive: false,
