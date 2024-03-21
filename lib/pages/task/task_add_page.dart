@@ -190,8 +190,7 @@ class TaskAddAlarm extends StatelessWidget {
                   content:
                       'To set alarm, you need PRO plan.\nStart with free trial plan!',
                   action: () {
-                    Navigator.push(rootNavKey.currentContext!,
-                        HTPageRoutes.slideUp(const SubscriptionPage()));
+                    slideUpSubscriptionPage();
                   },
                   buttonText: 'Try PRO',
                   isDestructive: false,

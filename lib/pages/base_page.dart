@@ -43,14 +43,9 @@ class _BasePageState extends State<BasePage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      if (!context.read<IAPService>().isPro()) {
-        Navigator.push(
-            context,
-            HTPageRoutes.slideUp(Provider(
-              create: (context) => SubscriptionBloc(),
-              dispose: (context, value) => value.dispose(),
-              child: const SubscriptionPage(),
-            )));
+      if (!context.read<IAPService>().isPro() &&
+          context.read<AppService>().settingsValue.completedOnboarding) {
+        slideUpSubscriptionPage();
       }
     });
   }
@@ -143,10 +138,7 @@ class _BasePageState extends State<BasePage> {
                                 content:
                                     'To add more task, you need PRO plan.\nStart with free trial plan!',
                                 action: () {
-                                  Navigator.push(
-                                      rootNavKey.currentContext!,
-                                      HTPageRoutes.slideUp(
-                                          const SubscriptionPage()));
+                                  slideUpSubscriptionPage();
                                 },
                                 buttonText: 'Try PRO',
                                 isDestructive: false,

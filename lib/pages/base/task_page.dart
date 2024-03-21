@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:habit_app/blocs/app_service.dart';
 import 'package:habit_app/blocs/base/task_bloc.dart';
+import 'package:habit_app/blocs/etc/subscription_bloc.dart';
 import 'package:habit_app/models/task_model.dart';
 import 'package:habit_app/pages/etc/subscription_page.dart';
 import 'package:habit_app/pages/task/task_detail_page.dart';
@@ -747,8 +748,7 @@ class SubscribePopup extends StatelessWidget {
         alignment: Alignment.bottomCenter,
         child: GestureDetector(
           onTap: () {
-            Navigator.push(rootNavKey.currentContext!,
-                HTPageRoutes.slideUp(const SubscriptionPage()));
+            slideUpSubscriptionPage();
           },
           child: Container(
             height: 96,

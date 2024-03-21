@@ -440,8 +440,7 @@ class NoneProTimerText extends StatelessWidget {
           content:
               'To adjsut time, you need PRO plan.\nStart with free trial plan!',
           action: () {
-            Navigator.push(rootNavKey.currentContext!,
-                HTPageRoutes.slideUp(const SubscriptionPage()));
+            slideUpSubscriptionPage();
           },
           buttonText: 'Try PRO',
           isDestructive: false,
