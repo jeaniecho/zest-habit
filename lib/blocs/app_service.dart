@@ -40,6 +40,10 @@ class AppService {
   Stream<bool> get isPro => _isPro.stream;
   bool get isProValue => _isPro.value;
 
+  final BehaviorSubject<bool> _isLoading = BehaviorSubject.seeded(false);
+  Stream<bool> get isLoading => _isLoading.stream;
+  Function(bool) get setIsLoading => _isLoading.add;
+
   AppService({required this.isar, required this.iapService}) {
     _isPro = BehaviorSubject.seeded(true);
 

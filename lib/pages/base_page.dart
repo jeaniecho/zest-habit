@@ -18,8 +18,10 @@ import 'package:habit_app/styles/colors.dart';
 import 'package:habit_app/styles/tokens.dart';
 import 'package:habit_app/styles/typos.dart';
 import 'package:habit_app/utils/functions.dart';
+import 'package:habit_app/utils/tutorial.dart';
 import 'package:habit_app/widgets/ht_dialog.dart';
 import 'package:habit_app/widgets/ht_text.dart';
+import 'package:lottie/lottie.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
@@ -53,143 +55,161 @@ class _BasePageState extends State<BasePage> {
     AppService appService = context.read<AppService>();
 
     return StreamBuilder<List>(
-        stream: Rx.combineLatestList(
-            [appService.bottomIndex, appService.settings, appService.isPro]),
+        stream: Rx.combineLatestList([
+          appService.bottomIndex,
+          appService.settings,
+          appService.isPro,
+          appService.isLoading,
+        ]),
         builder: (context, snapshot) {
           int bottomIndex = snapshot.data?[0] ?? 0;
           Settings settings = snapshot.data?[1] ?? Settings();
           bool isPro = snapshot.data?[2] ?? false;
+          bool isLoading = snapshot.data?[3] ?? false;
 
           return AnnotatedRegion<SystemUiOverlayStyle>(
             value: settings.isDarkMode
                 ? SystemUiOverlayStyle.light
                 : SystemUiOverlayStyle.dark,
-            child: Scaffold(
-              key: rootScaffoldKey,
-              body: SafeArea(
-                child: widget.child,
-              ),
-              bottomNavigationBar: SafeArea(
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-                  decoration: BoxDecoration(
-                    border: Border(
-                      top: BorderSide(
-                        color: htGreys(context).grey010,
-                        width: 1,
+            child: Stack(
+              children: [
+                Scaffold(
+                  key: rootScaffoldKey,
+                  body: SafeArea(
+                    child: widget.child,
+                  ),
+                  bottomNavigationBar: SafeArea(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 24, vertical: 8),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          top: BorderSide(
+                            color: htGreys(context).grey010,
+                            width: 1,
+                          ),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: () {
+                              while (context.canPop()) {
+                                context.pop();
+                              }
+
+                              if (appService.bottomIndexValue != 0) {
+                                context.replace(TaskPage.routeName);
+                                appService.setBottomIndex(0);
+                              }
+                            },
+                            child: SizedBox(
+                              width: 88,
+                              height: 52,
+                              child: Icon(
+                                Icons.calendar_today_rounded,
+                                size: 22,
+                                color: bottomIndex == 0
+                                    ? htGreys(context).black
+                                    : htGreys(context).grey040,
+                              ),
+                            ),
+                          ),
+                          GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onTap: () {
+                                if (appService.activeTaskCount() < taskLimit ||
+                                    isPro) {
+                                  showModalBottomSheet(
+                                      context: context,
+                                      isScrollControlled: true,
+                                      backgroundColor: HTColors.clear,
+                                      barrierColor: htGreys(context)
+                                          .black
+                                          .withOpacity(0.3),
+                                      useSafeArea: true,
+                                      builder: (context) {
+                                        return Provider(
+                                            create: (context) => TaskAddBloc(
+                                                appService:
+                                                    context.read<AppService>()),
+                                            dispose: (context, value) =>
+                                                value.dispose(),
+                                            child: const TaskAddWidget());
+                                      });
+                                } else {
+                                  HTDialog.showConfirmDialog(
+                                    context,
+                                    title: 'Unlimited Task with PRO',
+                                    content:
+                                        'To add more task, you need PRO plan.\nStart with free trial plan!',
+                                    action: () {
+                                      pushSubscriptionPage();
+                                    },
+                                    buttonText: 'Try PRO',
+                                    isDestructive: false,
+                                  );
+                                }
+                              },
+                              child: SizedBox(
+                                width: 88,
+                                child: Container(
+                                  key: addButtonKey,
+                                  width: 48,
+                                  height: 48,
+                                  decoration: BoxDecoration(
+                                    color: htGreys(context).black,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Center(
+                                    child: Icon(
+                                      Icons.add_rounded,
+                                      size: 24,
+                                      color: htGreys(context).white,
+                                    ),
+                                  ),
+                                ),
+                              )),
+                          GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: () {
+                              while (context.canPop()) {
+                                context.pop();
+                              }
+
+                              if (appService.bottomIndexValue != 1) {
+                                context.replace(TimerPage.routeName);
+                                appService.setBottomIndex(1);
+                              }
+                            },
+                            child: SizedBox(
+                              width: 88,
+                              height: 52,
+                              child: Icon(
+                                Icons.timer_outlined,
+                                size: 24,
+                                color: bottomIndex == 1
+                                    ? htGreys(context).black
+                                    : htGreys(context).grey040,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onTap: () {
-                          while (context.canPop()) {
-                            context.pop();
-                          }
-
-                          if (appService.bottomIndexValue != 0) {
-                            context.replace(TaskPage.routeName);
-                            appService.setBottomIndex(0);
-                          }
-                        },
-                        child: SizedBox(
-                          width: 88,
-                          height: 52,
-                          child: Icon(
-                            Icons.calendar_today_rounded,
-                            size: 22,
-                            color: bottomIndex == 0
-                                ? htGreys(context).black
-                                : htGreys(context).grey040,
-                          ),
-                        ),
-                      ),
-                      GestureDetector(
-                          behavior: HitTestBehavior.opaque,
-                          onTap: () {
-                            if (appService.activeTaskCount() < taskLimit ||
-                                isPro) {
-                              showModalBottomSheet(
-                                  context: context,
-                                  isScrollControlled: true,
-                                  backgroundColor: HTColors.clear,
-                                  barrierColor:
-                                      htGreys(context).black.withOpacity(0.3),
-                                  useSafeArea: true,
-                                  builder: (context) {
-                                    return Provider(
-                                        create: (context) => TaskAddBloc(
-                                            appService:
-                                                context.read<AppService>()),
-                                        dispose: (context, value) =>
-                                            value.dispose(),
-                                        child: const TaskAddWidget());
-                                  });
-                            } else {
-                              HTDialog.showConfirmDialog(
-                                context,
-                                title: 'Unlimited Task with PRO',
-                                content:
-                                    'To add more task, you need PRO plan.\nStart with free trial plan!',
-                                action: () {
-                                  pushSubscriptionPage();
-                                },
-                                buttonText: 'Try PRO',
-                                isDestructive: false,
-                              );
-                            }
-                          },
-                          child: SizedBox(
-                            width: 88,
-                            child: Container(
-                              width: 48,
-                              height: 48,
-                              decoration: BoxDecoration(
-                                color: htGreys(context).black,
-                                shape: BoxShape.circle,
-                              ),
-                              child: Center(
-                                child: Icon(
-                                  Icons.add_rounded,
-                                  size: 24,
-                                  color: htGreys(context).white,
-                                ),
-                              ),
-                            ),
-                          )),
-                      GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onTap: () {
-                          while (context.canPop()) {
-                            context.pop();
-                          }
-
-                          if (appService.bottomIndexValue != 1) {
-                            context.replace(TimerPage.routeName);
-                            appService.setBottomIndex(1);
-                          }
-                        },
-                        child: SizedBox(
-                          width: 88,
-                          height: 52,
-                          child: Icon(
-                            Icons.timer_outlined,
-                            size: 24,
-                            color: bottomIndex == 1
-                                ? htGreys(context).black
-                                : htGreys(context).grey040,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                  endDrawer: const BaseEndDrawer(),
                 ),
-              ),
-              endDrawer: const BaseEndDrawer(),
+                if (isLoading)
+                  Container(
+                    color: HTColors.black50,
+                    child: Center(
+                        child: Lottie.asset('assets/lotties/empty.json',
+                            width: 200, repeat: true)),
+                  ),
+              ],
             ),
           );
         });

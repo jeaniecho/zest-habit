@@ -50,6 +50,7 @@ class TaskAddBloc extends Disposable {
   final BehaviorSubject<bool> _openEmoji = BehaviorSubject.seeded(false);
   Stream<bool> get openEmoji => _openEmoji.stream;
   Function(bool) get setOpenEmoji => _openEmoji.add;
+  bool get openEmojiValue => _openEmoji.value;
 
   final BehaviorSubject<int> _selectedColor =
       BehaviorSubject.seeded(0xFF000000);
@@ -106,6 +107,12 @@ class TaskAddBloc extends Disposable {
 
     titleController = TextEditingController(text: task?.title);
     goalController = TextEditingController(text: task?.goal);
+
+    scrollController.addListener(() {
+      if (openEmojiValue) {
+        setOpenEmoji(false);
+      }
+    });
 
     if (appService.settingsValue.createdTaskCount == 0) {
       _showColorTooltip.add(true);

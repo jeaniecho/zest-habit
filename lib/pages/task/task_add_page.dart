@@ -13,12 +13,13 @@ import 'package:habit_app/utils/emojis.dart';
 import 'package:habit_app/utils/enums.dart';
 import 'package:habit_app/utils/functions.dart';
 import 'package:habit_app/utils/notifications.dart';
-import 'package:habit_app/utils/painters.dart';
+import 'package:habit_app/utils/tutorial.dart';
 import 'package:habit_app/widgets/ht_bottom_modal.dart';
 import 'package:habit_app/widgets/ht_calendar.dart';
 import 'package:habit_app/widgets/ht_dialog.dart';
 import 'package:habit_app/widgets/ht_radio.dart';
 import 'package:habit_app/widgets/ht_text.dart';
+import 'package:habit_app/widgets/ht_tooltip.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
@@ -39,46 +40,60 @@ class TaskAddBody extends StatelessWidget {
   Widget build(BuildContext context) {
     TaskAddBloc bloc = context.read<TaskAddBloc>();
 
+    ScrollController scrollController = ScrollController();
+    scrollController.addListener(() {
+      if (bloc.openEmojiValue) {
+        bloc.setOpenEmoji(false);
+      }
+    });
+
     return Stack(
       children: [
-        Column(
-          children: [
-            HTSpacers.height8,
-            const TaskAddClose(),
-            Expanded(
-              child: SingleChildScrollView(
-                controller: bloc.scrollController,
-                padding: HTEdgeInsets.vertical16,
-                child: const Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: HTEdgeInsets.horizontal24,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          TaskAddEmoji(),
-                          TaskAddAlarm(),
-                        ],
+        GestureDetector(
+          onTap: () {
+            if (bloc.openEmojiValue) {
+              bloc.setOpenEmoji(false);
+            }
+          },
+          child: Column(
+            children: [
+              HTSpacers.height8,
+              const TaskAddClose(),
+              Expanded(
+                child: SingleChildScrollView(
+                  controller: bloc.scrollController,
+                  padding: HTEdgeInsets.vertical16,
+                  child: const Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: HTEdgeInsets.horizontal24,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            TaskAddEmoji(),
+                            TaskAddAlarm(),
+                          ],
+                        ),
                       ),
-                    ),
-                    HTSpacers.height8,
-                    TaskAddTitle(),
-                    HTSpacers.height10,
-                    TaskAddGoal(),
-                    HTSpacers.height24,
-                    TaskAddColor(),
-                    HTSpacers.height12,
-                    TaskAddRepeatAt(),
-                    TaskAddFrom(),
-                    TaskAddUntil(),
-                    HTSpacers.height120,
-                  ],
+                      HTSpacers.height8,
+                      TaskAddTitle(),
+                      HTSpacers.height10,
+                      TaskAddGoal(),
+                      HTSpacers.height24,
+                      TaskAddColor(),
+                      HTSpacers.height12,
+                      TaskAddRepeatAt(),
+                      TaskAddFrom(),
+                      TaskAddUntil(),
+                      HTSpacers.height120,
+                    ],
+                  ),
                 ),
               ),
-            ),
-            const TaskAddSubmit(),
-          ],
+              const TaskAddSubmit(),
+            ],
+          ),
         ),
         StreamBuilder<bool>(
             stream: bloc.openEmoji,
@@ -241,6 +256,7 @@ class TaskAddEmoji extends StatelessWidget {
     TaskAddBloc bloc = context.read<TaskAddBloc>();
 
     return GestureDetector(
+      key: emojiButtonKey,
       onTap: () {
         bloc.toggleOpenEmoji();
       },
@@ -283,6 +299,7 @@ class TaskAddEmojiPicker extends StatelessWidget {
     TaskAddBloc bloc = context.read<TaskAddBloc>();
 
     return Positioned(
+      key: emojiPickerKey,
       top: 128,
       left: 24,
       child: Container(
@@ -658,47 +675,10 @@ class TaskAddColor extends StatelessWidget {
                 ),
               ),
               if (showColorTooltip)
-                Positioned(
+                const Positioned(
                   top: -58,
                   left: 16,
-                  child: Container(
-                    decoration: BoxDecoration(boxShadow: [
-                      BoxShadow(
-                        color: htGreys(context).black.withOpacity(0.08),
-                        blurRadius: 12,
-                        spreadRadius: 0,
-                        offset: const Offset(0, 2),
-                      ),
-                    ]),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          height: 40,
-                          padding: HTEdgeInsets.horizontal16,
-                          decoration: BoxDecoration(
-                            color: htGreys(context).white,
-                            borderRadius: HTBorderRadius.circular10,
-                          ),
-                          child: Center(
-                            child: HTText(
-                              '🎨 Change color of your task',
-                              typoToken: HTTypoToken.bodyMedium,
-                              color: htGreys(context).black,
-                              height: 1.25,
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: HTEdgeInsets.left20,
-                          child: CustomPaint(
-                            painter: InvertedTrianglePainter(),
-                            size: const Size(20, 10),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  child: HTTooltip('🎨 Change color of your task'),
                 ),
             ],
           );
@@ -1049,6 +1029,7 @@ class TaskAddSubmit extends StatelessWidget {
               width: double.infinity,
               padding: HTEdgeInsets.h24v16,
               child: ElevatedButton(
+                  key: doneButtonKey,
                   style: ElevatedButton.styleFrom(
                       backgroundColor: canSubmit
                           ? htGreys(context).black

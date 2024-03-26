@@ -94,13 +94,15 @@ class OnboardingTaskBloc extends Disposable {
     ).show(rootNavKey.currentContext!);
   }
 
-  Future<void> addTasks() async {
+  Future<List<Task>> addTasks() async {
     List<OnboardingTask> tasks = _selectedTasks.value
         .map((e) => onboardingTasks.firstWhere((element) => element.index == e))
         .toList();
 
+    List<Task> addedTasks = [];
+
     for (OnboardingTask task in tasks) {
-      await appService.addTask(
+      Task addedTask = await appService.addTask(
         Task(
           from: DateTime.now().getDate(),
           emoji: task.emoji,
@@ -110,8 +112,10 @@ class OnboardingTaskBloc extends Disposable {
           desc: '',
         ),
       );
+
+      addedTasks.add(addedTask);
     }
 
-    return;
+    return addedTasks;
   }
 }

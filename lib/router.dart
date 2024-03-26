@@ -44,7 +44,9 @@ List<RouteBase> routes = [
       GoRoute(
           path: TaskPage.routeName,
           builder: (context, state) {
-            return const TaskPage();
+            final bool showTutorial = (state.extra ?? false) as bool;
+
+            return TaskPage(showTutorial: showTutorial);
           }),
       GoRoute(
           path: TimerPage.routeName,

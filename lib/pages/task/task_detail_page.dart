@@ -11,6 +11,7 @@ import 'package:habit_app/styles/colors.dart';
 import 'package:habit_app/styles/tokens.dart';
 import 'package:habit_app/styles/typos.dart';
 import 'package:habit_app/utils/functions.dart';
+import 'package:habit_app/utils/tutorial.dart';
 import 'package:habit_app/widgets/ht_appbar.dart';
 import 'package:habit_app/widgets/ht_dialog.dart';
 import 'package:habit_app/widgets/ht_text.dart';
@@ -146,6 +147,7 @@ class TaskEditButton extends StatelessWidget {
     }
 
     return GestureDetector(
+      key: editButtonKey,
       behavior: HitTestBehavior.opaque,
       onTap: () {
         bloc.showEditModal(context);

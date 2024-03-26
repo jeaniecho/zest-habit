@@ -10,6 +10,7 @@ import 'package:habit_app/styles/colors.dart';
 import 'package:habit_app/styles/tokens.dart';
 import 'package:habit_app/styles/typos.dart';
 import 'package:habit_app/utils/functions.dart';
+import 'package:habit_app/utils/tutorial.dart';
 import 'package:habit_app/widgets/ht_scale.dart';
 import 'package:habit_app/widgets/ht_text.dart';
 import 'package:intl/intl.dart';
@@ -18,10 +19,34 @@ import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-class TaskPage extends StatelessWidget {
-  const TaskPage({super.key});
+class TaskPage extends StatefulWidget {
+  final bool showTutorial;
+  const TaskPage({super.key, this.showTutorial = false});
 
   static const routeName = '/calendar';
+
+  @override
+  State<TaskPage> createState() => _TaskPageState();
+}
+
+class _TaskPageState extends State<TaskPage> {
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.showTutorial) {
+      AppService appService = context.read<AppService>();
+      appService.setIsLoading(true);
+
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        Future.delayed(const Duration(seconds: 1), () {
+          showTutorial(
+              appService: appService, firstTask: appService.tasksValue.first);
+          appService.setIsLoading(false);
+        });
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -588,6 +613,7 @@ class DailyTaskList extends StatelessWidget {
                         DateTime today = DateTime.now().getDate();
 
                         return TaskBox(
+                          key: index == 0 ? firstTaskKey : null,
                           task: task,
                           disabled: !isSameDay(today, currDate) &&
                               today.isBefore(currDate.getDate()),

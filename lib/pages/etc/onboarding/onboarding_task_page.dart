@@ -252,9 +252,9 @@ class OnboardingTaskStartButton extends StatelessWidget {
                         borderRadius: HTBorderRadius.circular10)),
                 onPressed: () {
                   if (canStart) {
-                    bloc.addTasks().then((value) {
+                    bloc.addTasks().then((tasks) {
                       bloc.appService.updateOnboardingStatus(true);
-                      context.pushReplacement(TaskPage.routeName);
+                      context.pushReplacement(TaskPage.routeName, extra: true);
                     });
                   }
                 },
