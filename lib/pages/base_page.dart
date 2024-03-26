@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:go_router/go_router.dart';
-import 'package:habit_app/iap/iap_service.dart';
 import 'package:habit_app/blocs/app_service.dart';
 import 'package:habit_app/blocs/task/task_add_bloc.dart';
 import 'package:habit_app/models/settings_model.dart';

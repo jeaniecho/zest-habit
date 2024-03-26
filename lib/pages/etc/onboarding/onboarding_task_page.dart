@@ -7,7 +7,6 @@ import 'package:habit_app/iap/iap_service.dart';
 import 'package:habit_app/models/onboarding_task_model.dart';
 import 'package:habit_app/models/settings_model.dart';
 import 'package:habit_app/pages/base/task_page.dart';
-import 'package:habit_app/pages/base_page.dart';
 import 'package:habit_app/router.dart';
 import 'package:habit_app/styles/colors.dart';
 import 'package:habit_app/styles/tokens.dart';
