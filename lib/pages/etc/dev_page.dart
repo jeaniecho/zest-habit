@@ -307,7 +307,7 @@ class ViewIAPProducts extends StatelessWidget {
                                                           productDetails);
 
                                               if (productDetails.id ==
-                                                  IAPService.kConsumableId) {
+                                                  IAPService.kSubscriptionIds) {
                                                 iapService.inAppPurchase
                                                     .buyConsumable(
                                                         purchaseParam:

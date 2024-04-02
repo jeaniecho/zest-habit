@@ -12,21 +12,16 @@ import 'consumable_store.dart';
 
 class IAPService {
   static bool kAutoConsume = true;
-  static String kConsumableId = 'consumable';
-  static String kUpgradeId = 'upgrade';
   static String kEarlybirdMonthlyId = 'dev.jeanie.habitApp.earlybird.monthly';
   static String kEarlybirdYearlyId = 'dev.jeanie.habitApp.earlybird.yearly';
   static String kMonthlySubscriptionId = 'dev.jeanie.habitApp.monthly';
   static String kYearlySubscriptionId = 'dev.jeanie.habitApp.yearly';
-  static List<String> kProductIds = [
-    kConsumableId,
-    kUpgradeId,
-    kEarlybirdMonthlyId,
-    kEarlybirdYearlyId,
-  ];
+
   static List<String> kSubscriptionIds = [
     kEarlybirdMonthlyId,
+    kMonthlySubscriptionId,
     kEarlybirdYearlyId,
+    kYearlySubscriptionId,
   ];
 
   final InAppPurchase _inAppPurchase = InAppPurchase.instance;
@@ -99,7 +94,7 @@ class IAPService {
     await iosPlatformAddition.setDelegate(PaymentQueueDelegate());
 
     final ProductDetailsResponse productDetailsResponse =
-        await _inAppPurchase.queryProductDetails(kProductIds.toSet());
+        await _inAppPurchase.queryProductDetails(kSubscriptionIds.toSet());
     if (productDetailsResponse.error != null) {
       _queryProductError.add(productDetailsResponse.error!.message);
       _isAvailable.add(isAvailable);
@@ -118,7 +113,7 @@ class IAPService {
       _isAvailable.add(isAvailable);
       _products.add([]);
       _purchases.add([]);
-      _notFoundIds.add(kProductIds);
+      _notFoundIds.add(kSubscriptionIds);
       _consumables.add([]);
       _purchasePending.add(false);
       _loading.add(false);
@@ -127,8 +122,9 @@ class IAPService {
     }
 
     final List<String> consumables = await ConsumableStore.load();
-    _isAvailable.add(isAvailable);
+
     _products.add(productDetailsResponse.productDetails);
+    _isAvailable.add(isAvailable);
     _notFoundIds.add(productDetailsResponse.notFoundIDs);
     _consumables.add(consumables);
     _purchasePending.add(false);
@@ -149,7 +145,7 @@ class IAPService {
   }
 
   Future<void> deliverProduct(PurchaseDetails purchaseDetails) async {
-    if (purchaseDetails.productID == kConsumableId) {
+    if (purchaseDetails.productID == kSubscriptionIds) {
       await ConsumableStore.save(purchaseDetails.purchaseID!);
       final List<String> consumables = await ConsumableStore.load();
 

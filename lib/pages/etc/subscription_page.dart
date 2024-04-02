@@ -6,6 +6,7 @@ import 'package:habit_app/iap/iap_service.dart';
 import 'package:habit_app/gen/assets.gen.dart';
 import 'package:habit_app/styles/colors.dart';
 import 'package:habit_app/styles/tokens.dart';
+import 'package:habit_app/utils/functions.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
@@ -140,19 +141,15 @@ class SubscriptionProducts extends StatelessWidget {
     return StreamBuilder<List<ProductDetails>>(
         stream: iapService.products,
         builder: (context, snapshot) {
-          List<ProductDetails> products = snapshot.data ?? [];
-          List<ProductDetails> subscriptions = products
-              .where(
-                  (element) => IAPService.kSubscriptionIds.contains(element.id))
-              .toList();
-          subscriptions.sort((a, b) => -a.price.compareTo(b.price));
+          List<ProductDetails> subscriptions = snapshot.data ?? [];
+          subscriptions.sort((a, b) => a.rawPrice.compareTo(b.rawPrice));
 
           if (subscriptions.isEmpty) {
             return const Expanded(
                 child: Center(child: CircularProgressIndicator()));
           }
 
-          bloc.setSelectedProduct(subscriptions[1]);
+          bloc.setSelectedProduct(subscriptions[0]);
 
           return StreamBuilder<int>(
               stream: bloc.selectedIndex,
@@ -167,26 +164,28 @@ class SubscriptionProducts extends StatelessWidget {
                       GestureDetector(
                         onTap: () {
                           bloc.setSelectedIndex(0);
-                          bloc.setSelectedProduct(subscriptions[0]);
+                          bloc.setSelectedProduct(subscriptions[2]);
                         },
                         child: SubscriptionProductBox(
                           isSelected: selectedIndex == 0,
                           index: 0,
                           title: 'Yearly',
-                          details: subscriptions[0],
+                          details: subscriptions[2],
+                          originalPrice: subscriptions[1].rawPrice * 12,
                         ),
                       ),
                       SizedBox(width: 16.h),
                       GestureDetector(
                         onTap: () {
                           bloc.setSelectedIndex(1);
-                          bloc.setSelectedProduct(subscriptions[1]);
+                          bloc.setSelectedProduct(subscriptions[0]);
                         },
                         child: SubscriptionProductBox(
                           isSelected: selectedIndex == 1,
                           index: 1,
                           title: 'Monthly',
-                          details: subscriptions[1],
+                          details: subscriptions[0],
+                          originalPrice: subscriptions[1].rawPrice,
                         ),
                       ),
                     ],
@@ -202,24 +201,24 @@ class SubscriptionProductBox extends StatelessWidget {
   final int index;
   final String title;
   final ProductDetails details;
-  const SubscriptionProductBox(
-      {super.key,
-      required this.isSelected,
-      required this.index,
-      required this.title,
-      required this.details});
+  final double originalPrice;
+  const SubscriptionProductBox({
+    super.key,
+    required this.isSelected,
+    required this.index,
+    required this.title,
+    required this.details,
+    required this.originalPrice,
+  });
 
   @override
   Widget build(BuildContext context) {
-    String dividedPrice =
-        (details.rawPrice / (index == 0 ? 12 : 4)).toStringAsFixed(2);
+    String dividedPrice = subscriptionPriceFormat(
+        details.rawPrice / (index == 0 ? 12 : 4), details.currencySymbol);
     String dividedIn = (index == 0 ? 'month' : 'week');
 
-    double originalPrice = index == 0 ? 95.88 : 7.99;
     int discount =
         (((originalPrice - details.rawPrice) / originalPrice) * 100).floor();
-
-    String currency = details.price.split(RegExp(r'\d+')).first;
 
     return ClipRRect(
       borderRadius: BorderRadius.all(Radius.circular(10.h)),
@@ -240,7 +239,8 @@ class SubscriptionProductBox extends StatelessWidget {
               children: [
                 SizedBox(height: 24.h),
                 Text(
-                  details.price,
+                  subscriptionPriceFormat(
+                      details.rawPrice, details.currencySymbol),
                   style: TextStyle(
                     fontSize: 20.h,
                     color: isSelected ? HTColors.white : HTColors.grey040,
@@ -249,7 +249,7 @@ class SubscriptionProductBox extends StatelessWidget {
                 ),
                 SizedBox(height: 8.h),
                 Text(
-                  '($currency$dividedPrice / $dividedIn)',
+                  '($dividedPrice/$dividedIn)',
                   style: TextStyle(
                     fontSize: 16.h,
                     color: HTColors.grey050,
@@ -358,7 +358,13 @@ class SubscriptionButton extends StatelessWidget {
 
                   iapService.inAppPurchase
                       .buyNonConsumable(purchaseParam: purchaseParam)
-                      .then((value) => Navigator.pop(context));
+                      .then((value) {
+                    iapService.purchases.listen((event) {
+                      if (event.isNotEmpty) {
+                        Navigator.pop(context);
+                      }
+                    });
+                  });
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: HTColors.white,
@@ -381,7 +387,7 @@ class SubscriptionButton extends StatelessWidget {
                       Padding(
                         padding: EdgeInsets.only(top: 4.h),
                         child: Text(
-                          '${productDetails.price} / year will be paid after trial ends',
+                          '${productDetails.price}/year will be paid after trial ends',
                           style: TextStyle(
                             fontSize: 12.h,
                             color: HTColors.grey050,

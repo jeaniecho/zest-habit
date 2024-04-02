@@ -142,6 +142,13 @@ int progressPercentage(DateTime from, DateTime until, List<DateTime> doneAt) {
   return ((doneAt.length / difference) * 100).round();
 }
 
+String subscriptionPriceFormat(double price, String currencySymbol) {
+  NumberFormat formatter = NumberFormat.decimalPatternDigits(
+      decimalDigits: price.toString().contains('.') ? 2 : 0);
+
+  return currencySymbol + formatter.format(price);
+}
+
 extension DateTimeExtension on DateTime {
   DateTime getDate() {
     return DateTime(year, month, day);
