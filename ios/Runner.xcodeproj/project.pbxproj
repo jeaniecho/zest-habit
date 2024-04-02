@@ -14,10 +14,10 @@
 		877E88D52B9C75FE00B32356 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 877E88D42B9C75FE00B32356 /* StoreKit.framework */; };
 		877E88D72B9CC67800B32356 /* SyncedProducts.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 877E88D62B9CC67800B32356 /* SyncedProducts.storekit */; };
 		877E88D92B9CC74C00B32356 /* StoreKitTestCertificate.cer in Resources */ = {isa = PBXBuildFile; fileRef = 877E88D82B9CC74C00B32356 /* StoreKitTestCertificate.cer */; };
+		87E026982BBB8416005CA853 /* GoogleService-Info.plist in Sources */ = {isa = PBXBuildFile; fileRef = 5F44EEDCC78F7BC41E0C7B8D /* GoogleService-Info.plist */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
-		B2C3E7980B371C3E1C6D4F2E /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5F44EEDCC78F7BC41E0C7B8D /* GoogleService-Info.plist */; };
 		B372AB111B89CFD7791ABA9A /* Pods_RunnerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD96C97C37D301301360AA91 /* Pods_RunnerTests.framework */; };
 		F1737077012722666AA21D9C /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7C163532A98256C7A3D30B0 /* Pods_Runner.framework */; };
 /* End PBXBuildFile section */
@@ -258,7 +258,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1500;
-				LastUpgradeCheck = 1430;
+				LastUpgradeCheck = 1510;
 				ORGANIZATIONNAME = "";
 				TargetAttributes = {
 					331C8080294A63A400263BE5 = {
@@ -308,7 +308,6 @@
 				97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */,
 				97C146FC1CF9000F007C117D /* Main.storyboard in Resources */,
 				877E88D72B9CC67800B32356 /* SyncedProducts.storekit in Resources */,
-				B2C3E7980B371C3E1C6D4F2E /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -388,7 +387,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" build";
+			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" build\n";
 		};
 		C303CF04D44ECDE3917F13C3 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -422,6 +421,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				87E026982BBB8416005CA853 /* GoogleService-Info.plist in Sources */,
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
 			);
@@ -498,7 +498,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = iphoneos;
@@ -628,7 +628,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -677,7 +677,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = iphoneos;

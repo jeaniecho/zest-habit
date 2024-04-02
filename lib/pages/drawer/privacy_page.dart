@@ -51,7 +51,7 @@ This Privacy Policy governs the manner in which Zest ("Zest," "we," "us," or "ou
 
 5. Contact Us
 
-If you have any questions or concerns about this Privacy Policy or the privacy practices of the App, please contact us at yeajeanie@gmail.com.
+If you have any questions or concerns about this Privacy Policy or the privacy practices of the App, please contact us at jeanie@citralab.co.
 
 By using the Zest Habit App, you acknowledge that you have read, understood, and agree to be bound by this Privacy Policy.
 ''',

@@ -72,7 +72,7 @@ By downloading, installing, accessing, or using the App, you agree to be bound b
 Zest reserves the right to modify or amend these Terms at any time. Users will be notified of any changes to these Terms within the App. Continued use of the App after such modifications constitutes acceptance of the revised Terms.
 
 7. Contact Us
-If you have any questions or concerns about these Terms, please contact us at yeajeanie@gmail.com.
+If you have any questions or concerns about these Terms, please contact us at jeanie@citralab.co.
 
 By accessing or using the App, you acknowledge that you have read, understood, and agree to be bound by these Terms of Use.
 ''',

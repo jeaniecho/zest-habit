@@ -34,22 +34,24 @@ class AppService {
   Task? get timerTaskValue => _timerTask.value;
 
   Stream<List> get purchases => iapService.purchases;
+  List get purchasesValue => iapService.purchasesValue;
 
-  late final BehaviorSubject<bool> _isPro;
-  // Stream<bool> get isPro => purchases.map((purchases) => purchases.isNotEmpty);
-  Stream<bool> get isPro => _isPro.stream;
-  bool get isProValue => _isPro.value;
+  // late final BehaviorSubject<bool> _isPro;
+  Stream<bool> get isPro => purchases.map((purchases) => purchases.isNotEmpty);
+  // Stream<bool> get isPro => _isPro.stream;
+  // bool get isProValue => _isPro.value;
+  bool get isProValue => purchasesValue.isNotEmpty;
 
   final BehaviorSubject<bool> _isLoading = BehaviorSubject.seeded(false);
   Stream<bool> get isLoading => _isLoading.stream;
   Function(bool) get setIsLoading => _isLoading.add;
 
   AppService({required this.isar, required this.iapService}) {
-    _isPro = BehaviorSubject.seeded(true);
+    // _isPro = BehaviorSubject.seeded(true);
 
     getSettings();
     getTasks().then((value) {
-      if (_isPro.value) {
+      if (isProValue) {
         setupNotifications();
       } else {
         HTNotification.cancelAllNotifications();
@@ -58,7 +60,7 @@ class AppService {
   }
 
   setIsPro(bool value) {
-    _isPro.add(value);
+    // _isPro.add(value);
 
     if (value) {
       setupNotifications();

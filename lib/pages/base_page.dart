@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
@@ -256,7 +257,7 @@ class BaseEndDrawer extends StatelessWidget {
                     Email email = Email(
                       subject: '[${packageInfo.appName}] Feedback',
                       body: body,
-                      recipients: ['yeajeanie@gmail.com'],
+                      recipients: ['jeanie@citralab.co'],
                     );
 
                     await FlutterEmailSender.send(email);
@@ -287,7 +288,7 @@ class BaseEndDrawer extends StatelessWidget {
                   },
                   text: 'Mode'),
               const Spacer(),
-              const DevMenu(),
+              if (kDebugMode) const DevMenu(),
               FutureBuilder<PackageInfo>(
                   future: PackageInfo.fromPlatform(),
                   builder: (context, snapshot) {
