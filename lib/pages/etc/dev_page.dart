@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -58,7 +60,6 @@ class ViewNotiButton extends StatelessWidget {
           List<PendingNotificationRequest> pendingeNotifications =
               await HTNotification.getPendingNotifications();
 
-          // ignore: use_build_context_synchronously
           showDialog(
               context: context,
               builder: (context) {
@@ -306,8 +307,9 @@ class ViewIAPProducts extends StatelessWidget {
                                                       productDetails:
                                                           productDetails);
 
-                                              if (productDetails.id ==
-                                                  IAPService.kSubscriptionIds) {
+                                              if (IAPService.kSubscriptionIds
+                                                  .contains(
+                                                      productDetails.id)) {
                                                 iapService.inAppPurchase
                                                     .buyConsumable(
                                                         purchaseParam:

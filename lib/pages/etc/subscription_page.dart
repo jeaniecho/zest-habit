@@ -66,67 +66,98 @@ class SubscriptionAppbar extends StatelessWidget {
   }
 }
 
-class SubscriptionImage extends StatefulWidget {
+class SubscriptionImage extends StatelessWidget {
   const SubscriptionImage({super.key});
 
   @override
-  State<SubscriptionImage> createState() => _SubscriptionImageState();
-}
-
-class _SubscriptionImageState extends State<SubscriptionImage> {
-  final List<AssetGenImage> _images = [
-    Assets.images.imgPaywallEarlybird,
-    Assets.images.imgPaywallProBenefits,
-  ];
-
-  int _imageIndex = 0;
-
-  @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        SizedBox(
+    SubscriptionBloc bloc = context.read<SubscriptionBloc>();
+    IAPService iapService = context.read<IAPService>();
+
+    List<ProductDetails> subscriptions = iapService.productsValue;
+    subscriptions.sort((a, b) => a.rawPrice.compareTo(b.rawPrice));
+
+    double originalPrice = subscriptions[1].rawPrice * 12;
+    double currPrice = subscriptions[2].rawPrice;
+
+    int discount =
+        (((originalPrice - currPrice) / originalPrice) * 100).floor();
+
+    final List<Widget> images = [
+      Stack(
+        children: [
+          Assets.images.imgPaywallEarlybird.image(
+            width: 428.h,
             height: 428.h,
-            child: PageView.builder(
-              onPageChanged: (int index) {
-                setState(() {
-                  _imageIndex = index;
-                });
-              },
-              itemBuilder: (context, index) {
-                return (_images[index]).image(
-                  width: 428.h,
-                  fit: BoxFit.contain,
-                );
-              },
-              itemCount: _images.length,
-            )),
-        HTSpacers.height8,
-        SizedBox(
-          height: 8.h,
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            shrinkWrap: true,
-            itemBuilder: (context, index) {
-              return Container(
-                width: 8.h,
-                height: 8.h,
-                decoration: BoxDecoration(
-                  color: _imageIndex == index
-                      ? HTColors.grey010
-                      : HTColors.grey080,
-                  shape: BoxShape.circle,
-                ),
-              );
-            },
-            separatorBuilder: (context, index) {
-              return SizedBox(width: 8.h);
-            },
-            itemCount: _images.length,
+            fit: BoxFit.contain,
           ),
-        ),
-      ],
-    );
+          Positioned.fill(
+              top: 44.h,
+              child: Padding(
+                padding: EdgeInsets.only(right: 40.h),
+                child: Text(
+                  discount.toString(),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: HTColors.white,
+                    fontFamily: 'WalterTurncoat',
+                    fontSize: 72.h,
+                  ),
+                ),
+              )),
+        ],
+      ),
+      Assets.images.imgPaywallProBenefits.image(
+        width: 428.h,
+        fit: BoxFit.contain,
+      ),
+    ];
+
+    return StreamBuilder<int>(
+        stream: bloc.imageIndex,
+        builder: (context, snapshot) {
+          int imageIndex = snapshot.data ?? 0;
+
+          return Column(
+            children: [
+              SizedBox(
+                  height: 428.h,
+                  child: PageView.builder(
+                    onPageChanged: (int index) {
+                      bloc.setImageIndex(index);
+                    },
+                    itemBuilder: (context, index) {
+                      return images[index];
+                    },
+                    itemCount: images.length,
+                  )),
+              HTSpacers.height8,
+              SizedBox(
+                height: 8.h,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    return Container(
+                      width: 8.h,
+                      height: 8.h,
+                      decoration: BoxDecoration(
+                        color: imageIndex == index
+                            ? HTColors.grey010
+                            : HTColors.grey080,
+                        shape: BoxShape.circle,
+                      ),
+                    );
+                  },
+                  separatorBuilder: (context, index) {
+                    return SizedBox(width: 8.h);
+                  },
+                  itemCount: images.length,
+                ),
+              ),
+            ],
+          );
+        });
   }
 }
 

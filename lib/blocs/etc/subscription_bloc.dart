@@ -1,3 +1,4 @@
+import 'package:habit_app/IAP/iap_service.dart';
 import 'package:habit_app/utils/disposable.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:rxdart/rxdart.dart';
@@ -11,11 +12,16 @@ class SubscriptionBloc extends Disposable {
   Stream<ProductDetails> get selectedProduct => _selectedProduct.stream;
   Function(ProductDetails) get setSelectedProduct => _selectedProduct.add;
 
+  final BehaviorSubject<int> _imageIndex = BehaviorSubject.seeded(0);
+  Stream<int> get imageIndex => _imageIndex.stream;
+  Function(int) get setImageIndex => _imageIndex.add;
+
   SubscriptionBloc();
 
   @override
   void dispose() {
     _selectedIndex.close();
     _selectedProduct.close();
+    _imageIndex.close();
   }
 }

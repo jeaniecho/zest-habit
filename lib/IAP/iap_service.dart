@@ -145,7 +145,7 @@ class IAPService {
   }
 
   Future<void> deliverProduct(PurchaseDetails purchaseDetails) async {
-    if (purchaseDetails.productID == kSubscriptionIds) {
+    if (kSubscriptionIds.contains(purchaseDetails.productID)) {
       await ConsumableStore.save(purchaseDetails.purchaseID!);
       final List<String> consumables = await ConsumableStore.load();
 
