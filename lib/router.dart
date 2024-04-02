@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:habit_app/IAP/iap_service.dart';
 import 'package:habit_app/blocs/app_service.dart';
 import 'package:habit_app/blocs/etc/onboarding/onboarding_bloc.dart';
 import 'package:habit_app/blocs/etc/onboarding/onboarding_task_bloc.dart';

@@ -59,7 +59,11 @@ class SubscriptionAppbar extends StatelessWidget {
             color: HTColors.white.withOpacity(0.2),
             shape: BoxShape.circle,
           ),
-          child: const Icon(Icons.close, color: HTColors.black),
+          child: Icon(
+            Icons.close,
+            color: HTColors.black,
+            size: 24.h,
+          ),
         ),
       ),
     );
@@ -86,10 +90,12 @@ class SubscriptionImage extends StatelessWidget {
     final List<Widget> images = [
       Stack(
         children: [
-          Assets.images.imgPaywallEarlybird.image(
-            width: 428.h,
-            height: 428.h,
-            fit: BoxFit.contain,
+          Center(
+            child: Assets.images.imgPaywallEarlybird.image(
+              width: 428.h,
+              height: 428.h,
+              fit: BoxFit.contain,
+            ),
           ),
           Positioned.fill(
               top: 44.h,
