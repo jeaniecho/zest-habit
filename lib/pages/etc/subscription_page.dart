@@ -4,9 +4,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:habit_app/blocs/etc/subscription_bloc.dart';
 import 'package:habit_app/iap/iap_service.dart';
 import 'package:habit_app/gen/assets.gen.dart';
+import 'package:habit_app/pages/etc/webview_page.dart';
 import 'package:habit_app/styles/colors.dart';
 import 'package:habit_app/styles/tokens.dart';
+import 'package:habit_app/styles/typos.dart';
 import 'package:habit_app/utils/functions.dart';
+import 'package:habit_app/widgets/ht_text.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
@@ -31,6 +34,7 @@ class SubscriptionPage extends StatelessWidget {
                 SubscriptionImage(),
                 SubscriptionProducts(),
                 SubscriptionButton(),
+                SubscriptionMenu(),
               ],
             ),
           ),
@@ -92,13 +96,13 @@ class SubscriptionImage extends StatelessWidget {
         children: [
           Center(
             child: Assets.images.imgPaywallEarlybird.image(
-              width: 428.h,
-              height: 428.h,
+              width: 388.h,
+              height: 388.h,
               fit: BoxFit.contain,
             ),
           ),
           Positioned.fill(
-              top: 44.h,
+              top: 40.h,
               child: Padding(
                 padding: EdgeInsets.only(right: 40.h),
                 child: Text(
@@ -107,14 +111,14 @@ class SubscriptionImage extends StatelessWidget {
                   style: TextStyle(
                     color: HTColors.white,
                     fontFamily: 'WalterTurncoat',
-                    fontSize: 72.h,
+                    fontSize: 64.h,
                   ),
                 ),
               )),
         ],
       ),
       Assets.images.imgPaywallProBenefits.image(
-        width: 428.h,
+        width: 388.h,
         fit: BoxFit.contain,
       ),
     ];
@@ -127,7 +131,7 @@ class SubscriptionImage extends StatelessWidget {
           return Column(
             children: [
               SizedBox(
-                  height: 428.h,
+                  height: 388.h,
                   child: PageView.builder(
                     onPageChanged: (int index) {
                       bloc.setImageIndex(index);
@@ -437,5 +441,76 @@ class SubscriptionButton extends StatelessWidget {
                 ),
               ));
         });
+  }
+}
+
+class SubscriptionMenu extends StatelessWidget {
+  const SubscriptionMenu({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        HTSpacers.height24,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // HTText(
+            //   'Restore Purchase',
+            //   typoToken: HTTypoToken.bodyXXSmall,
+            //   color: HTColors.grey050,
+            // ),
+            // Padding(
+            //   padding: HTEdgeInsets.horizontal8,
+            //   child: HTText(
+            //     '|',
+            //     typoToken: HTTypoToken.bodyXXSmall,
+            //     color: HTColors.grey050,
+            //   ),
+            // ),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const WebviewPage(
+                            title: 'Terms of Service',
+                            url:
+                                'https://dour-rhodium-0f4.notion.site/Zest-Terms-of-Use-3d0f81cfe4d94feaae19ccd6dcbe1d66?pvs=4')));
+              },
+              child: const HTText(
+                'Terms of Service',
+                typoToken: HTTypoToken.bodyXXSmall,
+                color: HTColors.grey050,
+              ),
+            ),
+            const Padding(
+              padding: HTEdgeInsets.horizontal8,
+              child: HTText(
+                '|',
+                typoToken: HTTypoToken.bodyXXSmall,
+                color: HTColors.grey050,
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const WebviewPage(
+                            title: 'Privacy Policy',
+                            url:
+                                'https://dour-rhodium-0f4.notion.site/Zest-Privacy-Policy-bb8879af28fa4d83862300eb6c1f99ea?pvs=4')));
+              },
+              child: const HTText(
+                'Privacy Policy',
+                typoToken: HTTypoToken.bodyXXSmall,
+                color: HTColors.grey050,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
   }
 }
