@@ -191,6 +191,10 @@ class IAPService {
       await iapStoreKitPlatformAddition.showPriceConsentIfNeeded();
     }
   }
+
+  Future<void> restroePurchases() async {
+    await InAppPurchase.instance.restorePurchases();
+  }
 }
 
 class PaymentQueueDelegate implements SKPaymentQueueDelegateWrapper {

@@ -15,6 +15,10 @@ class SubscriptionBloc extends Disposable {
   Stream<int> get imageIndex => _imageIndex.stream;
   Function(int) get setImageIndex => _imageIndex.add;
 
+  final BehaviorSubject<bool> _isLoading = BehaviorSubject.seeded(false);
+  Stream<bool> get isLoading => _isLoading.stream;
+  Function(bool) get setIsLoading => _isLoading.add;
+
   SubscriptionBloc();
 
   @override
@@ -22,5 +26,6 @@ class SubscriptionBloc extends Disposable {
     _selectedIndex.close();
     _selectedProduct.close();
     _imageIndex.close();
+    _isLoading.close();
   }
 }

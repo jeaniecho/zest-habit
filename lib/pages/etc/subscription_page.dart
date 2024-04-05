@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:habit_app/blocs/etc/subscription_bloc.dart';
 import 'package:habit_app/iap/iap_service.dart';
@@ -9,6 +10,7 @@ import 'package:habit_app/styles/colors.dart';
 import 'package:habit_app/styles/tokens.dart';
 import 'package:habit_app/styles/typos.dart';
 import 'package:habit_app/utils/functions.dart';
+import 'package:habit_app/widgets/ht_dialog.dart';
 import 'package:habit_app/widgets/ht_text.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:provider/provider.dart';
@@ -21,23 +23,42 @@ class SubscriptionPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const PopScope(
+    SubscriptionBloc bloc = context.read<SubscriptionBloc>();
+
+    return PopScope(
       canPop: false,
       child: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.light,
-        child: Scaffold(
-          backgroundColor: HTColors.black,
-          body: SafeArea(
-            child: Column(
-              children: [
-                SubscriptionAppbar(),
-                SubscriptionImage(),
-                SubscriptionProducts(),
-                SubscriptionButton(),
-                SubscriptionMenu(),
-              ],
+        child: Stack(
+          children: [
+            const Scaffold(
+              backgroundColor: HTColors.black,
+              body: SafeArea(
+                child: Column(
+                  children: [
+                    SubscriptionAppbar(),
+                    SubscriptionImage(),
+                    SubscriptionProducts(),
+                    SubscriptionButton(),
+                    SubscriptionMenu(),
+                  ],
+                ),
+              ),
             ),
-          ),
+            StreamBuilder<bool>(
+                stream: bloc.isLoading,
+                builder: (context, snapshot) {
+                  bool isLoading = snapshot.data ?? false;
+
+                  return isLoading
+                      ? Container(
+                          color: HTColors.black50,
+                          child:
+                              const Center(child: CircularProgressIndicator()),
+                        )
+                      : const SizedBox.shrink();
+                }),
+          ],
         ),
       ),
     );
@@ -449,25 +470,52 @@ class SubscriptionMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SubscriptionBloc bloc = context.read<SubscriptionBloc>();
+    IAPService iapService = context.read<IAPService>();
+
     return Column(
       children: [
         HTSpacers.height24,
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // HTText(
-            //   'Restore Purchase',
-            //   typoToken: HTTypoToken.bodyXXSmall,
-            //   color: HTColors.grey050,
-            // ),
-            // Padding(
-            //   padding: HTEdgeInsets.horizontal8,
-            //   child: HTText(
-            //     '|',
-            //     typoToken: HTTypoToken.bodyXXSmall,
-            //     color: HTColors.grey050,
-            //   ),
-            // ),
+            GestureDetector(
+              onTap: () {
+                bloc.setIsLoading(true);
+                iapService.restroePurchases().then((value) {
+                  bloc.setIsLoading(false);
+
+                  iapService.purchases.listen((event) {
+                    if (event.isNotEmpty) {
+                      HTDialog.showConfirmDialog(
+                        context,
+                        title: 'Restoration Completed',
+                        content: 'You can now access Zest Pro features.',
+                        action: () {
+                          Navigator.pop(context);
+                        },
+                        buttonText: 'OK',
+                        isDestructive: false,
+                        showCancel: false,
+                      );
+                    }
+                  });
+                });
+              },
+              child: const HTText(
+                'Restore Purchase',
+                typoToken: HTTypoToken.bodyXXSmall,
+                color: HTColors.grey050,
+              ),
+            ),
+            const Padding(
+              padding: HTEdgeInsets.horizontal8,
+              child: HTText(
+                '|',
+                typoToken: HTTypoToken.bodyXXSmall,
+                color: HTColors.grey050,
+              ),
+            ),
             GestureDetector(
               onTap: () {
                 Navigator.push(

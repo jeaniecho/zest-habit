@@ -10,6 +10,7 @@ class HTDialog {
     required Function action,
     required String buttonText,
     bool isDestructive = true,
+    bool showCancel = true,
   }) {
     showCupertinoModalPopup(
         context: context,
@@ -17,16 +18,17 @@ class HTDialog {
               title: Text(title),
               content: Text(content),
               actions: <CupertinoDialogAction>[
-                CupertinoDialogAction(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  textStyle: TextStyle(
-                      color: !isDestructive
-                          ? CupertinoColors.black
-                          : CupertinoColors.activeBlue),
-                  child: const Text('Cancel'),
-                ),
+                if (showCancel)
+                  CupertinoDialogAction(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    textStyle: TextStyle(
+                        color: !isDestructive
+                            ? CupertinoColors.black
+                            : CupertinoColors.activeBlue),
+                    child: const Text('Cancel'),
+                  ),
                 CupertinoDialogAction(
                     isDefaultAction: true,
                     isDestructiveAction: isDestructive,
