@@ -17,29 +17,17 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for android - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return android;
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return macos;
       case TargetPlatform.windows:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return windows;
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -53,11 +41,51 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCvvJ2cgWC0pksmOwFOjYmE670ZNn0JHEQ',
-    appId: '1:206133893511:ios:5a9dd4250efa2476519b22',
-    messagingSenderId: '206133893511',
-    projectId: 'zest-13c5d',
-    storageBucket: 'zest-13c5d.appspot.com',
+    apiKey: 'AIzaSyDa6OQ_rm8mRwuKa9H5G_fBwljNTAqoblk',
+    appId: '1:527508969738:ios:5052cb99ebf02979a782f3',
+    messagingSenderId: '527508969738',
+    projectId: 'zest-habit',
+    storageBucket: 'zest-habit.appspot.com',
+    iosClientId: '527508969738-hba06sdoi48fp6t9c7h4tvic4l3220em.apps.googleusercontent.com',
     iosBundleId: 'dev.jeanie.habitApp',
   );
+
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyAm-6myJW1qM-35lLG-kqMkLQdvhkcxDCA',
+    appId: '1:527508969738:web:dd549eec33223d75a782f3',
+    messagingSenderId: '527508969738',
+    projectId: 'zest-habit',
+    authDomain: 'zest-habit.firebaseapp.com',
+    storageBucket: 'zest-habit.appspot.com',
+    measurementId: 'G-TCCZHH6W7Q',
+  );
+
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyDa6OQ_rm8mRwuKa9H5G_fBwljNTAqoblk',
+    appId: '1:527508969738:ios:5052cb99ebf02979a782f3',
+    messagingSenderId: '527508969738',
+    projectId: 'zest-habit',
+    storageBucket: 'zest-habit.appspot.com',
+    iosClientId: '527508969738-hba06sdoi48fp6t9c7h4tvic4l3220em.apps.googleusercontent.com',
+    iosBundleId: 'dev.jeanie.habitApp',
+  );
+
+  static const FirebaseOptions android = FirebaseOptions(
+    apiKey: 'AIzaSyBU0qKT4avaEiqf0tPSL5ILP4rqPWqhBBI',
+    appId: '1:527508969738:android:0eb9966ff0307afca782f3',
+    messagingSenderId: '527508969738',
+    projectId: 'zest-habit',
+    storageBucket: 'zest-habit.appspot.com',
+  );
+
+  static const FirebaseOptions windows = FirebaseOptions(
+    apiKey: 'AIzaSyAm-6myJW1qM-35lLG-kqMkLQdvhkcxDCA',
+    appId: '1:527508969738:web:3cc12eabd6b45fefa782f3',
+    messagingSenderId: '527508969738',
+    projectId: 'zest-habit',
+    authDomain: 'zest-habit.firebaseapp.com',
+    storageBucket: 'zest-habit.appspot.com',
+    measurementId: 'G-4SFLD3LZKN',
+  );
+
 }
