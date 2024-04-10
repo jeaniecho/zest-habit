@@ -28,7 +28,7 @@ class OnboardingPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SizedBox(
-                height: 428.h,
+                height: 400.h,
                 child: PageView.builder(
                   controller: bloc.imageController,
                   physics: const NeverScrollableScrollPhysics(),
@@ -70,7 +70,7 @@ class OnboardingPage extends StatelessWidget {
               ),
               HTSpacers.height24,
               SizedBox(
-                height: 64,
+                height: 72.h,
                 child: PageView.builder(
                   controller: bloc.textController,
                   physics: const NeverScrollableScrollPhysics(),
@@ -80,6 +80,7 @@ class OnboardingPage extends StatelessWidget {
                       typoToken: HTTypoToken.headlineSmall,
                       color: HTColors.white,
                       textAlign: TextAlign.center,
+                      fontSize: 24.h,
                     );
                   },
                   itemCount: bloc.texts.length,
@@ -94,7 +95,7 @@ class OnboardingPage extends StatelessWidget {
                     bool inLastPage = imageIndex >= bloc.images.length - 1;
 
                     return Container(
-                      height: 64,
+                      height: 64.h,
                       width: double.infinity,
                       padding: HTEdgeInsets.horizontal24,
                       child: ElevatedButton(
