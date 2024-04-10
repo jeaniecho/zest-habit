@@ -78,6 +78,13 @@ class MyApp extends StatelessWidget {
                 darkTheme: HTThemes.darkTheme,
                 themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
                 scaffoldMessengerKey: snackbarKey,
+                builder: (context, child) {
+                  return MediaQuery(
+                    data: MediaQuery.of(context)
+                        .copyWith(textScaler: const TextScaler.linear(1.0)),
+                    child: child!,
+                  );
+                },
               ),
             );
           }),

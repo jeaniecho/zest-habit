@@ -166,14 +166,14 @@ class TaskAppbar extends StatelessWidget {
                       children: [
                         const SizedBox(
                           height: 3,
-                          width: 192,
+                          width: 208,
                         ),
                         AnimatedPositioned(
-                          left: isCalView ? 0 : 99 + 9,
-                          duration: const Duration(milliseconds: 150),
+                          left: isCalView ? 0 : 114,
+                          duration: const Duration(milliseconds: 200),
                           child: Container(
                             height: 3,
-                            width: isCalView ? 99 : 85,
+                            width: isCalView ? 108 : 100,
                             color: htGreys(context).black,
                           ),
                         ),
