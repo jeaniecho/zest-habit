@@ -1,4 +1,5 @@
 import 'package:habit_app/utils/enums.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:intl/intl.dart';
 
 const int firstDayOfWeek = 0; // 0: Sunday, 1: Monday
@@ -118,6 +119,20 @@ int getLastDateOfMonth(DateTime dateTime) {
           ? DateTime(dateTime.year, dateTime.month + 1, 0)
           : DateTime(dateTime.year + 1, 1, 0))
       .day;
+}
+
+SubscriptionType getSubscriptionType(List<PurchaseDetails> purchases) {
+  if (purchases
+      .where((element) => element.productID.contains('monthly'))
+      .isNotEmpty) {
+    return SubscriptionType.monthly;
+  } else if (purchases
+      .where((element) => element.productID.contains('yearly'))
+      .isNotEmpty) {
+    return SubscriptionType.yearly;
+  } else {
+    return SubscriptionType.free;
+  }
 }
 
 String stndrd(int num) {

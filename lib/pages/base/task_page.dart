@@ -3,12 +3,14 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:habit_app/blocs/app_service.dart';
 import 'package:habit_app/blocs/base/task_bloc.dart';
+import 'package:habit_app/blocs/event_service.dart';
 import 'package:habit_app/models/task_model.dart';
 import 'package:habit_app/pages/task/task_detail_page.dart';
 import 'package:habit_app/router.dart';
 import 'package:habit_app/styles/colors.dart';
 import 'package:habit_app/styles/tokens.dart';
 import 'package:habit_app/styles/typos.dart';
+import 'package:habit_app/utils/enums.dart';
 import 'package:habit_app/utils/functions.dart';
 import 'package:habit_app/utils/tutorial.dart';
 import 'package:habit_app/widgets/ht_scale.dart';
@@ -185,6 +187,8 @@ class TaskAppbar extends StatelessWidget {
                 GestureDetector(
                   onTap: () {
                     rootScaffoldKey.currentState!.openEndDrawer();
+
+                    EventService.tapMenu();
                   },
                   child: const Icon(
                     Icons.menu_rounded,
@@ -654,6 +658,17 @@ class TaskBox extends StatelessWidget {
     return HTScale(
       onTap: () {
         context.push(TaskDetailPage.routeName, extra: task);
+
+        EventService.tapTask(
+          taskTitle: task.title,
+          taskStartDate: task.from,
+          taskEndDate: task.until,
+          taskRepeatType:
+              task.repeatAt == null ? null : htGetRepeatType(task.repeatAt!),
+          taskEmoji: task.emoji,
+          taskCreateDate: task.from,
+          taskAlarm: task.alarmTime != null,
+        );
       },
       child: Container(
         width: double.infinity,
@@ -758,7 +773,8 @@ class SubscribePopup extends StatelessWidget {
         alignment: Alignment.bottomCenter,
         child: GestureDetector(
           onTap: () {
-            pushSubscriptionPage();
+            pushSubscriptionPage(SubscriptionLocation.bottomBanner);
+            EventService.tapSubscribeBanner();
           },
           child: Container(
             height: 96,

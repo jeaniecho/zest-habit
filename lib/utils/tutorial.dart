@@ -126,7 +126,8 @@ showTutorial({required AppService appService, required Task firstTask}) {
   EventService.viewTutorial();
 
   BuildContext context = shellNavKey.currentContext!;
-  TaskDetailBloc taskDetailBloc = TaskDetailBloc(task: firstTask);
+  TaskDetailBloc taskDetailBloc =
+      TaskDetailBloc(task: firstTask, appService: appService);
   TaskAddBloc taskAddBloc =
       TaskAddBloc(appService: appService, task: firstTask);
 

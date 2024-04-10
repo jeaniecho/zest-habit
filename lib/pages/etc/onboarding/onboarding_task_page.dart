@@ -12,6 +12,7 @@ import 'package:habit_app/router.dart';
 import 'package:habit_app/styles/colors.dart';
 import 'package:habit_app/styles/tokens.dart';
 import 'package:habit_app/styles/typos.dart';
+import 'package:habit_app/utils/enums.dart';
 import 'package:habit_app/widgets/ht_text.dart';
 import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
@@ -32,7 +33,7 @@ class _OnboardingTaskPageState extends State<OnboardingTaskPage> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       if (!context.read<IAPService>().isPro() &&
           context.read<AppService>().settingsValue.createdTaskCount >= 3) {
-        pushSubscriptionPage();
+        pushSubscriptionPage(SubscriptionLocation.onboarding);
       }
     });
   }

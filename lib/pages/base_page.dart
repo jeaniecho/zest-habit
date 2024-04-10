@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:go_router/go_router.dart';
 import 'package:habit_app/blocs/app_service.dart';
+import 'package:habit_app/blocs/event_service.dart';
 import 'package:habit_app/blocs/task/task_add_bloc.dart';
 import 'package:habit_app/models/settings_model.dart';
 import 'package:habit_app/pages/base/task_page.dart';
@@ -18,6 +19,7 @@ import 'package:habit_app/router.dart';
 import 'package:habit_app/styles/colors.dart';
 import 'package:habit_app/styles/tokens.dart';
 import 'package:habit_app/styles/typos.dart';
+import 'package:habit_app/utils/enums.dart';
 import 'package:habit_app/utils/functions.dart';
 import 'package:habit_app/utils/tutorial.dart';
 import 'package:habit_app/widgets/ht_dialog.dart';
@@ -46,7 +48,7 @@ class _BasePageState extends State<BasePage> {
           // !context.read<IAPService>().isPro() &&
           !context.read<AppService>().isProValue &&
               context.read<AppService>().settingsValue.createdTaskCount >= 3) {
-        pushSubscriptionPage();
+        pushSubscriptionPage(SubscriptionLocation.secondSession);
       }
     });
   }
@@ -105,6 +107,8 @@ class _BasePageState extends State<BasePage> {
                                 context.replace(TaskPage.routeName);
                                 appService.setBottomIndex(0);
                               }
+
+                              EventService.tapNavTask();
                             },
                             child: SizedBox(
                               width: 88,
@@ -147,12 +151,15 @@ class _BasePageState extends State<BasePage> {
                                     content:
                                         'To add more task, you need PRO plan.\nStart with free trial plan!',
                                     action: () {
-                                      pushSubscriptionPage();
+                                      pushSubscriptionPage(
+                                          SubscriptionLocation.addDialog);
                                     },
                                     buttonText: 'Try PRO',
                                     isDestructive: false,
                                   );
                                 }
+
+                                EventService.tapNavCreateTask();
                               },
                               child: SizedBox(
                                 width: 88,
@@ -184,6 +191,8 @@ class _BasePageState extends State<BasePage> {
                                 context.replace(TimerPage.routeName);
                                 appService.setBottomIndex(1);
                               }
+
+                              EventService.tapNavTimer();
                             },
                             child: SizedBox(
                               width: 88,
@@ -249,6 +258,8 @@ class BaseEndDrawer extends StatelessWidget {
               HTSpacers.height20,
               BaseEndDrawerItem(
                   onTap: () async {
+                    EventService.tapSupport();
+
                     PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
                     String body =
@@ -285,6 +296,7 @@ class BaseEndDrawer extends StatelessWidget {
               BaseEndDrawerItem(
                   onTap: () {
                     context.push(ModePage.routeName);
+                    EventService.tapMode();
                   },
                   text: 'Mode'),
               const Spacer(),

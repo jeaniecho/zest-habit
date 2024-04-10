@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:habit_app/blocs/app_service.dart';
 import 'package:habit_app/blocs/base/timer_bloc.dart';
+import 'package:habit_app/blocs/event_service.dart';
 import 'package:habit_app/models/task_model.dart';
 import 'package:habit_app/router.dart';
 import 'package:habit_app/styles/colors.dart';
@@ -284,6 +285,9 @@ class TimerWidget extends StatelessWidget {
                               if (isTimerOn) {
                                 bloc.stopTimer();
                               } else {
+                                EventService.tapTimerPlay(
+                                    taskTitle: bloc.selectedTaskValue?.title);
+
                                 bloc.startTimer();
                               }
                             },
@@ -438,7 +442,7 @@ class NoneProTimerText extends StatelessWidget {
           content:
               'To adjsut time, you need PRO plan.\nStart with free trial plan!',
           action: () {
-            pushSubscriptionPage();
+            pushSubscriptionPage(SubscriptionLocation.timerDialog);
           },
           buttonText: 'Try PRO',
           isDestructive: false,

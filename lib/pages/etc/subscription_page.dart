@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:habit_app/blocs/etc/subscription_bloc.dart';
+import 'package:habit_app/blocs/event_service.dart';
 import 'package:habit_app/iap/iap_service.dart';
 import 'package:habit_app/gen/assets.gen.dart';
 import 'package:habit_app/pages/etc/webview_page.dart';
 import 'package:habit_app/styles/colors.dart';
 import 'package:habit_app/styles/tokens.dart';
 import 'package:habit_app/styles/typos.dart';
+import 'package:habit_app/utils/enums.dart';
 import 'package:habit_app/utils/functions.dart';
 import 'package:habit_app/widgets/ht_dialog.dart';
 import 'package:habit_app/widgets/ht_text.dart';
@@ -226,6 +228,7 @@ class SubscriptionProducts extends StatelessWidget {
                         onTap: () {
                           bloc.setSelectedIndex(0);
                           bloc.setSelectedProduct(subscriptions[2]);
+                          EventService.tapYearlyPlan();
                         },
                         child: SubscriptionProductBox(
                           isSelected: selectedIndex == 0,
@@ -240,6 +243,7 @@ class SubscriptionProducts extends StatelessWidget {
                         onTap: () {
                           bloc.setSelectedIndex(1);
                           bloc.setSelectedProduct(subscriptions[0]);
+                          EventService.tapMonthlyPlan();
                         },
                         child: SubscriptionProductBox(
                           isSelected: selectedIndex == 1,
@@ -414,6 +418,11 @@ class SubscriptionButton extends StatelessWidget {
               margin: EdgeInsets.symmetric(horizontal: 24.h),
               child: ElevatedButton(
                 onPressed: () {
+                  EventService.tapSubscribe(
+                      planType: selectedIndex == 0
+                          ? SubscriptionType.yearly
+                          : SubscriptionType.monthly);
+
                   PurchaseParam purchaseParam =
                       PurchaseParam(productDetails: productDetails);
 
@@ -423,6 +432,13 @@ class SubscriptionButton extends StatelessWidget {
                     iapService.purchases.listen((event) {
                       if (event.isNotEmpty) {
                         Navigator.pop(context);
+
+                        EventService.completeSubscribe(
+                          planType: selectedIndex == 0
+                              ? SubscriptionType.yearly
+                              : SubscriptionType.monthly,
+                          location: bloc.location,
+                        );
                       }
                     });
                   });

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:habit_app/blocs/app_service.dart';
+import 'package:habit_app/blocs/event_service.dart';
 import 'package:habit_app/models/task_model.dart';
 import 'package:habit_app/utils/disposable.dart';
 import 'package:habit_app/utils/functions.dart';
@@ -17,7 +18,6 @@ class TaskBloc extends Disposable {
 
   final BehaviorSubject<int> _tabIndex = BehaviorSubject.seeded(0);
   Stream<int> get tabIndex => _tabIndex.stream;
-  Function(int) get setTabIndex => _tabIndex.add;
 
   final BehaviorSubject<int> _dateIndex = BehaviorSubject.seeded(prevDates);
   Stream<int> get dateIndex => _dateIndex.stream;
@@ -55,6 +55,8 @@ class TaskBloc extends Disposable {
         _notToday.add(0);
       }
     });
+
+    viewCalendarTaskEvent();
   }
 
   @override
@@ -82,11 +84,46 @@ class TaskBloc extends Disposable {
     return items;
   }
 
+  setTabIndex(int index) {
+    _tabIndex.add(index);
+
+    if (index == 0) {
+      EventService.tapTabCalendar();
+      viewCalendarTaskEvent();
+    } else if (index == 1) {
+      int totalNumTask = appService.tasksValue.length;
+      int totalNumTaskActive = appService.activeTaskCount();
+      EventService.tapTabAllTask(
+        totalNumTask: totalNumTask,
+        totalNumTaskActive: totalNumTaskActive,
+        totalNumTaskInactive: totalNumTask - totalNumTaskActive,
+        totalNumTaskRepeat: appService.repeatingTaskCount(),
+      );
+    }
+  }
+
+  viewCalendarTaskEvent() {
+    EventService.viewCalendarTask(
+      todayNumTask: _currTasks.value.length,
+      todayNumTaskRepeat: _currTasks.value
+          .where((element) =>
+              element.repeatAt != null && element.repeatAt!.isNotEmpty)
+          .length,
+      date: _dates.value[_dateIndex.value],
+      viewDate: DateTime.now(),
+    );
+  }
+
   setDateIndex(int index) {
     _dateIndex.add(index);
 
     DateTime currDate = _dates.value[index];
     getCurrTasks(appService.tasksValue, currDate);
+
+    EventService.tapCalendarDate(
+      calendarDate: currDate,
+      tapDate: DateTime.now(),
+    );
   }
 
   List<Task> getCurrTasks(List<Task> tasks, DateTime currDate) {

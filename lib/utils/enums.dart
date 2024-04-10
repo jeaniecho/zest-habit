@@ -25,6 +25,9 @@ enum SubscriptionLocation {
   onboarding,
   secondSession,
   bottomBanner,
+  alarmDialog,
+  timerDialog,
+  addDialog,
 }
 
 enum ModeType {

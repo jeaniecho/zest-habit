@@ -19,6 +19,7 @@ import 'package:habit_app/pages/etc/onboarding/onboarding_task_page.dart';
 import 'package:habit_app/pages/etc/splash_page.dart';
 import 'package:habit_app/pages/etc/subscription_page.dart';
 import 'package:habit_app/pages/task/task_detail_page.dart';
+import 'package:habit_app/utils/enums.dart';
 import 'package:habit_app/utils/page_routes.dart';
 import 'package:provider/provider.dart';
 
@@ -59,7 +60,8 @@ List<RouteBase> routes = [
             final Task task = state.extra as Task;
 
             return Provider<TaskDetailBloc>(
-              create: (context) => TaskDetailBloc(task: task),
+              create: (context) => TaskDetailBloc(
+                  task: task, appService: context.read<AppService>()),
               dispose: (context, value) => value.dispose(),
               child: const TaskDetailPage(),
             );
@@ -125,12 +127,12 @@ List<RouteBase> routes = [
   ),
 ];
 
-pushSubscriptionPage() {
+pushSubscriptionPage(SubscriptionLocation location) {
   if (rootNavKey.currentContext != null) {
     Navigator.push(
         rootNavKey.currentContext!,
         HTPageRoutes.slideUp(Provider(
-          create: (context) => SubscriptionBloc(),
+          create: (context) => SubscriptionBloc(location),
           dispose: (context, value) => value.dispose(),
           child: const SubscriptionPage(),
         )));

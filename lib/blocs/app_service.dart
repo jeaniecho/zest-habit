@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:habit_app/blocs/event_service.dart';
 import 'package:habit_app/iap/iap_service.dart';
 import 'package:habit_app/models/settings_model.dart';
 import 'package:habit_app/models/task_model.dart';
+import 'package:habit_app/utils/enums.dart';
 import 'package:habit_app/utils/functions.dart';
 import 'package:habit_app/utils/notifications.dart';
 import 'package:isar/isar.dart';
@@ -88,6 +90,8 @@ class AppService {
     });
 
     await getSettings();
+
+    EventService.changeMode(modeType: value ? ModeType.dark : ModeType.light);
   }
 
   Future<List<Task>> getTasks() async {
@@ -127,6 +131,21 @@ class AppService {
     if (timerTaskValue?.id == task.id) {
       setTimerTask(null);
     }
+
+    DateTime now = DateTime.now();
+    EventService.deleteTask(
+      taskTitle: task.title,
+      taskStartDate: task.from,
+      taskEndDate: task.until,
+      taskRepeatType:
+          task.repeatAt == null ? null : htGetRepeatType(task.repeatAt!),
+      taskEmoji: task.emoji,
+      taskCreateDate: task.from,
+      taskAlarm: task.alarmTime != null,
+      deleteDate: now,
+      taskPeriod: now.difference(task.from).inDays,
+      subscribeStatus: getSubscriptionType(iapService.purchasesValue),
+    );
   }
 
   Future<Task> updateTask(Task task) async {
@@ -149,6 +168,18 @@ class AppService {
       task.doneAt.remove(toRemove);
     } catch (e) {
       task.doneAt.add(date);
+
+      EventService.tapTaskDone(
+        taskTitle: task.title,
+        taskStartDate: task.from,
+        taskEndDate: task.until,
+        taskRepeatType:
+            task.repeatAt == null ? null : htGetRepeatType(task.repeatAt!),
+        taskEmoji: task.emoji,
+        taskCreateDate: task.from,
+        taskAlarm: task.alarmTime != null,
+        doneDate: date,
+      );
     }
 
     try {
@@ -219,6 +250,13 @@ class AppService {
         .where((element) =>
             element.until == null ||
             element.until!.isAfter(DateTime.now().getDate()))
+        .length;
+  }
+
+  int repeatingTaskCount() {
+    return _tasks.value
+        .where((element) =>
+            element.repeatAt != null && element.repeatAt!.isNotEmpty)
         .length;
   }
 

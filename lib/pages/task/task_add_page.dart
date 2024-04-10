@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:habit_app/blocs/app_service.dart';
+import 'package:habit_app/blocs/event_service.dart';
 import 'package:habit_app/blocs/task/task_add_bloc.dart';
 import 'package:habit_app/models/settings_model.dart';
 import 'package:habit_app/pages/task/task_detail_page.dart';
@@ -203,7 +204,7 @@ class TaskAddAlarm extends StatelessWidget {
                   content:
                       'To set alarm, you need PRO plan.\nStart with free trial plan!',
                   action: () {
-                    pushSubscriptionPage();
+                    pushSubscriptionPage(SubscriptionLocation.alarmDialog);
                   },
                   buttonText: 'Try PRO',
                   isDestructive: false,
@@ -1012,6 +1013,7 @@ class TaskAddSubmit extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    AppService appService = context.read<AppService>();
     TaskAddBloc bloc = context.read<TaskAddBloc>();
 
     return StreamBuilder<List>(
@@ -1046,9 +1048,25 @@ class TaskAddSubmit extends StatelessWidget {
                           }
                         });
                       } else {
-                        bloc.addTask().then((value) {
-                          context.push(TaskDetailPage.routeName, extra: value);
+                        bloc.addTask().then((task) {
+                          context.push(TaskDetailPage.routeName, extra: task);
                           Navigator.pop(context);
+
+                          EventService.createTaskComplete(
+                            taskTitle: task.title,
+                            taskStartDate: task.from,
+                            taskEndDate: task.until,
+                            taskRepeatType: task.repeatAt == null
+                                ? null
+                                : htGetRepeatType(task.repeatAt!),
+                            taskEmoji: task.emoji,
+                            taskCreateDate: task.from,
+                            taskAlarm: task.alarmTime != null,
+                            fillSubtitle:
+                                task.goal != null && task.goal!.isNotEmpty,
+                            subscribeStatus: getSubscriptionType(
+                                appService.iapService.purchasesValue),
+                          );
                         });
                       }
                     } else {

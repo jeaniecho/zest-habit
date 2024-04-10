@@ -1,8 +1,12 @@
+import 'package:habit_app/blocs/event_service.dart';
 import 'package:habit_app/utils/disposable.dart';
+import 'package:habit_app/utils/enums.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:rxdart/rxdart.dart';
 
 class SubscriptionBloc extends Disposable {
+  final SubscriptionLocation location;
+
   final BehaviorSubject<int> _selectedIndex = BehaviorSubject.seeded(1);
   Stream<int> get selectedIndex => _selectedIndex.stream;
   Function(int) get setSelectedIndex => _selectedIndex.add;
@@ -19,7 +23,9 @@ class SubscriptionBloc extends Disposable {
   Stream<bool> get isLoading => _isLoading.stream;
   Function(bool) get setIsLoading => _isLoading.add;
 
-  SubscriptionBloc();
+  SubscriptionBloc(this.location) {
+    EventService.viewSubscribe();
+  }
 
   @override
   void dispose() {

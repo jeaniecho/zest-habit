@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:habit_app/blocs/app_service.dart';
+import 'package:habit_app/blocs/event_service.dart';
 import 'package:habit_app/blocs/task/task_add_bloc.dart';
 import 'package:habit_app/models/task_model.dart';
 import 'package:habit_app/pages/task/task_add_page.dart';
@@ -10,6 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
 
 class TaskDetailBloc extends Disposable {
+  final AppService appService;
   final Task task;
 
   late final BehaviorSubject<Task> _taskObj;
@@ -29,7 +31,7 @@ class TaskDetailBloc extends Disposable {
   final BehaviorSubject<List<int>> _timerDates = BehaviorSubject.seeded([]);
   Stream<List<int>> get timerDates => _timerDates.stream;
 
-  TaskDetailBloc({required this.task}) {
+  TaskDetailBloc({required this.task, required this.appService}) {
     _taskObj = BehaviorSubject.seeded(task);
 
     DateTime today = DateTime.now().getDate();
@@ -136,6 +138,8 @@ class TaskDetailBloc extends Disposable {
         setTaskObj(task as Task);
       }
     });
+
+    editTaskEvent();
   }
 
   showTutorialEditModal(BuildContext context, TaskAddBloc taskAddBloc) {
@@ -156,5 +160,20 @@ class TaskDetailBloc extends Disposable {
         setTaskObj(task as Task);
       }
     });
+  }
+
+  editTaskEvent() {
+    EventService.editTask(
+      taskTitle: task.title,
+      taskStartDate: task.from,
+      taskEndDate: task.until,
+      taskRepeatType:
+          task.repeatAt == null ? null : htGetRepeatType(task.repeatAt!),
+      taskEmoji: task.emoji,
+      taskCreateDate: task.from,
+      taskAlarm: task.alarmTime != null,
+      subscribeStatus:
+          getSubscriptionType(appService.iapService.purchasesValue),
+    );
   }
 }

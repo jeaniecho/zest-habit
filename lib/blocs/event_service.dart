@@ -60,9 +60,9 @@ class EventService {
   static void tapTask({
     required String taskTitle,
     required DateTime taskStartDate,
-    DateTime? taskEndDate,
-    RepeatType? taskRepeatType,
-    String? taskEmoji,
+    required DateTime? taskEndDate,
+    required RepeatType? taskRepeatType,
+    required String? taskEmoji,
     required DateTime taskCreateDate,
     required bool taskAlarm,
   }) {
@@ -75,7 +75,7 @@ class EventService {
         'task_repeat_type': taskRepeatType?.name ?? 'none',
         'task_emoji': taskEmoji ?? 'default',
         'task_create_date': taskCreateDate.toIso8601String(),
-        'task_alarm': taskAlarm,
+        'task_alarm': taskAlarm.toString(),
       },
     );
   }
@@ -118,17 +118,38 @@ class EventService {
   }
 
   /// 생성된 태스크 완료를 탭했을 때
-  static void tapTaskDone() {
-    FirebaseAnalytics.instance.logEvent(name: 'tap_taskdone');
+  static void tapTaskDone({
+    required String taskTitle,
+    required DateTime taskStartDate,
+    required DateTime? taskEndDate,
+    required RepeatType? taskRepeatType,
+    required String? taskEmoji,
+    required DateTime taskCreateDate,
+    required bool taskAlarm,
+    required DateTime doneDate,
+  }) {
+    FirebaseAnalytics.instance.logEvent(
+      name: 'tap_taskdone',
+      parameters: {
+        'task_title': taskTitle,
+        'task_start_date': taskStartDate.toIso8601String(),
+        'task_end_date': taskEndDate?.toIso8601String() ?? 'forever',
+        'task_repeat_type': taskRepeatType?.name ?? 'none',
+        'task_emoji': taskEmoji ?? 'default',
+        'task_create_date': taskCreateDate.toIso8601String(),
+        'task_alarm': taskAlarm.toString(),
+        'done_date': doneDate.toIso8601String(),
+      },
+    );
   }
 
   /// 태스크 삭제를 탭했을 때
   static void deleteTask({
     required String taskTitle,
     required DateTime taskStartDate,
-    DateTime? taskEndDate,
-    RepeatType? taskRepeatType,
-    String? taskEmoji,
+    required DateTime? taskEndDate,
+    required RepeatType? taskRepeatType,
+    required String? taskEmoji,
     required DateTime taskCreateDate,
     required bool taskAlarm,
     required DateTime deleteDate,
@@ -144,7 +165,7 @@ class EventService {
         'task_repeat_type': taskRepeatType?.name ?? 'none',
         'task_emoji': taskEmoji ?? 'default',
         'task_create_date': taskCreateDate.toIso8601String(),
-        'task_alarm': taskAlarm,
+        'task_alarm': taskAlarm.toString(),
         'delete_date': deleteDate.toIso8601String(),
         'task_period': taskPeriod,
         'subscribe_status': subscribeStatus.name,
@@ -156,9 +177,9 @@ class EventService {
   static void editTask({
     required String taskTitle,
     required DateTime taskStartDate,
-    DateTime? taskEndDate,
-    RepeatType? taskRepeatType,
-    String? taskEmoji,
+    required DateTime? taskEndDate,
+    required RepeatType? taskRepeatType,
+    required String? taskEmoji,
     required DateTime taskCreateDate,
     required bool taskAlarm,
     required SubscriptionType subscribeStatus,
@@ -172,7 +193,7 @@ class EventService {
         'task_repeat_type': taskRepeatType?.name ?? 'none',
         'task_emoji': taskEmoji ?? 'default',
         'task_create_date': taskCreateDate.toIso8601String(),
-        'task_alarm': taskAlarm,
+        'task_alarm': taskAlarm.toString(),
         'subscribe_status': subscribeStatus.name,
       },
     );
@@ -182,9 +203,9 @@ class EventService {
   static void createTaskComplete({
     required String taskTitle,
     required DateTime taskStartDate,
-    DateTime? taskEndDate,
-    RepeatType? taskRepeatType,
-    String? taskEmoji,
+    required DateTime? taskEndDate,
+    required RepeatType? taskRepeatType,
+    required String? taskEmoji,
     required DateTime taskCreateDate,
     required bool taskAlarm,
     required bool fillSubtitle,
@@ -198,7 +219,7 @@ class EventService {
       'task_repeat_type': taskRepeatType?.name ?? 'none',
       'task_emoji': taskEmoji ?? 'default',
       'task_create_date': taskCreateDate.toIso8601String,
-      'task_alarm': taskAlarm,
+      'task_alarm': taskAlarm.toString(),
       'fill_subtitle': fillSubtitle,
       'subscribe_status': subscribeStatus.name,
     });
@@ -287,27 +308,17 @@ class EventService {
     );
   }
 
-  /// 모드 탭에서 닫기 버튼을 탭했을 때
-  static void closeMode({required ModeType modeType}) {
-    FirebaseAnalytics.instance.logEvent(
-      name: 'close_mode',
-      parameters: {
-        'mode_type': modeType.name,
-      },
-    );
-  }
-
   /// 서포트를 탭했을 때
   static void tapSupport() {
     FirebaseAnalytics.instance.logEvent(name: 'tap_support');
   }
 
   /// 타이머 플레이를 탭했을 때
-  tapTimerPlay({required String taskTitle}) {
+  static void tapTimerPlay({required String? taskTitle}) {
     FirebaseAnalytics.instance.logEvent(
       name: 'tap_timer_play',
       parameters: {
-        'task_title': taskTitle,
+        if (taskTitle != null) 'task_title': taskTitle,
       },
     );
   }
