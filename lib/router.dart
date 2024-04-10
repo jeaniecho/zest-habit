@@ -1,3 +1,4 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:habit_app/blocs/app_service.dart';
@@ -28,10 +29,12 @@ GlobalKey<ScaffoldMessengerState> snackbarKey =
     GlobalKey<ScaffoldMessengerState>();
 
 final router = GoRouter(
-  navigatorKey: rootNavKey,
-  initialLocation: SplashPage.routeName,
-  routes: routes,
-);
+    navigatorKey: rootNavKey,
+    initialLocation: SplashPage.routeName,
+    routes: routes,
+    observers: [
+      FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance),
+    ]);
 
 List<RouteBase> routes = [
   ShellRoute(
