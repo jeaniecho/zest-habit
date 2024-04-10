@@ -14,3 +14,20 @@ enum TimeType {
   minute,
   second,
 }
+
+enum SubscriptionType {
+  monthly,
+  yearly,
+  free,
+}
+
+enum SubscriptionLocation {
+  onboarding,
+  secondSession,
+  bottomBanner,
+}
+
+enum ModeType {
+  light,
+  dark,
+}
