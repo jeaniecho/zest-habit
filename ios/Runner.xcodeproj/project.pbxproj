@@ -14,7 +14,6 @@
 		877E88D52B9C75FE00B32356 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 877E88D42B9C75FE00B32356 /* StoreKit.framework */; };
 		877E88D72B9CC67800B32356 /* SyncedProducts.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 877E88D62B9CC67800B32356 /* SyncedProducts.storekit */; };
 		877E88D92B9CC74C00B32356 /* StoreKitTestCertificate.cer in Resources */ = {isa = PBXBuildFile; fileRef = 877E88D82B9CC74C00B32356 /* StoreKitTestCertificate.cer */; };
-		87E026982BBB8416005CA853 /* GoogleService-Info.plist in Sources */ = {isa = PBXBuildFile; fileRef = 5F44EEDCC78F7BC41E0C7B8D /* GoogleService-Info.plist */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
@@ -261,7 +260,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1500;
-				LastUpgradeCheck = 1430;
+				LastUpgradeCheck = 1510;
 				ORGANIZATIONNAME = "";
 				TargetAttributes = {
 					331C8080294A63A400263BE5 = {
@@ -425,7 +424,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				87E026982BBB8416005CA853 /* GoogleService-Info.plist in Sources */,
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
 			);
