@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:habit_app/blocs/app_service.dart';
+import 'package:habit_app/blocs/event_service.dart';
 import 'package:habit_app/blocs/task/task_add_bloc.dart';
 import 'package:habit_app/blocs/task/task_detail_bloc.dart';
 import 'package:habit_app/models/task_model.dart';
@@ -122,57 +123,61 @@ showTutorial({required AppService appService, required Task firstTask}) {
     return;
   }
 
+  EventService.viewTutorial();
+
   BuildContext context = shellNavKey.currentContext!;
   TaskDetailBloc taskDetailBloc = TaskDetailBloc(task: firstTask);
   TaskAddBloc taskAddBloc =
       TaskAddBloc(appService: appService, task: firstTask);
 
   TutorialCoachMark(
-    targets: targets,
-    hideSkip: true,
-    opacityShadow: 0.5,
-    paddingFocus: 0,
-    onClickTarget: (p0) {
-      switch (p0.identify) {
-        case 1:
-          context.push(TaskDetailPage.routeName, extra: firstTask);
-          break;
-        case 2:
-          taskDetailBloc.showTutorialEditModal(context, taskAddBloc);
-          taskDetailBloc.dispose();
-          break;
-        case 3:
-          taskAddBloc.toggleOpenEmoji();
-          break;
-        case 4:
-          taskAddBloc.toggleOpenEmoji();
-          break;
-        case 5:
-          while (context.canPop()) {
-            context.pop();
-          }
-          taskAddBloc.dispose();
-          break;
-        case 6:
-          showModalBottomSheet(
-              context: rootNavKey.currentContext ?? context,
-              isScrollControlled: true,
-              backgroundColor: HTColors.clear,
-              barrierColor: htGreys(context).black.withOpacity(0.3),
-              useSafeArea: true,
-              builder: (context) {
-                return Provider(
-                    create: (context) =>
-                        TaskAddBloc(appService: context.read<AppService>()),
-                    dispose: (context, value) => value.dispose(),
-                    child: const TaskAddWidget());
-              });
-          break;
-        default:
-          break;
-      }
-    },
-  ).show(
+      targets: targets,
+      hideSkip: true,
+      opacityShadow: 0.5,
+      paddingFocus: 0,
+      onClickTarget: (p0) {
+        switch (p0.identify) {
+          case 1:
+            context.push(TaskDetailPage.routeName, extra: firstTask);
+            break;
+          case 2:
+            taskDetailBloc.showTutorialEditModal(context, taskAddBloc);
+            taskDetailBloc.dispose();
+            break;
+          case 3:
+            taskAddBloc.toggleOpenEmoji();
+            break;
+          case 4:
+            taskAddBloc.toggleOpenEmoji();
+            break;
+          case 5:
+            while (context.canPop()) {
+              context.pop();
+            }
+            taskAddBloc.dispose();
+            break;
+          case 6:
+            showModalBottomSheet(
+                context: rootNavKey.currentContext ?? context,
+                isScrollControlled: true,
+                backgroundColor: HTColors.clear,
+                barrierColor: htGreys(context).black.withOpacity(0.3),
+                useSafeArea: true,
+                builder: (context) {
+                  return Provider(
+                      create: (context) =>
+                          TaskAddBloc(appService: context.read<AppService>()),
+                      dispose: (context, value) => value.dispose(),
+                      child: const TaskAddWidget());
+                });
+            break;
+          default:
+            break;
+        }
+      },
+      onFinish: () {
+        EventService.completeTutorial();
+      }).show(
     context: context,
     rootOverlay: true,
   );

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:habit_app/blocs/app_service.dart';
 import 'package:habit_app/blocs/etc/onboarding/onboarding_task_bloc.dart';
+import 'package:habit_app/blocs/event_service.dart';
 import 'package:habit_app/iap/iap_service.dart';
 import 'package:habit_app/models/onboarding_task_model.dart';
 import 'package:habit_app/models/settings_model.dart';
@@ -255,6 +256,11 @@ class OnboardingTaskStartButton extends StatelessWidget {
                     bloc.addTasks().then((tasks) {
                       bloc.appService.updateOnboardingStatus(true);
                       context.pushReplacement(TaskPage.routeName, extra: true);
+
+                      EventService.completeOnboarding(
+                        taskTitle: tasks.map((e) => e.title).join(','),
+                        taskCategory: '',
+                      );
                     });
                   }
                 },

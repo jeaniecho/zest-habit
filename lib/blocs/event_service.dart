@@ -9,37 +9,37 @@ class EventService {
   // }
 
   /// 로그인
-  login(String loginMethod) {
+  static void login(String loginMethod) {
     FirebaseAnalytics.instance.logLogin(loginMethod: loginMethod);
   }
 
   /// 가입
-  signUp(String signUpMethod) {
+  static void signUp(String signUpMethod) {
     FirebaseAnalytics.instance.logSignUp(signUpMethod: signUpMethod);
   }
 
   /// 하단 네비에서 태스크 탭을 탭했을 때
-  tapNavTask() {
+  static void tapNavTask() {
     FirebaseAnalytics.instance.logEvent(name: 'tap_nav_task');
   }
 
   /// 하ㄴ 네비에서 타이머 탭을 탭했을 때
-  tapNavTimer() {
+  static void tapNavTimer() {
     FirebaseAnalytics.instance.logEvent(name: 'tap_nav_timer');
   }
 
   /// 상단 햄버거 메뉴 아이콘 버튼을 탭했을 때
-  tapMenu() {
+  static void tapMenu() {
     FirebaseAnalytics.instance.logEvent(name: 'tap_menu');
   }
 
   /// 하단 네비 태스크 생성 버튼을 탭했을 때
-  tapNavCreateTask() {
+  static void tapNavCreateTask() {
     FirebaseAnalytics.instance.logEvent(name: 'tap_nav_createtask');
   }
 
   /// 전체 태스크 탭을 탭했을 때
-  tapTabAllTask({
+  static void tapTabAllTask({
     required int totalNumTask,
     required int totalNumTaskActive,
     required int totalNumTaskInactive,
@@ -57,7 +57,7 @@ class EventService {
   }
 
   /// 태스크를 탭해 상세로 들어갈 때
-  tapTask({
+  static void tapTask({
     required String taskTitle,
     required DateTime taskStartDate,
     DateTime? taskEndDate,
@@ -81,7 +81,7 @@ class EventService {
   }
 
   /// 캘린더 탭 화면으로 유저가 랜딩되었을 때
-  viewCalendarTask({
+  static void viewCalendarTask({
     required int todayNumTask,
     required int todayNumTaskRepeat,
     required DateTime date,
@@ -99,7 +99,7 @@ class EventService {
   }
 
   /// 상단 날짜를 탭했을 때
-  tapCalendarDate({
+  static void tapCalendarDate({
     required DateTime calendarDate,
     required DateTime tapDate,
   }) {
@@ -113,17 +113,17 @@ class EventService {
   }
 
   /// 캘린더 탭을 탭했을 때
-  tapTabCalendar() {
+  static void tapTabCalendar() {
     FirebaseAnalytics.instance.logEvent(name: 'tap_tab_calendar');
   }
 
   /// 생성된 태스크 완료를 탭했을 때
-  tapTaskDone() {
+  static void tapTaskDone() {
     FirebaseAnalytics.instance.logEvent(name: 'tap_taskdone');
   }
 
   /// 태스크 삭제를 탭했을 때
-  deleteTask({
+  static void deleteTask({
     required String taskTitle,
     required DateTime taskStartDate,
     DateTime? taskEndDate,
@@ -153,7 +153,7 @@ class EventService {
   }
 
   /// 태스크 편집을 탭했을 때
-  editTask({
+  static void editTask({
     required String taskTitle,
     required DateTime taskStartDate,
     DateTime? taskEndDate,
@@ -179,7 +179,7 @@ class EventService {
   }
 
   /// 태스크 생성을 정상적으로 완료했을 때
-  createTaskComplete({
+  static void createTaskComplete({
     required String taskTitle,
     required DateTime taskStartDate,
     DateTime? taskEndDate,
@@ -205,22 +205,22 @@ class EventService {
   }
 
   /// 구독화면에 랜딩되었을 때
-  viewSubscribe() {
+  static void viewSubscribe() {
     FirebaseAnalytics.instance.logEvent(name: 'view_subscribe');
   }
 
   /// 연간 구독 상품을 탭했을 때
-  tapYearlyPlan() {
+  static void tapYearlyPlan() {
     FirebaseAnalytics.instance.logEvent(name: 'tap_yearly_plan');
   }
 
   /// 월간 구독 상품을 탭했을 때
-  tapMonthlyPlan() {
+  static void tapMonthlyPlan() {
     FirebaseAnalytics.instance.logEvent(name: 'tap_monthly_plan');
   }
 
   /// 구독하기 버튼읋 탭했을 때
-  tapSubscribe({required SubscriptionType planType}) {
+  static void tapSubscribe({required SubscriptionType planType}) {
     FirebaseAnalytics.instance.logEvent(
       name: 'tap_subscribe',
       parameters: {
@@ -230,7 +230,7 @@ class EventService {
   }
 
   /// 구독을 완료했을 때
-  completeSubscribe({
+  static void completeSubscribe({
     required SubscriptionType planType,
     required SubscriptionLocation location,
   }) {
@@ -244,12 +244,12 @@ class EventService {
   }
 
   /// tap_subscribe_banner
-  tapSubscribeBanner() {
+  static void tapSubscribeBanner() {
     FirebaseAnalytics.instance.logEvent(name: 'tap_subscribe_banner');
   }
 
   /// 온보딩에서 Start Now 버튼을 탭했을 때
-  completeOnboarding({
+  static void completeOnboarding({
     required String taskTitle,
     required String taskCategory,
   }) {
@@ -263,22 +263,22 @@ class EventService {
   }
 
   /// 튜토리얼 첫화면에 랜딩했을 때
-  viewTutorial() {
+  static void viewTutorial() {
     FirebaseAnalytics.instance.logEvent(name: 'view_tutorial');
   }
 
   /// 튜토리얼을 모두 완료했을 때
-  completeTutorial() {
+  static void completeTutorial() {
     FirebaseAnalytics.instance.logEvent(name: 'complete_tutorial');
   }
 
   /// 모드 메뉴를 탭했을 때
-  tapMode() {
+  static void tapMode() {
     FirebaseAnalytics.instance.logEvent(name: 'tap_mode');
   }
 
   /// 모드 라디오 버튼을 탭했을 때
-  changeMode({required ModeType modeType}) {
+  static void changeMode({required ModeType modeType}) {
     FirebaseAnalytics.instance.logEvent(
       name: 'change_mode',
       parameters: {
@@ -288,7 +288,7 @@ class EventService {
   }
 
   /// 모드 탭에서 닫기 버튼을 탭했을 때
-  closeMode({required ModeType modeType}) {
+  static void closeMode({required ModeType modeType}) {
     FirebaseAnalytics.instance.logEvent(
       name: 'close_mode',
       parameters: {
@@ -298,7 +298,7 @@ class EventService {
   }
 
   /// 서포트를 탭했을 때
-  tapSupport() {
+  static void tapSupport() {
     FirebaseAnalytics.instance.logEvent(name: 'tap_support');
   }
 
