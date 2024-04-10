@@ -11,8 +11,6 @@ import 'package:habit_app/pages/base/timer_page.dart';
 import 'package:habit_app/pages/base_page.dart';
 import 'package:habit_app/pages/drawer/licenses_page.dart';
 import 'package:habit_app/pages/drawer/mode_page.dart';
-import 'package:habit_app/pages/drawer/privacy_page.dart';
-import 'package:habit_app/pages/drawer/term_page.dart';
 import 'package:habit_app/pages/etc/dev_page.dart';
 import 'package:habit_app/pages/etc/onboarding/onboarding_page.dart';
 import 'package:habit_app/pages/etc/onboarding/onboarding_task_page.dart';
@@ -67,18 +65,6 @@ List<RouteBase> routes = [
             );
           }),
     ],
-  ),
-  GoRoute(
-    path: TermPage.routeName,
-    builder: (context, state) {
-      return const TermPage();
-    },
-  ),
-  GoRoute(
-    path: PrivacyPage.routeName,
-    builder: (context, state) {
-      return const PrivacyPage();
-    },
   ),
   GoRoute(
     path: LicensesPage.routeName,

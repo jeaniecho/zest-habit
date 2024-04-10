@@ -11,9 +11,8 @@ import 'package:habit_app/pages/base/task_page.dart';
 import 'package:habit_app/pages/base/timer_page.dart';
 import 'package:habit_app/pages/drawer/licenses_page.dart';
 import 'package:habit_app/pages/drawer/mode_page.dart';
-import 'package:habit_app/pages/drawer/privacy_page.dart';
-import 'package:habit_app/pages/drawer/term_page.dart';
 import 'package:habit_app/pages/etc/dev_page.dart';
+import 'package:habit_app/pages/etc/webview_page.dart';
 import 'package:habit_app/pages/task/task_add_page.dart';
 import 'package:habit_app/router.dart';
 import 'package:habit_app/styles/colors.dart';
@@ -277,13 +276,25 @@ class BaseEndDrawer extends StatelessWidget {
               HTSpacers.height8,
               BaseEndDrawerItem(
                   onTap: () {
-                    context.push(TermPage.routeName);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const WebviewPage(
+                                title: 'Terms of Service',
+                                url:
+                                    'https://dour-rhodium-0f4.notion.site/Zest-Terms-of-Use-3d0f81cfe4d94feaae19ccd6dcbe1d66?pvs=4')));
                   },
                   text: 'Terms of Use'),
               HTSpacers.height8,
               BaseEndDrawerItem(
                   onTap: () {
-                    context.push(PrivacyPage.routeName);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const WebviewPage(
+                                title: 'Privacy Policy',
+                                url:
+                                    'https://dour-rhodium-0f4.notion.site/Zest-Privacy-Policy-bb8879af28fa4d83862300eb6c1f99ea?pvs=4')));
                   },
                   text: 'Privacy Policy'),
               HTSpacers.height8,
