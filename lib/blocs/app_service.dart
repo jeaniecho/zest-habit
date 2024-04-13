@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -8,8 +10,13 @@ import 'package:habit_app/models/task_model.dart';
 import 'package:habit_app/utils/enums.dart';
 import 'package:habit_app/utils/functions.dart';
 import 'package:habit_app/utils/notifications.dart';
+import 'package:icloud_storage/icloud_storage.dart';
 import 'package:isar/isar.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart';
+
+const String iCloudContainerId = 'iCloud.dev.jeanie.habitApp';
+const String iCloudRelativePath = 'zest-habit/backup';
 
 class AppService {
   final Isar isar;
@@ -273,5 +280,41 @@ class AppService {
         await HTNotification.scheduleNotification(task);
       }
     });
+  }
+
+  Future downloadFromICloud() async {
+    final dir = await getApplicationDocumentsDirectory();
+
+    await ICloudStorage.download(
+        containerId: iCloudContainerId,
+        relativePath: iCloudRelativePath,
+        destinationFilePath: dir.path,
+        onProgress: (stream) {
+          stream.listen(
+            (progress) => log('ICloud Download Progress : $progress'),
+            onDone: () => log('ICloud Download Complete'),
+            onError: (error) => log('ICloud Download Error: $error'),
+            cancelOnError: true,
+          );
+        });
+
+    await getTasks();
+  }
+
+  Future uploadToICloud() async {
+    final dir = await getApplicationDocumentsDirectory();
+
+    await ICloudStorage.upload(
+        containerId: iCloudContainerId,
+        filePath: dir.path,
+        destinationRelativePath: iCloudRelativePath,
+        onProgress: (stream) {
+          stream.listen(
+            (progress) => log('ICloud Upload Progress : $progress'),
+            onDone: () => log('ICloud Upload Complete'),
+            onError: (error) => log('ICloud Upload Error: $error'),
+            cancelOnError: true,
+          );
+        });
   }
 }
