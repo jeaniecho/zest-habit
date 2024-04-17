@@ -4,9 +4,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:habit_app/blocs/app_service.dart';
+import 'package:habit_app/blocs/event_service.dart';
 import 'package:habit_app/blocs/task/task_detail_bloc.dart';
 import 'package:habit_app/models/settings_model.dart';
 import 'package:habit_app/models/task_model.dart';
+import 'package:habit_app/router.dart';
 import 'package:habit_app/styles/colors.dart';
 import 'package:habit_app/styles/tokens.dart';
 import 'package:habit_app/styles/typos.dart';
@@ -14,6 +16,7 @@ import 'package:habit_app/utils/functions.dart';
 import 'package:habit_app/utils/tutorial.dart';
 import 'package:habit_app/widgets/ht_appbar.dart';
 import 'package:habit_app/widgets/ht_dialog.dart';
+import 'package:habit_app/widgets/ht_snackbar.dart';
 import 'package:habit_app/widgets/ht_text.dart';
 import 'package:habit_app/widgets/ht_toggle.dart';
 import 'package:intl/intl.dart';
@@ -79,6 +82,46 @@ class TaskDetailAction extends StatelessWidget {
                   },
                 ),
               if (!isOld) const PullDownMenuDivider(),
+              PullDownMenuItem(
+                title: 'Duplicate',
+                icon: CupertinoIcons.doc_on_doc,
+                onTap: () {
+                  appService.duplicateTask(bloc.task).then((task) {
+                    context.push(TaskDetailPage.routeName, extra: task);
+
+                    EventService.duplicateTaskComplete(
+                      taskTitle: task.title,
+                      taskStartDate: task.from,
+                      taskEndDate: task.until,
+                      taskRepeatType: task.repeatAt == null
+                          ? null
+                          : htGetRepeatType(task.repeatAt!),
+                      taskEmoji: task.emoji,
+                      taskCreateDate: task.from,
+                      taskAlarm: task.alarmTime != null,
+                      fillSubtitle: task.goal != null && task.goal!.isNotEmpty,
+                      subscribeStatus: getSubscriptionType(
+                          appService.iapService.purchasesValue),
+                    );
+
+                    HTToastBar(
+                      name: 'duplicated',
+                      autoDismiss: true,
+                      snackbarDuration: const Duration(seconds: 3),
+                      position: HTSnackbarPosition.top,
+                      builder: (context) => HTToastCard(
+                        title: HTText(
+                          '😃 Successfully duplicated',
+                          typoToken: HTTypoToken.bodyMedium,
+                          color: htGreys(context).white,
+                        ),
+                        color: htGreys(context).grey080,
+                      ),
+                    ).show(shellNavKey.currentContext!);
+                  });
+                },
+              ),
+              const PullDownMenuDivider(),
               PullDownMenuItem(
                 title: 'Delete',
                 icon: CupertinoIcons.trash,

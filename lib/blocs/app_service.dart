@@ -127,6 +127,21 @@ class AppService {
     return task;
   }
 
+  Future<Task> duplicateTask(Task task) async {
+    Task dup = Task(
+      from: task.from,
+      emoji: task.emoji,
+      title: '$task.title} (Copy)',
+      repeatAt: task.repeatAt,
+      goal: task.goal,
+      desc: task.desc,
+      color: task.color,
+      alarmTime: task.alarmTime,
+    );
+
+    return await addTask(dup);
+  }
+
   Future deleteTask(Task task) async {
     await HTNotification.cancelNotification(task);
 

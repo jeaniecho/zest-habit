@@ -225,6 +225,32 @@ class EventService {
     });
   }
 
+  /// 태스크 복제를 정상적으로 완료했을 때
+  static void duplicateTaskComplete({
+    required String taskTitle,
+    required DateTime taskStartDate,
+    required DateTime? taskEndDate,
+    required RepeatType? taskRepeatType,
+    required String? taskEmoji,
+    required DateTime taskCreateDate,
+    required bool taskAlarm,
+    required bool fillSubtitle,
+    required SubscriptionType subscribeStatus,
+  }) {
+    FirebaseAnalytics.instance
+        .logEvent(name: 'create_task_complete', parameters: {
+      'task_title': taskTitle,
+      'task_start_date': taskStartDate.toIso8601String(),
+      'task_end_date': taskEndDate?.toIso8601String() ?? 'forever',
+      'task_repeat_type': taskRepeatType?.name ?? 'none',
+      'task_emoji': taskEmoji ?? 'default',
+      'task_create_date': taskCreateDate.toIso8601String,
+      'task_alarm': taskAlarm.toString(),
+      'fill_subtitle': fillSubtitle,
+      'subscribe_status': subscribeStatus.name,
+    });
+  }
+
   /// 구독화면에 랜딩되었을 때
   static void viewSubscribe() {
     FirebaseAnalytics.instance.logEvent(name: 'view_subscribe');
