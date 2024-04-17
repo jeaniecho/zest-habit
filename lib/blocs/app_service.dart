@@ -108,6 +108,9 @@ class AppService {
       tasks = await isar.tasks.where().findAll();
     });
 
+    final dir = await getApplicationDocumentsDirectory();
+    isar.copyToFile(dir.path).then((value) => uploadToICloud());
+
     _tasks.add(tasks);
     return tasks;
   }
