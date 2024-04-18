@@ -211,13 +211,7 @@ class _BasePageState extends State<BasePage> {
                   ),
                   endDrawer: const BaseEndDrawer(),
                 ),
-                if (isLoading)
-                  Container(
-                    color: HTColors.black50,
-                    child: Center(
-                        child: Lottie.asset('assets/lotties/empty.json',
-                            width: 200, repeat: true)),
-                  ),
+                if (isLoading) Container(color: HTColors.black50),
               ],
             ),
           );

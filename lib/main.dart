@@ -32,6 +32,7 @@ void main() async {
 
   // Firebase
   await Firebase.initializeApp(
+    name: 'Zest',
     options: DefaultFirebaseOptions.currentPlatform,
   );
   FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(true);

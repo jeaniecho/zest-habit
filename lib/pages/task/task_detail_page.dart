@@ -12,6 +12,7 @@ import 'package:habit_app/router.dart';
 import 'package:habit_app/styles/colors.dart';
 import 'package:habit_app/styles/tokens.dart';
 import 'package:habit_app/styles/typos.dart';
+import 'package:habit_app/utils/enums.dart';
 import 'package:habit_app/utils/functions.dart';
 import 'package:habit_app/utils/tutorial.dart';
 import 'package:habit_app/widgets/ht_appbar.dart';
@@ -86,39 +87,55 @@ class TaskDetailAction extends StatelessWidget {
                 title: 'Duplicate',
                 icon: CupertinoIcons.doc_on_doc,
                 onTap: () {
-                  appService.duplicateTask(bloc.task).then((task) {
-                    context.push(TaskDetailPage.routeName, extra: task);
+                  if (appService.activeTaskCount() < taskLimit ||
+                      appService.isProValue) {
+                    appService.duplicateTask(bloc.task).then((task) {
+                      context.push(TaskDetailPage.routeName, extra: task);
 
-                    EventService.duplicateTaskComplete(
-                      taskTitle: task.title,
-                      taskStartDate: task.from,
-                      taskEndDate: task.until,
-                      taskRepeatType: task.repeatAt == null
-                          ? null
-                          : htGetRepeatType(task.repeatAt!),
-                      taskEmoji: task.emoji,
-                      taskCreateDate: task.from,
-                      taskAlarm: task.alarmTime != null,
-                      fillSubtitle: task.goal != null && task.goal!.isNotEmpty,
-                      subscribeStatus: getSubscriptionType(
-                          appService.iapService.purchasesValue),
-                    );
+                      EventService.duplicateTaskComplete(
+                        taskTitle: task.title,
+                        taskStartDate: task.from,
+                        taskEndDate: task.until,
+                        taskRepeatType: task.repeatAt == null
+                            ? null
+                            : htGetRepeatType(task.repeatAt!),
+                        taskEmoji: task.emoji,
+                        taskCreateDate: task.from,
+                        taskAlarm: task.alarmTime != null,
+                        fillSubtitle:
+                            task.goal != null && task.goal!.isNotEmpty,
+                        subscribeStatus: getSubscriptionType(
+                            appService.iapService.purchasesValue),
+                      );
 
-                    HTToastBar(
-                      name: 'duplicated',
-                      autoDismiss: true,
-                      snackbarDuration: const Duration(seconds: 3),
-                      position: HTSnackbarPosition.top,
-                      builder: (context) => HTToastCard(
-                        title: HTText(
-                          '😃 Successfully duplicated',
-                          typoToken: HTTypoToken.bodyMedium,
-                          color: htGreys(context).white,
+                      HTToastBar(
+                        name: 'duplicated',
+                        autoDismiss: true,
+                        snackbarDuration: const Duration(seconds: 3),
+                        position: HTSnackbarPosition.top,
+                        builder: (context) => HTToastCard(
+                          title: HTText(
+                            '😃 Successfully duplicated',
+                            typoToken: HTTypoToken.bodyMedium,
+                            color: htGreys(context).white,
+                          ),
+                          color: htGreys(context).grey080,
                         ),
-                        color: htGreys(context).grey080,
-                      ),
-                    ).show(shellNavKey.currentContext!);
-                  });
+                      ).show(shellNavKey.currentContext!);
+                    });
+                  } else {
+                    HTDialog.showConfirmDialog(
+                      context,
+                      title: 'Task Limit Reached',
+                      content: 'You can get unlimited tasks with Pro plan!',
+                      action: () {
+                        pushSubscriptionPage(
+                            SubscriptionLocation.duplicateDialog);
+                      },
+                      buttonText: 'Get PRO',
+                      isDestructive: false,
+                    );
+                  }
                 },
               ),
               const PullDownMenuDivider(),

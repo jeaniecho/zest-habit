@@ -28,6 +28,7 @@ enum SubscriptionLocation {
   alarmDialog,
   timerDialog,
   addDialog,
+  duplicateDialog,
 }
 
 enum ModeType {
