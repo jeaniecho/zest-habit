@@ -218,9 +218,9 @@ class EventService {
       'task_end_date': taskEndDate?.toIso8601String() ?? 'forever',
       'task_repeat_type': taskRepeatType?.name ?? 'none',
       'task_emoji': taskEmoji ?? 'default',
-      'task_create_date': taskCreateDate.toIso8601String,
+      'task_create_date': taskCreateDate.toIso8601String(),
       'task_alarm': taskAlarm.toString(),
-      'fill_subtitle': fillSubtitle,
+      'fill_subtitle': fillSubtitle.toString(),
       'subscribe_status': subscribeStatus.name,
     });
   }
@@ -246,7 +246,7 @@ class EventService {
       'task_emoji': taskEmoji ?? 'default',
       'task_create_date': taskCreateDate.toIso8601String,
       'task_alarm': taskAlarm.toString(),
-      'fill_subtitle': fillSubtitle,
+      'fill_subtitle': fillSubtitle.toString(),
       'subscribe_status': subscribeStatus.name,
     });
   }
