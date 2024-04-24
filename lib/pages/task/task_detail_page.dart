@@ -775,146 +775,198 @@ class TaskMonthlyCalendar extends StatelessWidget {
 
           List<int> repeatAt = task.repeatAt ?? [];
 
-          return Container(
-            width: (28 * 7) +
-                (8 * 6) +
-                16, // (boxWidth * 7days) + (boxPadding * (7-1)days) + containerPadding
-            padding: HTEdgeInsets.all8,
-            decoration: BoxDecoration(
-              color: htGreys(context).grey010,
-              borderRadius: HTBorderRadius.circular8,
-            ),
-            child: StreamBuilder<List>(
-                stream: Rx.combineLatestList([bloc.doneDates, bloc.timerDates]),
-                builder: (context, snapshot) {
-                  List<int> doneDates = snapshot.data?[0] ?? [];
-                  List<int> timerDates = snapshot.data?[1] ?? [];
+          return Column(
+            children: [
+              Container(
+                width: (28 * 7) +
+                    (8 * 6) +
+                    16, // (boxWidth * 7days) + (boxPadding * (7-1)days) + containerPadding
+                padding: HTEdgeInsets.all8,
+                decoration: BoxDecoration(
+                  color: htGreys(context).grey010,
+                  borderRadius: HTBorderRadius.circular8,
+                ),
+                child: StreamBuilder<List>(
+                    stream:
+                        Rx.combineLatestList([bloc.doneDates, bloc.timerDates]),
+                    builder: (context, snapshot) {
+                      List<int> doneDates = snapshot.data?[0] ?? [];
+                      List<int> timerDates = snapshot.data?[1] ?? [];
 
-                  DateTime now = DateTime.now().getDate();
-                  int todayDateInCal = now.day - 1 + fillDays;
+                      DateTime now = DateTime.now().getDate();
+                      int todayDateInCal = now.day - 1 + fillDays;
 
-                  return GridView.builder(
-                    shrinkWrap: true,
-                    padding: HTEdgeInsets.zero,
-                    physics: const NeverScrollableScrollPhysics(),
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 7,
-                      crossAxisSpacing: 8,
-                      mainAxisSpacing: 8,
-                    ),
-                    itemBuilder: (context, index) {
-                      int currWeekday = index % 7;
-                      if (currWeekday == 0 && firstDayOfWeek == 0) {
-                        currWeekday = 7;
-                      }
-                      bool repeatToday =
-                          repeatAt.contains(currWeekday + firstDayOfWeek);
-
-                      int dateInCalendar =
-                          index + 1 - fillDays + firstDayOfWeek;
-
-                      bool inSameMonth = htIsSameMonth(currMonth, now);
-
-                      bool isDone = doneDates.contains(index - fillDays + 1);
-                      bool isDoneWithTimer =
-                          timerDates.contains(index - fillDays + 1);
-
-                      bool isOld = task.until != null &&
-                          task.until!.isBefore(DateTime(
-                              currMonth.year, currMonth.month, dateInCalendar));
-
-                      bool isLater = (inSameMonth && index > todayDateInCal) ||
-                          (!inSameMonth &&
-                              DateTime(currMonth.year, currMonth.month)
-                                  .isAfter(DateTime(now.year, now.month)));
-
-                      bool notInRange = !repeatToday ||
-                          DateTime(currMonth.year, currMonth.month,
-                                  dateInCalendar)
-                              .isBefore(task.from) ||
-                          isOld;
-
-                      if (repeatAt.isEmpty &&
-                          task.from.day - 1 + fillDays == index) {
-                        return Container(
-                          width: 28,
-                          height: 28,
-                          decoration: BoxDecoration(
-                            border:
-                                Border.all(color: Color(task.color), width: 2),
-                            color: isDone
-                                ? Color(task.color)
-                                : isLater
-                                    ? htGreys(context).white
-                                    : Color(task.color).withOpacity(0.2),
-                            borderRadius: HTBorderRadius.circular8,
-                          ),
-                          child: isDone && isDoneWithTimer
-                              ? Center(
-                                  child: Icon(
-                                    Icons.timer_rounded,
-                                    color: htGreys(context).white,
-                                    size: 18,
-                                  ),
-                                )
-                              : const SizedBox.shrink(),
-                        );
-                      }
-
-                      // fill days
-                      if (index < fillDays) {
-                        return Container(
-                          width: 28,
-                          height: 28,
-                          decoration: BoxDecoration(
-                            color: htGreys(context).grey010,
-                            borderRadius: HTBorderRadius.circular8,
-                          ),
-                        );
-                      }
-
-                      if (notInRange) {
-                        return Container(
-                          width: 28,
-                          height: 28,
-                          decoration: BoxDecoration(
-                            color: htGreys(context).white.withOpacity(0.5),
-                            borderRadius: HTBorderRadius.circular8,
-                          ),
-                        );
-                      }
-
-                      return Container(
-                        width: 28,
-                        height: 28,
-                        decoration: BoxDecoration(
-                          border: inSameMonth && index == todayDateInCal
-                              ? Border.all(color: Color(task.color), width: 2)
-                              : null,
-                          color: isDone
-                              ? Color(task.color)
-                              : isLater
-                                  ? htGreys(context).white
-                                  : Color(task.color).withOpacity(0.2),
-                          borderRadius: HTBorderRadius.circular8,
+                      return GridView.builder(
+                        shrinkWrap: true,
+                        padding: HTEdgeInsets.zero,
+                        physics: const NeverScrollableScrollPhysics(),
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 7,
+                          crossAxisSpacing: 8,
+                          mainAxisSpacing: 8,
                         ),
-                        child: isDone && isDoneWithTimer
-                            ? Center(
-                                child: Icon(
-                                  Icons.timer_rounded,
-                                  color: htGreys(context).white,
-                                  size: 18,
-                                ),
-                              )
-                            : const SizedBox.shrink(),
+                        itemBuilder: (context, index) {
+                          int currWeekday = index % 7;
+                          if (currWeekday == 0 && firstDayOfWeek == 0) {
+                            currWeekday = 7;
+                          }
+                          bool repeatToday =
+                              repeatAt.contains(currWeekday + firstDayOfWeek);
+
+                          int dateInCalendar =
+                              index + 1 - fillDays + firstDayOfWeek;
+
+                          bool inSameMonth = htIsSameMonth(currMonth, now);
+
+                          bool isDone =
+                              doneDates.contains(index - fillDays + 1);
+                          bool isDoneWithTimer =
+                              timerDates.contains(index - fillDays + 1);
+
+                          bool isOld = task.until != null &&
+                              task.until!.isBefore(DateTime(currMonth.year,
+                                  currMonth.month, dateInCalendar));
+
+                          bool isLater = (inSameMonth &&
+                                  index > todayDateInCal) ||
+                              (!inSameMonth &&
+                                  DateTime(currMonth.year, currMonth.month)
+                                      .isAfter(DateTime(now.year, now.month)));
+
+                          bool notInRange = !repeatToday ||
+                              DateTime(currMonth.year, currMonth.month,
+                                      dateInCalendar)
+                                  .isBefore(task.from) ||
+                              isOld;
+
+                          if (repeatAt.isEmpty &&
+                              task.from.day - 1 + fillDays == index) {
+                            return Container(
+                              width: 28,
+                              height: 28,
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: Color(task.color), width: 2),
+                                color: isDone
+                                    ? Color(task.color)
+                                    : isLater
+                                        ? htGreys(context).white
+                                        : Color(task.color).withOpacity(0.2),
+                                borderRadius: HTBorderRadius.circular8,
+                              ),
+                              child: isDone && isDoneWithTimer
+                                  ? Center(
+                                      child: Icon(
+                                        Icons.timer_rounded,
+                                        color: htGreys(context).white,
+                                        size: 18,
+                                      ),
+                                    )
+                                  : const SizedBox.shrink(),
+                            );
+                          }
+
+                          // fill days
+                          if (index < fillDays) {
+                            return Container(
+                              width: 28,
+                              height: 28,
+                              decoration: BoxDecoration(
+                                color: htGreys(context).grey010,
+                                borderRadius: HTBorderRadius.circular8,
+                              ),
+                            );
+                          }
+
+                          if (notInRange) {
+                            return Container(
+                              width: 28,
+                              height: 28,
+                              decoration: BoxDecoration(
+                                color: htGreys(context).white.withOpacity(0.5),
+                                borderRadius: HTBorderRadius.circular8,
+                              ),
+                            );
+                          }
+
+                          return Container(
+                            width: 28,
+                            height: 28,
+                            decoration: BoxDecoration(
+                              border: inSameMonth && index == todayDateInCal
+                                  ? Border.all(
+                                      color: Color(task.color), width: 2)
+                                  : null,
+                              color: isDone
+                                  ? Color(task.color)
+                                  : isLater
+                                      ? htGreys(context).white
+                                      : Color(task.color).withOpacity(0.2),
+                              borderRadius: HTBorderRadius.circular8,
+                            ),
+                            child: isDone && isDoneWithTimer
+                                ? Center(
+                                    child: Icon(
+                                      Icons.timer_rounded,
+                                      color: htGreys(context).white,
+                                      size: 18,
+                                    ),
+                                  )
+                                : const SizedBox.shrink(),
+                          );
+                        },
+                        itemCount: daysCount,
                       );
-                    },
-                    itemCount: daysCount,
-                  );
-                }),
+                    }),
+              ),
+              HTSpacers.height12,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  MonthlyTipRow(color: Color(task.color), text: 'Done'),
+                  HTSpacers.width8,
+                  MonthlyTipRow(
+                      color: Color(task.color).withOpacity(0.2),
+                      text: 'Not Done'),
+                  HTSpacers.width8,
+                  MonthlyTipRow(
+                      color: htGreys(context).grey010, text: 'Not Planned'),
+                ],
+              ),
+            ],
           );
         });
+  }
+}
+
+class MonthlyTipRow extends StatelessWidget {
+  final Color color;
+  final String text;
+  const MonthlyTipRow({super.key, required this.color, required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+          width: 18,
+          height: 18,
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: HTBorderRadius.circular4,
+          ),
+        ),
+        HTSpacers.width4,
+        HTText(
+          text,
+          typoToken: HTTypoToken.bodyXXSmall,
+          color: htGreys(context).grey060,
+          height: 1.25,
+        ),
+      ],
+    );
   }
 }
 
