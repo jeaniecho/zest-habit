@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:habit_app/blocs/app_service.dart';
+import 'package:habit_app/services/app_service.dart';
 import 'package:habit_app/models/task_model.dart';
 import 'package:habit_app/utils/disposable.dart';
 import 'package:habit_app/utils/enums.dart';

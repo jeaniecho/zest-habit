@@ -1,4 +1,4 @@
-import 'package:habit_app/blocs/event_service.dart';
+import 'package:habit_app/services/event_service.dart';
 import 'package:habit_app/utils/disposable.dart';
 import 'package:habit_app/utils/enums.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';

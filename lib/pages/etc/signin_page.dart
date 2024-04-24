@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:habit_app/blocs/etc/signin_bloc.dart';
 import 'package:habit_app/gen/assets.gen.dart';
+import 'package:habit_app/pages/base/task_page.dart';
 import 'package:habit_app/pages/etc/webview_page.dart';
 import 'package:habit_app/styles/colors.dart';
 import 'package:habit_app/styles/tokens.dart';
@@ -121,9 +123,17 @@ class SigninButton extends StatelessWidget {
         ),
         onPressed: () async {
           if (snsType == SNSType.apple) {
-            await bloc.signInWithApple();
+            bloc.signInWithApple().then((value) {
+              if (value != null) {
+                context.pushReplacement(TaskPage.routeName);
+              }
+            });
           } else if (snsType == SNSType.google) {
-            await bloc.signInWithGoogle();
+            bloc.signInWithGoogle().then((value) {
+              if (value != null) {
+                context.pushReplacement(TaskPage.routeName);
+              }
+            });
           }
 
           // context.pushReplacement(TaskPage.routeName);

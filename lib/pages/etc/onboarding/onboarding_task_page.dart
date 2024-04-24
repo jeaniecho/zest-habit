@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
-import 'package:habit_app/blocs/app_service.dart';
+import 'package:habit_app/services/app_service.dart';
 import 'package:habit_app/blocs/etc/onboarding/onboarding_task_bloc.dart';
-import 'package:habit_app/blocs/event_service.dart';
+import 'package:habit_app/services/event_service.dart';
 import 'package:habit_app/iap/iap_service.dart';
 import 'package:habit_app/models/onboarding_task_model.dart';
 import 'package:habit_app/models/settings_model.dart';

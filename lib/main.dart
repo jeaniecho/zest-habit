@@ -3,7 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:habit_app/iap/iap_service.dart';
-import 'package:habit_app/blocs/app_service.dart';
+import 'package:habit_app/services/app_service.dart';
 import 'package:habit_app/blocs/base/task_bloc.dart';
 import 'package:habit_app/blocs/base/timer_bloc.dart';
 import 'package:habit_app/models/settings_model.dart';

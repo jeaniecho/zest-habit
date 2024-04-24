@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:habit_app/blocs/event_service.dart';
+import 'package:habit_app/models/auth_token_model.dart';
+import 'package:habit_app/services/event_service.dart';
 import 'package:habit_app/iap/iap_service.dart';
 import 'package:habit_app/models/settings_model.dart';
 import 'package:habit_app/models/task_model.dart';
@@ -35,10 +36,10 @@ class AppService {
   Function(Task?) get setTimerTask => _timerTask.add;
   Task? get timerTaskValue => _timerTask.value;
 
-  final BehaviorSubject<bool> _signedIn = BehaviorSubject.seeded(false);
-  Stream<bool> get signedIn => _signedIn.stream;
-  Function(bool) get setSignedIn => _signedIn.add;
-  bool get signedInValue => _signedIn.value;
+  final BehaviorSubject<AuthToken?> _auth = BehaviorSubject.seeded(null);
+  Stream<AuthToken?> get auth => _auth.stream;
+  Function(AuthToken?) get setAuth => _auth.add;
+  AuthToken? get authValue => _auth.value;
 
   Stream<List> get purchases => iapService.purchases;
   List get purchasesValue => iapService.purchasesValue;

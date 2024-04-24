@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:habit_app/blocs/etc/subscription_bloc.dart';
-import 'package:habit_app/blocs/event_service.dart';
+import 'package:habit_app/services/event_service.dart';
 import 'package:habit_app/iap/iap_service.dart';
 import 'package:habit_app/gen/assets.gen.dart';
 import 'package:habit_app/pages/etc/webview_page.dart';

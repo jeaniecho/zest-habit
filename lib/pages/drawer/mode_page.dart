@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:habit_app/blocs/app_service.dart';
+import 'package:habit_app/services/app_service.dart';
 import 'package:habit_app/models/settings_model.dart';
 import 'package:habit_app/styles/colors.dart';
 import 'package:habit_app/styles/tokens.dart';

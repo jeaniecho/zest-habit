@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:habit_app/blocs/app_service.dart';
-import 'package:habit_app/blocs/event_service.dart';
+import 'package:habit_app/services/app_service.dart';
+import 'package:habit_app/services/event_service.dart';
 import 'package:habit_app/blocs/task/task_add_bloc.dart';
 import 'package:habit_app/blocs/task/task_detail_bloc.dart';
 import 'package:habit_app/models/task_model.dart';

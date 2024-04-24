@@ -1,7 +1,7 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:habit_app/blocs/app_service.dart';
+import 'package:habit_app/services/app_service.dart';
 import 'package:habit_app/blocs/etc/onboarding/onboarding_bloc.dart';
 import 'package:habit_app/blocs/etc/onboarding/onboarding_task_bloc.dart';
 import 'package:habit_app/blocs/etc/signin_bloc.dart';
@@ -120,7 +120,7 @@ List<RouteBase> routes = [
     path: SigninPage.routeName,
     builder: (context, state) {
       return Provider(
-        create: (context) => SigninBloc(),
+        create: (context) => SigninBloc(context.read<AppService>()),
         dispose: (context, value) => value.dispose(),
         child: const SigninPage(),
       );

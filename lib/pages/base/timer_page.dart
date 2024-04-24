@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:habit_app/blocs/app_service.dart';
+import 'package:habit_app/services/app_service.dart';
 import 'package:habit_app/blocs/base/timer_bloc.dart';
-import 'package:habit_app/blocs/event_service.dart';
+import 'package:habit_app/services/event_service.dart';
 import 'package:habit_app/models/task_model.dart';
 import 'package:habit_app/router.dart';
 import 'package:habit_app/styles/colors.dart';
