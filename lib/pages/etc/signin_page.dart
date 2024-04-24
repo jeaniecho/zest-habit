@@ -1,11 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
-import 'package:habit_app/blocs/app_service.dart';
 import 'package:habit_app/blocs/etc/signin_bloc.dart';
 import 'package:habit_app/gen/assets.gen.dart';
-import 'package:habit_app/pages/base/task_page.dart';
 import 'package:habit_app/pages/etc/webview_page.dart';
 import 'package:habit_app/styles/colors.dart';
 import 'package:habit_app/styles/tokens.dart';
@@ -14,6 +13,7 @@ import 'package:habit_app/utils/enums.dart';
 import 'package:habit_app/widgets/ht_text.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class SigninPage extends StatelessWidget {
   const SigninPage({super.key});
@@ -120,8 +120,23 @@ class SigninButton extends StatelessWidget {
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.h)),
         ),
-        onPressed: () {
-          context.pushReplacement(TaskPage.routeName);
+        onPressed: () async {
+          if (snsType == SNSType.apple) {
+            try {
+              AuthorizationCredentialAppleID credential =
+                  await SignInWithApple.getAppleIDCredential(
+                scopes: [
+                  AppleIDAuthorizationScopes.email,
+                  AppleIDAuthorizationScopes.fullName,
+                ],
+              );
+              log(credential.toString());
+            } catch (e) {
+              log(e.toString());
+            }
+          } else if (snsType == SNSType.google) {}
+
+          // context.pushReplacement(TaskPage.routeName);
         },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
