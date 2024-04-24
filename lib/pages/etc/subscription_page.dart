@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:habit_app/blocs/etc/subscription_bloc.dart';
+import 'package:habit_app/flavors.dart';
+import 'package:habit_app/services/app_service.dart';
 import 'package:habit_app/services/event_service.dart';
 import 'package:habit_app/iap/iap_service.dart';
 import 'package:habit_app/gen/assets.gen.dart';
@@ -433,6 +435,10 @@ class SubscriptionButton extends StatelessWidget {
                       if (event.isNotEmpty) {
                         Navigator.pop(context);
 
+                        if (F.appFlavor == Flavor.dev) {
+                          context.read<AppService>().setIsPro(true);
+                        }
+
                         EventService.completeSubscribe(
                           planType: selectedIndex == 0
                               ? SubscriptionType.yearly
@@ -497,7 +503,7 @@ class SubscriptionMenu extends StatelessWidget {
             GestureDetector(
               onTap: () {
                 bloc.setIsLoading(true);
-                iapService.restroePurchases().then((value) {
+                iapService.restorePurchases().then((value) {
                   bloc.setIsLoading(false);
 
                   iapService.purchases.listen((event) {

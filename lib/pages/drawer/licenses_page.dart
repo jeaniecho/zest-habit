@@ -58,7 +58,7 @@ Please note that these packages and resources may be subject to their own respec
 
 Zest Habit is developed using Flutter, an open-source mobile application development framework created by Google. For more information about Flutter and its licenses, please visit Flutter's GitHub repository.
 
-If you have any questions or concerns regarding the licenses used in Zest Habit, please contact us at jeanie@citralab.co.
+If you have any questions or concerns regarding the licenses used in Zest Habit, please contact us at zest@citralab.co.
 
 Thank you for using Zest Habit!
 ''',

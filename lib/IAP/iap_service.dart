@@ -19,10 +19,11 @@ class IAPService {
   static String kYearlySubscriptionId = 'dev.jeanie.habitApp.yearly';
 
   static String kDevEarlybirdMonthlyId =
-      'dev.jeanie.habitApp.earlybird.monthly';
-  static String kDevEarlybirdYearlyId = 'dev.jeanie.habitApp.earlybird.yearly';
-  static String kDevMonthlySubscriptionId = 'dev.jeanie.habitApp.monthly';
-  static String kDevYearlySubscriptionId = 'dev.jeanie.habitApp.yearly';
+      'dev.jeanie.habitApp.dev.earlybird.monthly';
+  static String kDevEarlybirdYearlyId =
+      'dev.jeanie.habitApp.dev.earlybird.yearly';
+  static String kDevMonthlySubscriptionId = 'dev.jeanie.habitApp.dev.monthly';
+  static String kDevYearlySubscriptionId = 'dev.jeanie.habitApp.dev.yearly';
 
   static List<String> kSubscriptionIds = [
     kEarlybirdMonthlyId,
@@ -210,7 +211,7 @@ class IAPService {
     }
   }
 
-  Future<void> restroePurchases() async {
+  Future<void> restorePurchases() async {
     await InAppPurchase.instance.restorePurchases();
   }
 }

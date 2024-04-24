@@ -301,7 +301,7 @@ class BaseEndDrawer extends StatelessWidget {
                     Email email = Email(
                       subject: '[${packageInfo.appName}] Feedback',
                       body: body,
-                      recipients: ['jeanie@citralab.co'],
+                      recipients: ['zest@citralab.co'],
                     );
 
                     await FlutterEmailSender.send(email);
