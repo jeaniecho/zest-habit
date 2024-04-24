@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -10,13 +8,8 @@ import 'package:habit_app/models/task_model.dart';
 import 'package:habit_app/utils/enums.dart';
 import 'package:habit_app/utils/functions.dart';
 import 'package:habit_app/utils/notifications.dart';
-import 'package:icloud_storage/icloud_storage.dart';
 import 'package:isar/isar.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart';
-
-const String iCloudContainerId = 'iCloud.dev.jeanie.habitApp';
-const String iCloudRelativePath = 'zest-habit/backup';
 
 class AppService {
   final Isar isar;
@@ -108,22 +101,8 @@ class AppService {
       tasks = await isar.tasks.where().findAll();
     });
 
-    final backupDirectory = await getApplicationSupportDirectory();
-    isar
-        .copyToFile(
-            '${backupDirectory.path}/backup${DateTime.now().toIso8601String()}.db')
-        .then((value) => uploadToICloud());
-
     _tasks.add(tasks);
     return tasks;
-  }
-
-  backupTasks() async {
-    final backupDirectory = await getApplicationSupportDirectory();
-    isar
-        .copyToFile(
-            '${backupDirectory.path}/backup${DateTime.now().toIso8601String()}.db')
-        .then((value) => uploadToICloud());
   }
 
   Future<Task?> getTask(int id) async {
@@ -309,51 +288,5 @@ class AppService {
         await HTNotification.scheduleNotification(task);
       }
     });
-  }
-
-  Future<List<Task>> downloadFromICloud() async {
-    try {
-      final dir = await getApplicationDocumentsDirectory();
-
-      await ICloudStorage.download(
-          containerId: iCloudContainerId,
-          relativePath: iCloudRelativePath,
-          destinationFilePath: '${dir.path}/backup',
-          onProgress: (stream) {
-            stream.listen(
-              (progress) => log('ICloud Download Progress : $progress'),
-              onDone: () => log('ICloud Download Complete'),
-              onError: (error) => log('ICloud Download Error: $error'),
-              cancelOnError: true,
-            );
-          });
-
-      return await getTasks();
-    } catch (e) {
-      log(e.toString());
-      return [];
-    }
-  }
-
-  Future uploadToICloud() async {
-    try {
-      final dir = await getApplicationDocumentsDirectory();
-
-      await ICloudStorage.upload(
-          containerId: iCloudContainerId,
-          filePath: '${dir.path}/backup',
-          destinationRelativePath: iCloudRelativePath,
-          onProgress: (stream) {
-            stream.listen(
-              (progress) => log('ICloud Upload Progress : $progress'),
-              onDone: () => log('ICloud Upload Complete'),
-              onError: (error) => log('ICloud Upload Error: $error'),
-              cancelOnError: true,
-            );
-          });
-    } catch (e) {
-      log(e.toString());
-      return;
-    }
   }
 }

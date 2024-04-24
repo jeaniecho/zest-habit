@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:habit_app/blocs/app_service.dart';
 import 'package:habit_app/blocs/etc/onboarding/onboarding_bloc.dart';
-import 'package:habit_app/pages/base/task_page.dart';
 import 'package:habit_app/pages/etc/onboarding/onboarding_task_page.dart';
 import 'package:habit_app/styles/colors.dart';
 import 'package:habit_app/styles/tokens.dart';
@@ -20,7 +18,6 @@ class OnboardingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     OnboardingBloc bloc = context.read<OnboardingBloc>();
-    AppService appService = context.read<AppService>();
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light,
@@ -112,16 +109,8 @@ class OnboardingPage extends StatelessWidget {
                             bloc.setImageIndex(imageIndex + 1);
                             bloc.movePage(imageIndex + 1);
                           } else {
-                            appService.downloadFromICloud().then((value) {
-                              if (value.isEmpty) {
-                                context.pushReplacement(
-                                    OnboardingTaskPage.routeName);
-                              } else {
-                                appService.updateOnboardingStatus(true);
-                                context.pushReplacement(TaskPage.routeName,
-                                    extra: true);
-                              }
-                            });
+                            context
+                                .pushReplacement(OnboardingTaskPage.routeName);
                           }
                         },
                         child: HTText(
