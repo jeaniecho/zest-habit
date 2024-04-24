@@ -101,8 +101,6 @@ PODS:
   - GoogleUtilities/UserDefaults (7.13.0):
     - GoogleUtilities/Logger
     - GoogleUtilities/Privacy
-  - icloud_storage (0.0.1):
-    - Flutter
   - in_app_purchase_storekit (0.0.1):
     - Flutter
     - FlutterMacOS
@@ -136,7 +134,6 @@ DEPENDENCIES:
   - flutter_native_splash (from `.symlinks/plugins/flutter_native_splash/ios`)
   - flutter_ringtone_player (from `.symlinks/plugins/flutter_ringtone_player/ios`)
   - flutter_timezone (from `.symlinks/plugins/flutter_timezone/ios`)
-  - icloud_storage (from `.symlinks/plugins/icloud_storage/ios`)
   - in_app_purchase_storekit (from `.symlinks/plugins/in_app_purchase_storekit/darwin`)
   - isar_flutter_libs (from `.symlinks/plugins/isar_flutter_libs/ios`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
@@ -174,8 +171,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_ringtone_player/ios"
   flutter_timezone:
     :path: ".symlinks/plugins/flutter_timezone/ios"
-  icloud_storage:
-    :path: ".symlinks/plugins/icloud_storage/ios"
   in_app_purchase_storekit:
     :path: ".symlinks/plugins/in_app_purchase_storekit/darwin"
   isar_flutter_libs:
@@ -207,7 +202,6 @@ SPEC CHECKSUMS:
   flutter_timezone: ffb07bdad3c6276af8dada0f11978d8a1f8a20bb
   GoogleAppMeasurement: ccefe3eac9b0aa27f96066809fb1a7fe4b462626
   GoogleUtilities: d053d902a8edaa9904e1bd00c37535385b8ed152
-  icloud_storage: d9ac7a33ced81df08ba7ea1bf3099cc0ee58f60a
   in_app_purchase_storekit: 9e9931234f0adcf71ae323f8c83785b96030edf1
   isar_flutter_libs: b69f437aeab9c521821c3f376198c4371fa21073
   nanopb: 438bc412db1928dac798aa6fd75726007be04262

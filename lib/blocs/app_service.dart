@@ -35,6 +35,11 @@ class AppService {
   Function(Task?) get setTimerTask => _timerTask.add;
   Task? get timerTaskValue => _timerTask.value;
 
+  final BehaviorSubject<bool> _signedIn = BehaviorSubject.seeded(false);
+  Stream<bool> get signedIn => _signedIn.stream;
+  Function(bool) get setSignedIn => _signedIn.add;
+  bool get signedInValue => _signedIn.value;
+
   Stream<List> get purchases => iapService.purchases;
   List get purchasesValue => iapService.purchasesValue;
 

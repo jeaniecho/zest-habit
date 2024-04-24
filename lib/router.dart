@@ -4,17 +4,19 @@ import 'package:go_router/go_router.dart';
 import 'package:habit_app/blocs/app_service.dart';
 import 'package:habit_app/blocs/etc/onboarding/onboarding_bloc.dart';
 import 'package:habit_app/blocs/etc/onboarding/onboarding_task_bloc.dart';
+import 'package:habit_app/blocs/etc/signin_bloc.dart';
 import 'package:habit_app/blocs/etc/subscription_bloc.dart';
 import 'package:habit_app/blocs/task/task_detail_bloc.dart';
 import 'package:habit_app/models/task_model.dart';
 import 'package:habit_app/pages/base/task_page.dart';
 import 'package:habit_app/pages/base/timer_page.dart';
-import 'package:habit_app/pages/base_page.dart';
+import 'package:habit_app/pages/base/base_page.dart';
 import 'package:habit_app/pages/drawer/licenses_page.dart';
 import 'package:habit_app/pages/drawer/mode_page.dart';
 import 'package:habit_app/pages/etc/dev_page.dart';
 import 'package:habit_app/pages/etc/onboarding/onboarding_page.dart';
 import 'package:habit_app/pages/etc/onboarding/onboarding_task_page.dart';
+import 'package:habit_app/pages/etc/signin_page.dart';
 import 'package:habit_app/pages/etc/splash_page.dart';
 import 'package:habit_app/pages/etc/subscription_page.dart';
 import 'package:habit_app/pages/task/task_detail_page.dart';
@@ -112,6 +114,16 @@ List<RouteBase> routes = [
     path: SplashPage.routeName,
     builder: (context, state) {
       return const SplashPage();
+    },
+  ),
+  GoRoute(
+    path: SigninPage.routeName,
+    builder: (context, state) {
+      return Provider(
+        create: (context) => SigninBloc(),
+        dispose: (context, value) => value.dispose(),
+        child: const SigninPage(),
+      );
     },
   ),
 ];

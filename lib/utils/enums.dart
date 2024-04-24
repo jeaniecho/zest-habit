@@ -35,3 +35,11 @@ enum ModeType {
   light,
   dark,
 }
+
+enum SNSType {
+  apple('Apple'),
+  google('Google');
+
+  final String value;
+  const SNSType(this.value);
+}
