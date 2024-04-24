@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -13,7 +11,6 @@ import 'package:habit_app/utils/enums.dart';
 import 'package:habit_app/widgets/ht_text.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
-import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class SigninPage extends StatelessWidget {
   const SigninPage({super.key});
@@ -110,6 +107,8 @@ class SigninButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SigninBloc bloc = context.read<SigninBloc>();
+
     return Container(
       height: 56.h,
       width: double.infinity,
@@ -122,19 +121,10 @@ class SigninButton extends StatelessWidget {
         ),
         onPressed: () async {
           if (snsType == SNSType.apple) {
-            try {
-              AuthorizationCredentialAppleID credential =
-                  await SignInWithApple.getAppleIDCredential(
-                scopes: [
-                  AppleIDAuthorizationScopes.email,
-                  AppleIDAuthorizationScopes.fullName,
-                ],
-              );
-              log(credential.toString());
-            } catch (e) {
-              log(e.toString());
-            }
-          } else if (snsType == SNSType.google) {}
+            await bloc.signInWithApple();
+          } else if (snsType == SNSType.google) {
+            await bloc.signInWithGoogle();
+          }
 
           // context.pushReplacement(TaskPage.routeName);
         },
