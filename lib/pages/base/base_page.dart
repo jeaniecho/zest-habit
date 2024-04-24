@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:go_router/go_router.dart';
+import 'package:habit_app/flavors.dart';
 import 'package:habit_app/services/app_service.dart';
 import 'package:habit_app/services/event_service.dart';
 import 'package:habit_app/blocs/task/task_add_bloc.dart';
@@ -344,7 +345,7 @@ class BaseEndDrawer extends StatelessWidget {
                   },
                   text: 'Mode'),
               const Spacer(),
-              if (kDebugMode) const DevMenu(),
+              if (kDebugMode || F.appFlavor == Flavor.dev) const DevMenu(),
               FutureBuilder<PackageInfo>(
                   future: PackageInfo.fromPlatform(),
                   builder: (context, snapshot) {

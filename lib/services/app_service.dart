@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:habit_app/flavors.dart';
 import 'package:habit_app/models/auth_token_model.dart';
 import 'package:habit_app/services/event_service.dart';
 import 'package:habit_app/iap/iap_service.dart';
@@ -44,18 +45,20 @@ class AppService {
   Stream<List> get purchases => iapService.purchases;
   List get purchasesValue => iapService.purchasesValue;
 
-  // late final BehaviorSubject<bool> _isPro;
-  Stream<bool> get isPro => purchases.map((purchases) => purchases.isNotEmpty);
-  // Stream<bool> get isPro => _isPro.stream;
-  // bool get isProValue => _isPro.value;
-  bool get isProValue => purchasesValue.isNotEmpty;
+  late final BehaviorSubject<bool> _isPro;
+
+  Stream<bool> get isPro => F.appFlavor == Flavor.prod
+      ? purchases.map((purchases) => purchases.isNotEmpty)
+      : _isPro.stream;
+  bool get isProValue =>
+      F.appFlavor == Flavor.prod ? purchasesValue.isNotEmpty : _isPro.value;
 
   final BehaviorSubject<bool> _isLoading = BehaviorSubject.seeded(false);
   Stream<bool> get isLoading => _isLoading.stream;
   Function(bool) get setIsLoading => _isLoading.add;
 
   AppService({required this.isar, required this.iapService}) {
-    // _isPro = BehaviorSubject.seeded(true);
+    _isPro = BehaviorSubject.seeded(true);
 
     getSettings();
     getTasks().then((value) {
@@ -68,7 +71,7 @@ class AppService {
   }
 
   setIsPro(bool value) {
-    // _isPro.add(value);
+    _isPro.add(value);
 
     if (value) {
       setupNotifications();

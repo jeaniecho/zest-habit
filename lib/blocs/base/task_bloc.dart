@@ -35,7 +35,7 @@ class TaskBloc extends Disposable {
   TaskBloc({required this.appService, required this.deviceWidth}) {
     getDates();
     dateScrollOffset =
-        (dateWidth * (prevDates + 1) - ((deviceWidth - 84) / 2)).toDouble();
+        (dateWidth * prevDates - ((deviceWidth - 84) / 2)).toDouble();
 
     dateScrollController =
         ScrollController(initialScrollOffset: dateScrollOffset);

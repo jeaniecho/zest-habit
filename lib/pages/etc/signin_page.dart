@@ -1,8 +1,11 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:habit_app/blocs/etc/signin_bloc.dart';
+import 'package:habit_app/flavors.dart';
 import 'package:habit_app/gen/assets.gen.dart';
 import 'package:habit_app/pages/base/task_page.dart';
 import 'package:habit_app/pages/etc/webview_page.dart';
@@ -28,73 +31,92 @@ class SigninPage extends StatelessWidget {
       child: Scaffold(
         backgroundColor: HTColors.black,
         body: SafeArea(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+          child: Stack(
             children: [
-              SizedBox(
-                height: 400.h,
-                child: PageView.builder(
-                  controller: bloc.imageController,
-                  onPageChanged: (index) => bloc.movePage(index),
-                  itemBuilder: (context, index) {
-                    return bloc.images[index].image();
-                  },
-                  itemCount: bloc.images.length,
-                ),
-              ),
-              Container(
-                height: 6,
-                margin: HTEdgeInsets.vertical24,
-                child: StreamBuilder<int>(
-                    stream: bloc.imageIndex,
-                    builder: (context, snapshot) {
-                      int imageIndex = snapshot.data ?? 0;
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    height: 400.h,
+                    child: PageView.builder(
+                      controller: bloc.imageController,
+                      onPageChanged: (index) => bloc.movePage(index),
+                      itemBuilder: (context, index) {
+                        return bloc.images[index].image();
+                      },
+                      itemCount: bloc.images.length,
+                    ),
+                  ),
+                  Container(
+                    height: 6,
+                    margin: HTEdgeInsets.vertical24,
+                    child: StreamBuilder<int>(
+                        stream: bloc.imageIndex,
+                        builder: (context, snapshot) {
+                          int imageIndex = snapshot.data ?? 0;
 
-                      return ListView.separated(
-                        shrinkWrap: true,
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, index) {
-                          return Container(
-                            width: 6,
-                            height: 6,
-                            decoration: BoxDecoration(
-                              color: imageIndex == index
-                                  ? HTColors.white
-                                  : HTColors.white30,
-                              shape: BoxShape.circle,
-                            ),
+                          return ListView.separated(
+                            shrinkWrap: true,
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: (context, index) {
+                              return Container(
+                                width: 6,
+                                height: 6,
+                                decoration: BoxDecoration(
+                                  color: imageIndex == index
+                                      ? HTColors.white
+                                      : HTColors.white30,
+                                  shape: BoxShape.circle,
+                                ),
+                              );
+                            },
+                            separatorBuilder: (context, index) {
+                              return HTSpacers.width8;
+                            },
+                            itemCount: bloc.images.length,
                           );
-                        },
-                        separatorBuilder: (context, index) {
-                          return HTSpacers.width8;
-                        },
-                        itemCount: bloc.images.length,
-                      );
-                    }),
+                        }),
+                  ),
+                  SizedBox(
+                    height: 72.h,
+                    child: PageView.builder(
+                      controller: bloc.textController,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        return HTText(
+                          bloc.texts[index],
+                          typoToken: HTTypoToken.headlineSmall,
+                          color: HTColors.white,
+                          textAlign: TextAlign.center,
+                          fontSize: 24.h,
+                        );
+                      },
+                      itemCount: bloc.texts.length,
+                    ),
+                  ),
+                  HTSpacers.height24,
+                  const SigninButton(snsType: SNSType.apple),
+                  HTSpacers.height16,
+                  const SigninButton(snsType: SNSType.google),
+                  HTSpacers.height24,
+                  const SigninMenu(),
+                ],
               ),
-              SizedBox(
-                height: 72.h,
-                child: PageView.builder(
-                  controller: bloc.textController,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    return HTText(
-                      bloc.texts[index],
-                      typoToken: HTTypoToken.headlineSmall,
-                      color: HTColors.white,
-                      textAlign: TextAlign.center,
-                      fontSize: 24.h,
-                    );
-                  },
-                  itemCount: bloc.texts.length,
-                ),
-              ),
-              HTSpacers.height24,
-              const SigninButton(snsType: SNSType.apple),
-              HTSpacers.height16,
-              const SigninButton(snsType: SNSType.google),
-              HTSpacers.height24,
-              const SigninMenu(),
+              if (F.appFlavor == Flavor.dev)
+                Positioned(
+                  top: 16,
+                  right: 24,
+                  child: GestureDetector(
+                    onTap: () {
+                      context.pushReplacement(TaskPage.routeName);
+                    },
+                    child: const HTText(
+                      'Skip',
+                      typoToken: HTTypoToken.bodySmall,
+                      color: HTColors.grey040,
+                    ),
+                  ),
+                )
             ],
           ),
         ),
