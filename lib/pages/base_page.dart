@@ -23,7 +23,6 @@ import 'package:habit_app/utils/functions.dart';
 import 'package:habit_app/utils/tutorial.dart';
 import 'package:habit_app/widgets/ht_dialog.dart';
 import 'package:habit_app/widgets/ht_text.dart';
-import 'package:lottie/lottie.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
@@ -109,15 +108,35 @@ class _BasePageState extends State<BasePage> {
 
                               EventService.tapNavTask();
                             },
-                            child: SizedBox(
-                              width: 88,
-                              height: 52,
-                              child: Icon(
-                                Icons.calendar_today_rounded,
-                                size: 22,
-                                color: bottomIndex == 0
-                                    ? htGreys(context).black
-                                    : htGreys(context).grey040,
+                            child: Container(
+                              width: 104,
+                              height: 36,
+                              padding: HTEdgeInsets.horizontal8,
+                              decoration: bottomIndex == 0
+                                  ? BoxDecoration(
+                                      color: htGreys(context).grey010,
+                                      borderRadius: HTBorderRadius.circular32,
+                                    )
+                                  : null,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.calendar_today_rounded,
+                                    size: 22,
+                                    color: bottomIndex == 0
+                                        ? htGreys(context).black
+                                        : htGreys(context).grey040,
+                                  ),
+                                  if (bottomIndex == 0) HTSpacers.width4,
+                                  if (bottomIndex == 0)
+                                    HTText(
+                                      'Calendar',
+                                      typoToken: HTTypoToken.subtitleXSmall,
+                                      color: htGreys(context).black,
+                                      height: 1.25,
+                                    ),
+                                ],
                               ),
                             ),
                           ),
@@ -193,15 +212,35 @@ class _BasePageState extends State<BasePage> {
 
                               EventService.tapNavTimer();
                             },
-                            child: SizedBox(
-                              width: 88,
-                              height: 52,
-                              child: Icon(
-                                Icons.timer_outlined,
-                                size: 24,
-                                color: bottomIndex == 1
-                                    ? htGreys(context).black
-                                    : htGreys(context).grey040,
+                            child: Container(
+                              width: 104,
+                              height: 36,
+                              padding: HTEdgeInsets.horizontal8,
+                              decoration: bottomIndex == 1
+                                  ? BoxDecoration(
+                                      color: htGreys(context).grey010,
+                                      borderRadius: HTBorderRadius.circular32,
+                                    )
+                                  : null,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.timer_outlined,
+                                    size: 24,
+                                    color: bottomIndex == 1
+                                        ? htGreys(context).black
+                                        : htGreys(context).grey040,
+                                  ),
+                                  if (bottomIndex == 1) HTSpacers.width4,
+                                  if (bottomIndex == 1)
+                                    HTText(
+                                      'Timer',
+                                      typoToken: HTTypoToken.subtitleXSmall,
+                                      color: htGreys(context).black,
+                                      height: 1.25,
+                                    ),
+                                ],
                               ),
                             ),
                           ),
