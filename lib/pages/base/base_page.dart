@@ -1,9 +1,8 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:go_router/go_router.dart';
-import 'package:habit_app/flavors.dart';
+import 'package:habit_app/pages/drawer/privacy_policy_page.dart';
+import 'package:habit_app/pages/drawer/terms_page.dart';
 import 'package:habit_app/services/app_service.dart';
 import 'package:habit_app/services/event_service.dart';
 import 'package:habit_app/blocs/task/task_add_bloc.dart';
@@ -13,7 +12,6 @@ import 'package:habit_app/pages/base/timer_page.dart';
 import 'package:habit_app/pages/drawer/licenses_page.dart';
 import 'package:habit_app/pages/drawer/mode_page.dart';
 import 'package:habit_app/pages/etc/dev_page.dart';
-import 'package:habit_app/pages/etc/webview_page.dart';
 import 'package:habit_app/pages/task/task_add_page.dart';
 import 'package:habit_app/router.dart';
 import 'package:habit_app/styles/colors.dart';
@@ -289,46 +287,48 @@ class BaseEndDrawer extends StatelessWidget {
                 ),
               ),
               HTSpacers.height20,
-              BaseEndDrawerItem(
-                  onTap: () async {
-                    EventService.tapSupport();
+              // BaseEndDrawerItem(
+              //     onTap: () async {
+              //       EventService.tapSupport();
 
-                    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+              //       PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
-                    String body =
-                        "\n\n\n\n\nApp Version: ${packageInfo.version} (${packageInfo.buildNumber})";
+              //       String body =
+              //           "\n\n\n\n\nApp Version: ${packageInfo.version} (${packageInfo.buildNumber})";
 
-                    Email email = Email(
-                      subject: '[${packageInfo.appName}] Feedback',
-                      body: body,
-                      recipients: ['zest@citralab.co'],
-                    );
+              //       Email email = Email(
+              //         subject: '[${packageInfo.appName}] Feedback',
+              //         body: body,
+              //         recipients: ['zest@citralab.co'],
+              //       );
 
-                    await FlutterEmailSender.send(email);
-                  },
-                  text: 'Support'),
-              HTSpacers.height8,
+              //       await FlutterEmailSender.send(email);
+              //     },
+              //     text: 'Support'),
+              // HTSpacers.height8,
               BaseEndDrawerItem(
                   onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const WebviewPage(
-                                title: 'Terms of Service',
-                                url:
-                                    'https://dour-rhodium-0f4.notion.site/Zest-Terms-of-Use-3d0f81cfe4d94feaae19ccd6dcbe1d66?pvs=4')));
+                    context.push(TermsPage.routeName);
+                    // Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //         builder: (context) => const WebviewPage(
+                    //             title: 'Terms of Service',
+                    //             url:
+                    //                 'https://dour-rhodium-0f4.notion.site/Zest-Terms-of-Use-3d0f81cfe4d94feaae19ccd6dcbe1d66?pvs=4')));
                   },
                   text: 'Terms of Use'),
               HTSpacers.height8,
               BaseEndDrawerItem(
                   onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const WebviewPage(
-                                title: 'Privacy Policy',
-                                url:
-                                    'https://dour-rhodium-0f4.notion.site/Zest-Privacy-Policy-bb8879af28fa4d83862300eb6c1f99ea?pvs=4')));
+                    context.push(PrivacyPolicyPage.routeName);
+                    // Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //         builder: (context) => const WebviewPage(
+                    //             title: 'Privacy Policy',
+                    //             url:
+                    //                 'https://dour-rhodium-0f4.notion.site/Zest-Privacy-Policy-bb8879af28fa4d83862300eb6c1f99ea?pvs=4')));
                   },
                   text: 'Privacy Policy'),
               HTSpacers.height8,
@@ -345,7 +345,7 @@ class BaseEndDrawer extends StatelessWidget {
                   },
                   text: 'Mode'),
               const Spacer(),
-              if (kDebugMode || F.appFlavor == Flavor.dev) const DevMenu(),
+              // if (kDebugMode || F.appFlavor == Flavor.dev) const DevMenu(),
               FutureBuilder<PackageInfo>(
                   future: PackageInfo.fromPlatform(),
                   builder: (context, snapshot) {
