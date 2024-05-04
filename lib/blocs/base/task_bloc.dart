@@ -33,12 +33,19 @@ class TaskBloc extends Disposable {
   late final double dateScrollOffset;
 
   TaskBloc({required this.appService, required this.deviceWidth}) {
-    getDates();
+    List<DateTime> dateList = getDates();
+    int extra = dateList
+            .sublist(0, prevDates)
+            .where((element) => element.day == 1)
+            .isNotEmpty
+        ? 1
+        : 0;
+
     dateScrollOffset =
-        (dateWidth * prevDates - ((deviceWidth - 84) / 2)).toDouble();
+        (dateWidth * (prevDates + extra) - ((deviceWidth - 84) / 2)).toDouble();
 
     dateScrollController =
-        ScrollController(initialScrollOffset: dateScrollOffset);
+        ScrollController(initialScrollOffset: dateScrollOffset - extra);
 
     appService.tasks.listen((tasks) {
       getCurrTasks(tasks, _dates.value[_dateIndex.value]);
@@ -142,7 +149,6 @@ class TaskBloc extends Disposable {
   }
 
   scrollToToday() {
-    getDates();
     DateTime now = DateTime.now().getDate();
 
     dateScrollController.animateTo(
