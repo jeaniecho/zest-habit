@@ -9,7 +9,6 @@ import 'package:habit_app/blocs/task/task_add_bloc.dart';
 import 'package:habit_app/models/settings_model.dart';
 import 'package:habit_app/pages/base/task_page.dart';
 import 'package:habit_app/pages/base/timer_page.dart';
-import 'package:habit_app/pages/drawer/licenses_page.dart';
 import 'package:habit_app/pages/drawer/mode_page.dart';
 import 'package:habit_app/pages/etc/dev_page.dart';
 import 'package:habit_app/pages/task/task_add_page.dart';
@@ -40,14 +39,14 @@ class _BasePageState extends State<BasePage> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      if (
-          // !context.read<IAPService>().isPro() &&
-          !context.read<AppService>().isProValue &&
-              context.read<AppService>().settingsValue.createdTaskCount >= 3) {
-        pushSubscriptionPage(SubscriptionLocation.secondSession);
-      }
-    });
+    // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    //   if (
+    //       // !context.read<IAPService>().isPro() &&
+    //       !context.read<AppService>().isProValue &&
+    //           context.read<AppService>().settingsValue.createdTaskCount >= 3) {
+    //     pushSubscriptionPage(SubscriptionLocation.secondSession);
+    //   }
+    // });
   }
 
   @override
@@ -331,12 +330,12 @@ class BaseEndDrawer extends StatelessWidget {
                     //                 'https://dour-rhodium-0f4.notion.site/Zest-Privacy-Policy-bb8879af28fa4d83862300eb6c1f99ea?pvs=4')));
                   },
                   text: 'Privacy Policy'),
-              HTSpacers.height8,
-              BaseEndDrawerItem(
-                  onTap: () {
-                    context.push(LicensesPage.routeName);
-                  },
-                  text: 'Licenses'),
+              // HTSpacers.height8,
+              // BaseEndDrawerItem(
+              //     onTap: () {
+              //       context.push(LicensesPage.routeName);
+              //     },
+              //     text: 'Licenses'),
               HTSpacers.height8,
               BaseEndDrawerItem(
                   onTap: () {

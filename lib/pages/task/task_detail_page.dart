@@ -104,8 +104,9 @@ class TaskDetailAction extends StatelessWidget {
                         taskAlarm: task.alarmTime != null,
                         fillSubtitle:
                             task.goal != null && task.goal!.isNotEmpty,
-                        subscribeStatus: getSubscriptionType(
-                            appService.iapService.purchasesValue),
+                        // subscribeStatus: getSubscriptionType(
+                        //     appService.iapService.purchasesValue),
+                        subscribeStatus: SubscriptionType.free,
                       );
 
                       HTToastBar(

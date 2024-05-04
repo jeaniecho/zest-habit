@@ -26,21 +26,21 @@ class IAPService {
   static String kDevYearlySubscriptionId = 'dev.jeanie.habitApp.dev.yearly';
 
   static List<String> kSubscriptionIds = [
-    kEarlybirdMonthlyId,
-    kMonthlySubscriptionId,
-    kEarlybirdYearlyId,
-    kYearlySubscriptionId,
+    // kEarlybirdMonthlyId,
+    // kMonthlySubscriptionId,
+    // kEarlybirdYearlyId,
+    // kYearlySubscriptionId,
   ];
 
   static List<String> kDevSubscriptionIds = [
-    kDevEarlybirdMonthlyId,
-    kDevEarlybirdYearlyId,
-    kDevMonthlySubscriptionId,
-    kDevYearlySubscriptionId,
+    // kDevEarlybirdMonthlyId,
+    // kDevEarlybirdYearlyId,
+    // kDevMonthlySubscriptionId,
+    // kDevYearlySubscriptionId,
   ];
 
   final InAppPurchase _inAppPurchase = InAppPurchase.instance;
-  late StreamSubscription<List<PurchaseDetails>> _subscription;
+  // late StreamSubscription<List<PurchaseDetails>> _subscription;
   InAppPurchase get inAppPurchase => _inAppPurchase;
 
   final BehaviorSubject<List<String>> _notFoundIds = BehaviorSubject.seeded([]);
@@ -73,21 +73,21 @@ class IAPService {
   Stream<String?> get queryProductError => _queryProductError.stream;
 
   IAPService() {
-    final Stream<List<PurchaseDetails>> purchaseUpdated =
-        _inAppPurchase.purchaseStream;
-    _subscription = purchaseUpdated.listen(
-      (List<PurchaseDetails> purchaseDetailsList) {
-        _listenToPurchaseUpdated(purchaseDetailsList);
-      },
-      onDone: () {
-        _subscription.cancel();
-      },
-      onError: (Object error) {
-        // handle error here
-      },
-    );
+    // final Stream<List<PurchaseDetails>> purchaseUpdated =
+    //     _inAppPurchase.purchaseStream;
+    // _subscription = purchaseUpdated.listen(
+    //   (List<PurchaseDetails> purchaseDetailsList) {
+    //     _listenToPurchaseUpdated(purchaseDetailsList);
+    //   },
+    //   onDone: () {
+    //     _subscription.cancel();
+    //   },
+    //   onError: (Object error) {
+    //     // handle error here
+    //   },
+    // );
 
-    initStoreInfo();
+    // initStoreInfo();
   }
 
   List<String> getSubscriptionIds() {
@@ -151,7 +151,8 @@ class IAPService {
   }
 
   bool isPro() {
-    return _purchases.value.isNotEmpty;
+    // return _purchases.value.isNotEmpty;
+    return true;
   }
 
   Future<bool> verifyPurchase(PurchaseDetails purchaseDetails) {
@@ -176,31 +177,31 @@ class IAPService {
     }
   }
 
-  Future<void> _listenToPurchaseUpdated(
-      List<PurchaseDetails> purchaseDetailsList) async {
-    for (final PurchaseDetails purchaseDetails in purchaseDetailsList) {
-      if (purchaseDetails.status == PurchaseStatus.pending) {
-        // show pending UI
-      } else {
-        if (purchaseDetails.status == PurchaseStatus.error) {
-          _purchasePending.add(false);
-        } else if (purchaseDetails.status == PurchaseStatus.purchased ||
-            purchaseDetails.status == PurchaseStatus.restored) {
-          final bool valid = await verifyPurchase(purchaseDetails);
-          if (valid) {
-            unawaited(deliverProduct(purchaseDetails));
-          } else {
-            handleInvalidPurchase(purchaseDetails);
-            return;
-          }
-        }
+  // Future<void> _listenToPurchaseUpdated(
+  //     List<PurchaseDetails> purchaseDetailsList) async {
+  //   for (final PurchaseDetails purchaseDetails in purchaseDetailsList) {
+  //     if (purchaseDetails.status == PurchaseStatus.pending) {
+  //       // show pending UI
+  //     } else {
+  //       if (purchaseDetails.status == PurchaseStatus.error) {
+  //         _purchasePending.add(false);
+  //       } else if (purchaseDetails.status == PurchaseStatus.purchased ||
+  //           purchaseDetails.status == PurchaseStatus.restored) {
+  //         final bool valid = await verifyPurchase(purchaseDetails);
+  //         if (valid) {
+  //           unawaited(deliverProduct(purchaseDetails));
+  //         } else {
+  //           handleInvalidPurchase(purchaseDetails);
+  //           return;
+  //         }
+  //       }
 
-        if (purchaseDetails.pendingCompletePurchase) {
-          await _inAppPurchase.completePurchase(purchaseDetails);
-        }
-      }
-    }
-  }
+  //       if (purchaseDetails.pendingCompletePurchase) {
+  //         await _inAppPurchase.completePurchase(purchaseDetails);
+  //       }
+  //     }
+  //   }
+  // }
 
   Future<void> confirmPriceChange(BuildContext context) async {
     if (Platform.isIOS) {

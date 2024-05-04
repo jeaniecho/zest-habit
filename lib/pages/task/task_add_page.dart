@@ -1013,7 +1013,6 @@ class TaskAddSubmit extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AppService appService = context.read<AppService>();
     TaskAddBloc bloc = context.read<TaskAddBloc>();
 
     return StreamBuilder<List>(
@@ -1064,8 +1063,9 @@ class TaskAddSubmit extends StatelessWidget {
                             taskAlarm: task.alarmTime != null,
                             fillSubtitle:
                                 task.goal != null && task.goal!.isNotEmpty,
-                            subscribeStatus: getSubscriptionType(
-                                appService.iapService.purchasesValue),
+                            // subscribeStatus: getSubscriptionType(
+                            //     appService.iapService.purchasesValue),
+                            subscribeStatus: SubscriptionType.free,
                           );
                         });
                       }

@@ -6,6 +6,7 @@ import 'package:habit_app/models/task_model.dart';
 import 'package:habit_app/pages/task/task_add_page.dart';
 import 'package:habit_app/styles/colors.dart';
 import 'package:habit_app/utils/disposable.dart';
+import 'package:habit_app/utils/enums.dart';
 import 'package:habit_app/utils/functions.dart';
 import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
@@ -172,8 +173,9 @@ class TaskDetailBloc extends Disposable {
       taskEmoji: task.emoji,
       taskCreateDate: task.from,
       taskAlarm: task.alarmTime != null,
-      subscribeStatus:
-          getSubscriptionType(appService.iapService.purchasesValue),
+      // subscribeStatus:
+      //     getSubscriptionType(appService.iapService.purchasesValue),
+      subscribeStatus: SubscriptionType.free,
     );
   }
 }

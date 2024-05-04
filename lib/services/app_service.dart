@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:habit_app/models/auth_token_model.dart';
 import 'package:habit_app/services/event_service.dart';
-import 'package:habit_app/iap/iap_service.dart';
 import 'package:habit_app/models/settings_model.dart';
 import 'package:habit_app/models/task_model.dart';
 import 'package:habit_app/utils/enums.dart';
@@ -14,7 +13,6 @@ import 'package:rxdart/rxdart.dart';
 
 class AppService {
   final Isar isar;
-  final IAPService iapService;
 
   final BehaviorSubject<Settings> _settings =
       BehaviorSubject.seeded(Settings());
@@ -41,9 +39,6 @@ class AppService {
   Function(AuthToken?) get setAuth => _auth.add;
   AuthToken? get authValue => _auth.value;
 
-  Stream<List> get purchases => iapService.purchases;
-  List get purchasesValue => iapService.purchasesValue;
-
   final BehaviorSubject<bool> _isPro = BehaviorSubject.seeded(true);
   Stream<bool> get isPro => _isPro.stream;
   bool get isProValue => _isPro.value;
@@ -52,7 +47,7 @@ class AppService {
   Stream<bool> get isLoading => _isLoading.stream;
   Function(bool) get setIsLoading => _isLoading.add;
 
-  AppService({required this.isar, required this.iapService}) {
+  AppService({required this.isar}) {
     getSettings();
     getTasks().then((value) {
       if (isProValue) {
@@ -161,7 +156,8 @@ class AppService {
       taskAlarm: task.alarmTime != null,
       deleteDate: now,
       taskPeriod: now.difference(task.from).inDays,
-      subscribeStatus: getSubscriptionType(iapService.purchasesValue),
+      // subscribeStatus: getSubscriptionType(iapService.purchasesValue),
+      subscribeStatus: SubscriptionType.free,
     );
   }
 
