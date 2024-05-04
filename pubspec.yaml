@@ -2,7 +2,7 @@ name: habit_app
 description: "Habit Tracker App"
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 1.0.2+37
+version: 1.0.2+38
 
 environment:
   sdk: '>=3.2.3 <4.0.0'
