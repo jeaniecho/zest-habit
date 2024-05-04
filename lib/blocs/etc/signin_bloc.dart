@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:habit_app/gen/assets.gen.dart';
@@ -57,14 +56,14 @@ class SigninBloc extends Disposable {
       );
       log(credential.toString());
 
-      String? apnsToken = await FirebaseMessaging.instance.getAPNSToken();
-      String? fcmToken =
-          apnsToken != null ? await FirebaseMessaging.instance.getToken() : '';
+      // String? apnsToken = await FirebaseMessaging.instance.getAPNSToken();
+      // String? fcmToken =
+      //     apnsToken != null ? await FirebaseMessaging.instance.getToken() : '';
 
       AuthToken auth = await ApiService().postAuthLoginApple(
         authorizationCode: credential.authorizationCode,
         snsUserId: credential.userIdentifier ?? '',
-        deviceToken: fcmToken ?? '',
+        deviceToken: '',
       );
       appService.setAuth(auth);
 
@@ -90,14 +89,14 @@ class SigninBloc extends Disposable {
 
         GoogleSignInAuthentication googleAuth = await credential.authentication;
 
-        String? apnsToken = await FirebaseMessaging.instance.getAPNSToken();
-        String? fcmToken = apnsToken != null
-            ? await FirebaseMessaging.instance.getToken()
-            : '';
+        // String? apnsToken = await FirebaseMessaging.instance.getAPNSToken();
+        // String? fcmToken = apnsToken != null
+        //     ? await FirebaseMessaging.instance.getToken()
+        //     : '';
 
         AuthToken auth = await ApiService().postAuthLoginGoogle(
           authorizationCode: googleAuth.idToken ?? '',
-          deviceToken: fcmToken ?? '',
+          deviceToken: '',
         );
 
         return auth;

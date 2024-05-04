@@ -123,7 +123,7 @@ showTutorial({required AppService appService, required Task firstTask}) {
     return;
   }
 
-  EventService.viewTutorial();
+  // EventService.viewTutorial();
 
   BuildContext context = shellNavKey.currentContext!;
   TaskDetailBloc taskDetailBloc =
