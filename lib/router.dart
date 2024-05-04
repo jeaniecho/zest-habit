@@ -1,6 +1,8 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:habit_app/pages/drawer/privacy_policy_page.dart';
+import 'package:habit_app/pages/drawer/terms_page.dart';
 import 'package:habit_app/services/app_service.dart';
 import 'package:habit_app/blocs/etc/onboarding/onboarding_bloc.dart';
 import 'package:habit_app/blocs/etc/onboarding/onboarding_task_bloc.dart';
@@ -124,6 +126,18 @@ List<RouteBase> routes = [
         dispose: (context, value) => value.dispose(),
         child: const SigninPage(),
       );
+    },
+  ),
+  GoRoute(
+    path: TermsPage.routeName,
+    builder: (context, state) {
+      return const TermsPage();
+    },
+  ),
+  GoRoute(
+    path: PrivacyPolicyPage.routeName,
+    builder: (context, state) {
+      return const PrivacyPolicyPage();
     },
   ),
 ];
